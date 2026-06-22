@@ -21,6 +21,7 @@ The app mainly targets Food seekers, which comprises anyone who cannot afford a 
 ## Architecture 
 
 ![Architecture design](docs/Architecture-digram-ResQPlate.png)
+
 The app will use separate frontend, backend, and database architecture on the Google Cloud platform and Cloudflare. The frontend is a React + Vite Typescript app deployed on Cloudflare pages, which is responsible for handling routing by serving frontend for normal page requests and forwarding `/api` requests to backend VM. The backend will be an Express REST API deployed on a VM on GCP. It will handle application logic, authentication through Better Auth, RBAC, food listing management, reservations, reports and communication with external services: the Google Maps API for location and map-based listings, the Gemini API for AI-assisted report review, and the Algolia Search API for faster listing search and filtering. The database will be PostgreSQL hosted inside our Backend VM and will be managed by us, which stores all the data of our application, and it will act as an internal database service. At a high-level, users will access the frontend Cloudflare page in their browser, or mobile app, then frontend sends API requests to backend VM. Backend reads and writes data in PostgreSQL and calls external APIs when needed, and the responses are sent back to frontend and displayed for food seekers and businesses.  
 
 ## Justification for Stack A 
@@ -48,6 +49,7 @@ Sukhjit Singh Chana: Pickup Management.
 ## ER Diagram 
 
 ![ER Diagram](docs/er-diagram.jpg)
+
 The Main entities are Users, Restaurant Profiles, Food Listings, Reservations, Reports, Allergens, and Listing Allergens. The key relationships are: 
 
 1. One user can own a zero or one restaurant profile. (1-0..1 relationship)
