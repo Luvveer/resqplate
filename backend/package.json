@@ -16,6 +16,7 @@
   },
   "type": "module",
   "dependencies": {
+    "better-auth": "^1.6.20",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "drizzle-orm": "^0.45.2",
