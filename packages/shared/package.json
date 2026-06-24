@@ -1,0 +1,16 @@
+{
+  "name": "@resqplate/shared",
+  "version": "1.0.0",
+  "scripts": {
+    "lint": "eslint ."
+  },
+  "type": "module",
+  "types": "src/index.ts",
+  "main": "src/index.ts",
+  "private": true,
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.5.0",
+    "typescript-eslint": "^8.62.0"
+  }
+}
