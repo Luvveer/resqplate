@@ -6,6 +6,7 @@
   },
   "scripts": {
     "prepare": "husky",
+    "build": "npm run build -w packages/shared && npm run build -w backend && npm run build -w frontend",
     "lint": "npm run lint --workspaces --if-present",
     "format": "prettier --write .",
     "db:start": "docker compose up -d",
