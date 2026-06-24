@@ -1,0 +1,43 @@
+{
+  "name": "final-project-group-12",
+  "version": "1.0.0",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "prepare": "husky",
+    "lint": "npm run lint --workspaces --if-present",
+    "format": "prettier --write .",
+    "db:start": "docker compose up -d",
+    "db:stop": "docker compose down",
+    "db:force-stop": "docker compose down -v",
+    "db:migrate": "npm exec -w backend -- drizzle-kit migrate",
+    "db:generate": "npm exec -w backend -- drizzle-kit generate",
+    "db:studio": "npm exec -w backend -- drizzle-kit studio",
+    "test": "npm run test --workspaces --if-present"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": "eslint --fix",
+    "*.{json,md,css,scss,html}": "prettier --write"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bobbychan-cmpt/final-project-group-12.git"
+  },
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/bobbychan-cmpt/final-project-group-12/issues"
+  },
+  "homepage": "https://github.com/bobbychan-cmpt/final-project-group-12#readme",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "packages/shared",
+    "frontend"
+  ],
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.8",
+    "prettier": "^3.8.4"
+  }
+}
