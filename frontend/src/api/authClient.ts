@@ -1,0 +1,53 @@
+import { apiClient } from "./apiClient";
+import type {
+  SignupInput,
+  LoginInput,
+  UserRole,
+  ProfileResponse,
+} from "@resqplate/shared";
+
+class AuthAPI {
+  async loginRequest(input_email: string, input_password: string) {
+    const loginData: LoginInput = {
+      email: input_email,
+      password: input_password,
+    };
+    return await apiClient.request<{ profile: ProfileResponse }>(
+      "POST",
+      "/auth/login",
+      loginData,
+    );
+  }
+
+  async signupRequest(
+    input_email: string,
+    input_password: string,
+    input_name: string,
+    input_role: UserRole,
+  ) {
+    const signupData: SignupInput = {
+      email: input_email,
+      password: input_password,
+      name: input_name,
+      role: input_role,
+    };
+    return await apiClient.request<{ profile: ProfileResponse }>(
+      "POST",
+      "/auth/signup",
+      signupData,
+    );
+  }
+
+  async logoutRequest() {
+    return await apiClient.request<{ message: string }>("POST", "/auth/logout");
+  }
+
+  async profileMe() {
+    return await apiClient.request<{ profile: ProfileResponse }>(
+      "GET",
+      "/auth/profile/me",
+    );
+  }
+}
+
+export const authApi = new AuthAPI();
