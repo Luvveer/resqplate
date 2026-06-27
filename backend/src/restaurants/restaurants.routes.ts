@@ -7,7 +7,12 @@ import {
 
 const RestaurantRouter = Router();
 
-RestaurantRouter.get("/me", getSession, isBusiness, getRestaurantHandler);
+RestaurantRouter.get(
+  "/profileres",
+  getSession,
+  isBusiness,
+  getRestaurantHandler,
+);
 RestaurantRouter.post(
   "/signup",
   getSession,

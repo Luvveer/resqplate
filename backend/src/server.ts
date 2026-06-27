@@ -4,7 +4,7 @@ import AuthRouter from "./auth/auth.routes.js";
 import RestaurantRouter from "./restaurants/restaurants.routes.js";
 
 const app = express();
-
+app.disable("etag");
 app.use(
   cors({
     origin: process.env.FRONTEND_URL ?? "http://localhost:5173",
