@@ -8,7 +8,7 @@ class CompanyAPI {
   async getMyRestaurant() {
     return await apiClient.request<{ restaurant: RestaurantProfileResponse }>(
       "GET",
-      "/restaurants/me",
+      "/restaurants/profileres",
     );
   }
 
