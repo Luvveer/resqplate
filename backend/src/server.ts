@@ -2,8 +2,10 @@ import express from "express";
 import cors from "cors";
 import AuthRouter from "./auth/auth.routes.js";
 import RestaurantRouter from "./restaurants/restaurants.routes.js";
+import morgan from "morgan";
 
 const app = express();
+app.use(morgan("dev"));
 app.disable("etag");
 app.use(
   cors({
