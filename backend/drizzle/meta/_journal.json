@@ -8,6 +8,20 @@
       "when": 1782188312528,
       "tag": "0000_steady_marrow",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1782295276381,
+      "tag": "0001_sweet_juggernaut",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1782339311684,
+      "tag": "0002_broken_bug",
+      "breakpoints": true
     }
   ]
 }
