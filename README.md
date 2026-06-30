@@ -42,8 +42,11 @@ We will be using Stack A: Express + React for our application because our app is
 Our team is suitable for this app because it can be divided into clear features, and each member will take ownership of one major feature while still doing integration and testing.
 
 Luvver Singh Lamba: Food search and reservation for food seekers.
-Priyansh Sarvaiya: Business Profile & Verification.  
+
+Priyansh Sarvaiya: Business Profile & Verification.
+
 Daiwik Marrott: Food Listing Creation.
+
 Sukhjit Singh Chana: Pickup Management.
 
 ## ER Diagram
@@ -53,6 +56,7 @@ Sukhjit Singh Chana: Pickup Management.
 The Main entities are Users, Restaurant Profiles, Food Listings, Reservations, Reports, Allergens, and Listing Allergens. The key relationships are:
 
 1. One user can own a zero or one restaurant profile. (1-0..1 relationship)
+
 2. One restaurant profile can create many food listings. (1-N relationship)
 
 3. One user can make many food reservations. (1-N relationship)
