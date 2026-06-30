@@ -42,8 +42,11 @@ We will be using Stack A: Express + React for our application because our app is
 Our team is suitable for this app because it can be divided into clear features, and each member will take ownership of one major feature while still doing integration and testing.
 
 Luvver Singh Lamba: Food search and reservation for food seekers.
-Priyansh Sarvaiya: Business Profile & Verification.  
+
+Priyansh Sarvaiya: Business Profile & Verification.
+
 Daiwik Marrott: Food Listing Creation.
+
 Sukhjit Singh Chana: Pickup Management.
 
 ## ER Diagram
