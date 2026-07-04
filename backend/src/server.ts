@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import AuthRouter from "./auth/auth.routes.js";
 import RestaurantRouter from "./restaurants/restaurants.routes.js";
+import AdminRouter from "./admin/admin.routes.js";
 import morgan from "morgan";
 
 const app = express();
@@ -22,6 +23,7 @@ app.get("/api/health", (req, res) => {
 // Call routes in the respective modules
 app.use("/api/auth", AuthRouter);
 app.use("/api/restaurants", RestaurantRouter);
+app.use("/api/admin", AdminRouter);
 
 const port = process.env.PORT ?? 3000;
 
