@@ -27,7 +27,7 @@ export function BusinessOnboardingGuard({ children }: { children: ReactNode }) {
   }, [location.pathname]);
 
   const isLoading = fetchedForPath != location.pathname;
-  if (isLoading) return null;
+  if (isLoading) return <p>Checking business profile...</p>;
   const isOneSteupPage = location.pathname === "/business/setup";
   if (!restaurant && !isOneSteupPage)
     return <Navigate to="/business/setup" replace />;

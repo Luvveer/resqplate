@@ -2,6 +2,7 @@ import { useAuth } from "../../auth/useAuth";
 import { useState, useEffect } from "react";
 import { companyApi } from "../../api/restaurant";
 import type { RestaurantProfileResponse } from "@resqplate/shared";
+import { Link } from "react-router-dom";
 
 export function BusinessDashboard() {
   const { profile, logout } = useAuth();
@@ -15,7 +16,7 @@ export function BusinessDashboard() {
       .catch(() => setRestaurant(null))
       .finally(() => setIsLoading(false));
   }, []);
-  if (isLoading) return null;
+  if (isLoading) return <p>Loading business dashboard...</p>;
 
   if (restaurant?.verificationStatus !== "APPROVED") {
     return (
@@ -34,6 +35,7 @@ export function BusinessDashboard() {
     <div>
       <h1>Business Dashboard</h1>
       <p>Welcome, {profile?.name}</p>
+      <Link to="/business/listings">Manage Listings</Link>
       <button onClick={() => logout()}>Logout</button>
     </div>
   );

@@ -9,7 +9,7 @@ interface RoleGuardProps {
 
 export function RoleGuard({ allowedRoles, children }: RoleGuardProps) {
   const { profile, isLoading } = useAuth();
-  if (isLoading) return null;
+  if (isLoading) return <p>Checking session...</p>;
   if (!profile) return <Navigate to="/" />;
   if (!allowedRoles.includes(profile.role)) return <Navigate to="/" />;
   return <>{children}</>;
