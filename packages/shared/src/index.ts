@@ -12,8 +12,17 @@ export const loginSchema = z.object({
   password: z.string().min(1),
 });
 
+export const verificationStatusSchema = z.enum([
+  "PENDING",
+  "APPROVED",
+  "REJECTED",
+  "SUSPENDED",
+  "INFO_REQUESTED",
+]);
+
 export type SignupInput = z.infer<typeof signupSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
+export type verificationStatus = z.infer<typeof verificationStatusSchema>;
 
 export type UserRole = "FOOD_SEEKER" | "BUSINESS" | "ADMIN";
 export type profileStatus = "ACTIVE" | "SUSPENDED" | "DELETED";
@@ -39,12 +48,7 @@ export type RestaurantProfileResponse = {
   postalCode: string;
   phone: string | null;
   description: string | null;
-  verificationStatus:
-    | "PENDING"
-    | "APPROVED"
-    | "REJECTED"
-    | "SUSPENDED"
-    | "INFO_REQUESTED";
+  verificationStatus: verificationStatus;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -59,9 +63,47 @@ export const createRestaurantSchema = z.object({
   description: z.string().optional(),
 });
 
+export type AdminRestaurantProfileResponse = {
+  id: string;
+  profileId: string;
+  businessName: string;
+  address: string;
+  city: string;
+  province: string;
+  postalCode: string;
+  phone: string | null;
+  description: string | null;
+  verificationStatus: verificationStatus;
+  adminNotes: string | null;
+  verifiedAt: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export const AdminRestaurantParamsSchema = z.object({
+  restaurantId: z.uuid(),
+});
+
+export const AdminRestaurantStatusQuerySchema = z.object({
+  status: verificationStatusSchema.optional(),
+});
+
+export const AdminVerificationActionSchema = z.object({
+  adminNotes: z.string().optional(),
+});
+
+export type AdminRestaurantParamsInput = z.infer<
+  typeof AdminRestaurantParamsSchema
+>;
+export type AdminRestaurantStatusQueryInput = z.infer<
+  typeof AdminRestaurantStatusQuerySchema
+>;
+export type AdminVerificationActionInput = z.infer<
+  typeof AdminVerificationActionSchema
+>;
 export type CreateRestaurantInput = z.infer<typeof createRestaurantSchema>;
 
-/* Feature 2 */
+/* Listing */
 export type ListingStatus = "AVAILABLE" | "RESERVED" | "EXPIRED";
 
 export type AllergenResponse = {
