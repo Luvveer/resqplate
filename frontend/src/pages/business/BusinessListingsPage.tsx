@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import type { FoodListingResponse } from "@resqplate/shared";
 import { restaurantListingApi } from "../../api/restaurantListing";
+import "./Business.css";
 
 export function BusinessListingsPage() {
   const [listings, setListings] = useState<FoodListingResponse[]>([]);
@@ -54,61 +55,112 @@ export function BusinessListingsPage() {
   }
 
   return (
-    <div>
-      <h1>Food Listings</h1>
-      <Link to="/business">Back to dashboard</Link>
-      <div>
-        <Link to="/business/listings/new">Create Listing</Link>
-      </div>
+    <div className="business-page">
+      <header className="business-topbar">
+        <div className="business-brand">
+          <h1>Food Listings</h1>
+          <p>Create and manage available pickup listings.</p>
+        </div>
 
-      {error && <p>{error}</p>}
+        <div className="business-actions">
+          <Link className="business-link-button secondary" to="/business">
+            Dashboard
+          </Link>
+          <Link className="business-link-button" to="/business/listings/new">
+            Create Listing
+          </Link>
+        </div>
+      </header>
 
-      {isLoading ? (
-        <p>Loading...</p>
-      ) : listings.length === 0 ? (
-        <p>No listings found.</p>
-      ) : (
-        <table>
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Category</th>
-              <th>Quantity</th>
-              <th>Pickup</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {listings.map((listing) => (
-              <tr key={listing.id}>
-                <td>
-                  <strong>{listing.title}</strong>
-                  <div>{listing.description}</div>
-                </td>
-                <td>{listing.category || "Uncategorized"}</td>
-                <td>{listing.quantityAvailable}</td>
-                <td>
-                  <div>{new Date(listing.pickupStart).toLocaleString()}</div>
-                  <div>{new Date(listing.pickupEnd).toLocaleString()}</div>
-                </td>
-                <td>{listing.status}</td>
-                <td>
-                  <Link to={`/business/listings/${listing.id}/edit`}>Edit</Link>
-                  <button
-                    onClick={() => expireListing(listing.id)}
-                    disabled={
-                      updatingId === listing.id || listing.status === "EXPIRED"
-                    }
-                  >
-                    Expire
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+      <main className="business-main">
+        {error && <p className="business-error">{error}</p>}
+
+        {isLoading ? (
+          <p className="business-message">Loading listings...</p>
+        ) : listings.length === 0 ? (
+          <section className="business-card">
+            <h2>No listings yet</h2>
+            <p className="business-muted">
+              Create your first food listing when you have food available for
+              pickup.
+            </p>
+            <Link className="business-link-button" to="/business/listings/new">
+              Create Listing
+            </Link>
+          </section>
+        ) : (
+          <div className="business-table-wrap">
+            <table className="business-table">
+              <thead>
+                <tr>
+                  <th>Listing</th>
+                  <th>Category</th>
+                  <th>Quantity</th>
+                  <th>Pickup</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {listings.map((listing) => (
+                  <tr key={listing.id}>
+                    <td>
+                      <div className="business-title">{listing.title}</div>
+                      <div className="business-muted">
+                        {listing.description || "No description"}
+                      </div>
+                    </td>
+
+                    <td>{listing.category || "Uncategorized"}</td>
+
+                    <td>{listing.quantityAvailable}</td>
+
+                    <td>
+                      <div>
+                        {new Date(listing.pickupStart).toLocaleString()}
+                      </div>
+                      <div className="business-muted">
+                        to {new Date(listing.pickupEnd).toLocaleString()}
+                      </div>
+                    </td>
+
+                    <td>
+                      <span
+                        className={`business-status ${listing.status.toLowerCase()}`}
+                      >
+                        {listing.status}
+                      </span>
+                    </td>
+
+                    <td>
+                      <div className="business-actions">
+                        <Link
+                          className="business-link-button secondary"
+                          to={`/business/listings/${listing.id}/edit`}
+                        >
+                          Edit
+                        </Link>
+
+                        <button
+                          className="business-button danger"
+                          onClick={() => expireListing(listing.id)}
+                          disabled={
+                            updatingId === listing.id ||
+                            listing.status === "EXPIRED"
+                          }
+                        >
+                          Expire
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </main>
     </div>
   );
 }

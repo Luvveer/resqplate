@@ -83,8 +83,8 @@ export function ListingForm({
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
+    <form className="business-form" onSubmit={handleSubmit}>
+      <div className="business-field">
         <label htmlFor="listing-title">Title</label>
         <input
           id="listing-title"
@@ -94,7 +94,7 @@ export function ListingForm({
         />
       </div>
 
-      <div>
+      <div className="business-field">
         <label htmlFor="listing-description">Description</label>
         <textarea
           id="listing-description"
@@ -103,99 +103,101 @@ export function ListingForm({
         />
       </div>
 
-      <div>
-        <label htmlFor="listing-category">Category</label>
-        <input
-          id="listing-category"
-          value={values.category}
-          onChange={(event) => updateField("category", event.target.value)}
-        />
+      <div className="business-form-grid">
+        <div className="business-field">
+          <label htmlFor="listing-category">Category</label>
+          <input
+            id="listing-category"
+            value={values.category}
+            onChange={(event) => updateField("category", event.target.value)}
+          />
+        </div>
+
+        <div className="business-field">
+          <label htmlFor="listing-quantity">Quantity</label>
+          <input
+            id="listing-quantity"
+            type="number"
+            min="1"
+            value={values.quantityAvailable}
+            onChange={(event) =>
+              updateField("quantityAvailable", event.target.value)
+            }
+            required
+          />
+        </div>
+
+        <div className="business-field">
+          <label htmlFor="listing-pickup-start">Pickup start</label>
+          <input
+            id="listing-pickup-start"
+            type="datetime-local"
+            value={values.pickupStart}
+            onChange={(event) => updateField("pickupStart", event.target.value)}
+            required
+          />
+        </div>
+
+        <div className="business-field">
+          <label htmlFor="listing-pickup-end">Pickup end</label>
+          <input
+            id="listing-pickup-end"
+            type="datetime-local"
+            value={values.pickupEnd}
+            onChange={(event) => updateField("pickupEnd", event.target.value)}
+            required
+          />
+        </div>
+
+        <div className="business-field">
+          <label htmlFor="listing-pickup-code">Pickup code</label>
+          <input
+            id="listing-pickup-code"
+            value={values.pickupCode}
+            onChange={(event) => updateField("pickupCode", event.target.value)}
+          />
+        </div>
+
+        <div className="business-field">
+          <label htmlFor="listing-address">Pickup address</label>
+          <input
+            id="listing-address"
+            value={values.addressSnapShot}
+            onChange={(event) =>
+              updateField("addressSnapShot", event.target.value)
+            }
+          />
+        </div>
+
+        <div className="business-field">
+          <label htmlFor="listing-latitude">Latitude</label>
+          <input
+            id="listing-latitude"
+            value={values.latitude}
+            onChange={(event) => updateField("latitude", event.target.value)}
+          />
+        </div>
+
+        <div className="business-field">
+          <label htmlFor="listing-longitude">Longitude</label>
+          <input
+            id="listing-longitude"
+            value={values.longitude}
+            onChange={(event) => updateField("longitude", event.target.value)}
+          />
+        </div>
+
+        <div className="business-field business-field-full">
+          <label htmlFor="listing-storage-note">Storage notes</label>
+          <input
+            id="listing-storage-note"
+            value={values.storageNote}
+            onChange={(event) => updateField("storageNote", event.target.value)}
+          />
+        </div>
       </div>
 
-      <div>
-        <label htmlFor="listing-quantity">Quantity</label>
-        <input
-          id="listing-quantity"
-          type="number"
-          min="1"
-          value={values.quantityAvailable}
-          onChange={(event) =>
-            updateField("quantityAvailable", event.target.value)
-          }
-          required
-        />
-      </div>
-
-      <div>
-        <label htmlFor="listing-pickup-start">Pickup start</label>
-        <input
-          id="listing-pickup-start"
-          type="datetime-local"
-          value={values.pickupStart}
-          onChange={(event) => updateField("pickupStart", event.target.value)}
-          required
-        />
-      </div>
-
-      <div>
-        <label htmlFor="listing-pickup-end">Pickup end</label>
-        <input
-          id="listing-pickup-end"
-          type="datetime-local"
-          value={values.pickupEnd}
-          onChange={(event) => updateField("pickupEnd", event.target.value)}
-          required
-        />
-      </div>
-
-      <div>
-        <label htmlFor="listing-pickup-code">Pickup code</label>
-        <input
-          id="listing-pickup-code"
-          value={values.pickupCode}
-          onChange={(event) => updateField("pickupCode", event.target.value)}
-        />
-      </div>
-
-      <div>
-        <label htmlFor="listing-address">Pickup address</label>
-        <input
-          id="listing-address"
-          value={values.addressSnapShot}
-          onChange={(event) =>
-            updateField("addressSnapShot", event.target.value)
-          }
-        />
-      </div>
-
-      <div>
-        <label htmlFor="listing-latitude">Latitude</label>
-        <input
-          id="listing-latitude"
-          value={values.latitude}
-          onChange={(event) => updateField("latitude", event.target.value)}
-        />
-      </div>
-
-      <div>
-        <label htmlFor="listing-longitude">Longitude</label>
-        <input
-          id="listing-longitude"
-          value={values.longitude}
-          onChange={(event) => updateField("longitude", event.target.value)}
-        />
-      </div>
-
-      <div>
-        <label htmlFor="listing-storage-note">Storage note</label>
-        <input
-          id="listing-storage-note"
-          value={values.storageNote}
-          onChange={(event) => updateField("storageNote", event.target.value)}
-        />
-      </div>
-
-      <button type="submit" disabled={isSubmitting}>
+      <button className="business-button" type="submit" disabled={isSubmitting}>
         {isSubmitting ? "Saving..." : submitLabel}
       </button>
     </form>

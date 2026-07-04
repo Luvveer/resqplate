@@ -24,15 +24,32 @@ export function CreateListingPage() {
   }
 
   return (
-    <div>
-      <h1>Create Listing</h1>
-      <Link to="/business/listings">Back to listings</Link>
-      {error && <p>{error}</p>}
-      <ListingForm
-        submitLabel="Create Listing"
-        isSubmitting={isSubmitting}
-        onSubmit={handleSubmit}
-      />
+    <div className="business-form-page">
+      <div className="business-form-shell">
+        <section className="business-form-card">
+          <div className="business-form-header">
+            <div>
+              <h1>Create Listing</h1>
+              <p>Add pickup details for a new food listing.</p>
+            </div>
+
+            <Link
+              className="business-link-button secondary"
+              to="/business/listings"
+            >
+              Back to listings
+            </Link>
+          </div>
+
+          {error && <p className="business-error">{error}</p>}
+
+          <ListingForm
+            submitLabel="Create Listing"
+            isSubmitting={isSubmitting}
+            onSubmit={handleSubmit}
+          />
+        </section>
+      </div>
     </div>
   );
 }

@@ -56,33 +56,58 @@ export function EditListingPage() {
     }
   }
 
-  if (isLoading) return null;
+  if (isLoading) {
+    return (
+      <div className="business-form-page">
+        <div className="business-form-shell">
+          <p className="business-message">Loading listing...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div>
-      <h1>Edit Listing</h1>
-      <Link to="/business/listings">Back to listings</Link>
-      {error && <p>{error}</p>}
-      {listing && (
-        <ListingForm
-          initialValues={{
-            title: listing.title,
-            description: listing.description ?? "",
-            category: listing.category ?? "",
-            quantityAvailable: String(listing.quantityAvailable),
-            pickupStart: listing.pickupStart,
-            pickupEnd: listing.pickupEnd,
-            pickupCode: listing.pickupCode ?? "",
-            addressSnapShot: listing.addressSnapShot ?? "",
-            latitude: listing.latitude ?? "",
-            longitude: listing.longitude ?? "",
-            storageNote: listing.storageNote ?? "",
-          }}
-          submitLabel="Update Listing"
-          isSubmitting={isSubmitting}
-          onSubmit={handleSubmit}
-        />
-      )}
+    <div className="business-form-page">
+      <div className="business-form-shell">
+        <section className="business-form-card">
+          <div className="business-form-header">
+            <div>
+              <h1>Edit Listing</h1>
+              <p>Update pickup time, location, and listing details.</p>
+            </div>
+
+            <Link
+              className="business-link-button secondary"
+              to="/business/listings"
+            >
+              Back to listings
+            </Link>
+          </div>
+
+          {error && <p className="business-error">{error}</p>}
+
+          {listing && (
+            <ListingForm
+              initialValues={{
+                title: listing.title,
+                description: listing.description ?? "",
+                category: listing.category ?? "",
+                quantityAvailable: String(listing.quantityAvailable),
+                pickupStart: listing.pickupStart,
+                pickupEnd: listing.pickupEnd,
+                pickupCode: listing.pickupCode ?? "",
+                addressSnapShot: listing.addressSnapShot ?? "",
+                latitude: listing.latitude ?? "",
+                longitude: listing.longitude ?? "",
+                storageNote: listing.storageNote ?? "",
+              }}
+              submitLabel="Update Listing"
+              isSubmitting={isSubmitting}
+              onSubmit={handleSubmit}
+            />
+          )}
+        </section>
+      </div>
     </div>
   );
 }
