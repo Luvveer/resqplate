@@ -60,14 +60,3 @@ export const createRestaurantSchema = z.object({
 });
 
 export type CreateRestaurantInput = z.infer<typeof createRestaurantSchema>;
-
-// Feature 3 -Food listing (the browser and search for food items) + reservations)
-
-// Function to export everything that a user would seek in the app and filter by, optional fields
-export const listingFilterSchema = z.object({
-  q: z.string.trim().min(1).optional(),
-  city: z.string.trim().min(1).optional(),
-  category: z.string().trim().min(1).optional(),
-  //incase there are any algeries that the user wants to avoid
-  excludeAllergens: z.array(z.string().trim().min(1)).optional(),
-});
