@@ -159,12 +159,12 @@ export type ListingParamsInput = z.infer<typeof listingParamsSchema>;
 // Feature 3 -Food listing (the browser and search for food items) + reservations)
 
 //Function to match on the restaurant's city, listing category, and free text search
-export const brouseListingQuerySchema = z.object({
+export const browseListingsQuerySchema = z.object({
   city: z.string().trim().min(1).optional(),
   category: z.string().trim().min(1).optional(),
   search: z.string().trim().min(1).optional(),
   // Constraint for the allergens to be excluded from the search results.
-  excludeAllergens: z
+  excludeAllergenIds: z
     .string()
     .optional()
     .transform((value) =>
@@ -178,7 +178,7 @@ export const brouseListingQuerySchema = z.object({
     .pipe(z.array(z.uuid())),
 });
 
-export type BrouseListingQueryInput = z.infer<typeof brouseListingQuerySchema>; //single unit for listing
+export type BrowseListingsQuery = z.infer<typeof browseListingsQuerySchema>; //single unit for listing
 
 export const createReservationSchema = z.object({
   listingId: z.uuid(),
@@ -186,7 +186,7 @@ export const createReservationSchema = z.object({
 });
 
 export type CreateReservationInput = z.infer<typeof createReservationSchema>;
-export type ReservationParamsInput = z.infer<typeof createReservationSchema>; // reuse listingParamsSchema for reservation params
+// export type ReservationParamsInput = z.infer<typeof createReservationSchema>; // reuse listingParamsSchema for reservation params
 
 export type ReservationStatus =
   | "RESERVED"
@@ -195,6 +195,10 @@ export type ReservationStatus =
   | "EXPIRED"
   | "NO_SHOW";
 
+// the validation for the reservation and the reservationId routes
+export const reservationParamsSchema = z.object({ reservationId: z.uuid() });
+export type ReservationParamsInput = z.infer<typeof reservationParamsSchema>;
+
 // Returning the shape of the reservation response object row
 export type ReservationResponse = {
   id: string;
@@ -202,7 +206,7 @@ export type ReservationResponse = {
   listingId: string;
   pickupCodeDisplay: string | null;
   status: ReservationStatus;
-  reserveAt: Date;
+  reservedAt: Date;
   pickedUpAt: Date | null;
   cancelledAt: Date | null;
   // expiredAt: Date | null;
@@ -213,7 +217,7 @@ export type ReservationResponse = {
 
 // Reserved by the seeker and what was reserved and the pickup code
 export type ReservationWithListingResponse = ReservationResponse & {
-  listing: FoodListingResponse;
+  listing: FoodListingResponse | null;
 };
 
 // The listing as the seaker will see it
