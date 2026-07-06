@@ -155,3 +155,14 @@ export const listingParamsSchema = z.object({
 export type CreateListingInput = z.infer<typeof createListingSchema>;
 export type UpdateListingInput = z.infer<typeof updateListingSchema>;
 export type ListingParamsInput = z.infer<typeof listingParamsSchema>;
+
+// Feature 3 -Food listing (the browser and search for food items) + reservations)
+
+// Function to export everything that a user would seek in the app and filter by, optional fields
+export const listingFilterSchema = z.object({
+  // q: z.string.trim().min(1).optional(),
+  // city: z.string.trim().min(1).optional(),
+  category: z.string().trim().min(1).optional(),
+  //incase there are any algeries that the user wants to avoid
+  excludeAllergens: z.array(z.string().trim().min(1)).optional(),
+});
