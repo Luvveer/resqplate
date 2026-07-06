@@ -158,11 +158,72 @@ export type ListingParamsInput = z.infer<typeof listingParamsSchema>;
 
 // Feature 3 -Food listing (the browser and search for food items) + reservations)
 
-// Function to export everything that a user would seek in the app and filter by, optional fields
-export const listingFilterSchema = z.object({
-  // q: z.string.trim().min(1).optional(),
-  // city: z.string.trim().min(1).optional(),
+//Function to match on the restaurant's city, listing category, and free text search
+export const brouseListingQuerySchema = z.object({
+  city: z.string().trim().min(1).optional(),
   category: z.string().trim().min(1).optional(),
-  //incase there are any algeries that the user wants to avoid
-  excludeAllergens: z.array(z.string().trim().min(1)).optional(),
+  search: z.string().trim().min(1).optional(),
+  // Constraint for the allergens to be excluded from the search results.
+  excludeAllergens: z
+    .string()
+    .optional()
+    .transform((value) =>
+      value
+        ? value
+            .split(",")
+            .map((part) => part.trim())
+            .filter(Boolean)
+        : [],
+    )
+    .pipe(z.array(z.uuid())),
 });
+
+export type BrouseListingQueryInput = z.infer<typeof brouseListingQuerySchema>; //single unit for listing
+
+export const createReservationSchema = z.object({
+  listingId: z.uuid(),
+  // pickupCode: z.string().min(1),
+});
+
+export type CreateReservationInput = z.infer<typeof createReservationSchema>;
+export type ReservationParamsInput = z.infer<typeof createReservationSchema>; // reuse listingParamsSchema for reservation params
+
+export type ReservationStatus =
+  | "RESERVED"
+  | "PICKED_UP"
+  | "CANCELLED"
+  | "EXPIRED"
+  | "NO_SHOW";
+
+// Returning the shape of the reservation response object row
+export type ReservationResponse = {
+  id: string;
+  profileId: string;
+  listingId: string;
+  pickupCodeDisplay: string | null;
+  status: ReservationStatus;
+  reserveAt: Date;
+  pickedUpAt: Date | null;
+  cancelledAt: Date | null;
+  // expiredAt: Date | null;
+  noShowAt: Date | null;
+  // createdAt: Date;
+  // updatedAt: Date;
+};
+
+// Reserved by the seeker and what was reserved and the pickup code
+export type ReservationWithListingResponse = ReservationResponse & {
+  listing: FoodListingResponse;
+};
+
+// The listing as the seaker will see it
+export type PublicListingResponse = FoodListingResponse & {
+  restaurant: {
+    id: string;
+    businessName: string;
+    address: string;
+    city: string;
+    province: string;
+    // postalCode: string;
+  } | null;
+};
