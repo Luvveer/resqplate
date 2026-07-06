@@ -64,6 +64,8 @@ export async function profileHandler(req: Request, res: Response) {
         profile,
       });
     }
+
+    return res.status(200).json({ profile });
   } catch {
     return res.status(500).json({
       error: "Failed to get current user",

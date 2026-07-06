@@ -56,6 +56,7 @@ Sukhjit Singh Chana: Pickup Management.
 The Main entities are Users, Restaurant Profiles, Food Listings, Reservations, Reports, Allergens, and Listing Allergens. The key relationships are:
 
 1. One user can own a zero or one restaurant profile. (1-0..1 relationship)
+
 2. One restaurant profile can create many food listings. (1-N relationship)
 
 3. One user can make many food reservations. (1-N relationship)

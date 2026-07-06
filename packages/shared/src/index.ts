@@ -12,8 +12,17 @@ export const loginSchema = z.object({
   password: z.string().min(1),
 });
 
+export const verificationStatusSchema = z.enum([
+  "PENDING",
+  "APPROVED",
+  "REJECTED",
+  "SUSPENDED",
+  "INFO_REQUESTED",
+]);
+
 export type SignupInput = z.infer<typeof signupSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
+export type verificationStatus = z.infer<typeof verificationStatusSchema>;
 
 export type UserRole = "FOOD_SEEKER" | "BUSINESS" | "ADMIN";
 export type profileStatus = "ACTIVE" | "SUSPENDED" | "DELETED";
@@ -39,12 +48,7 @@ export type RestaurantProfileResponse = {
   postalCode: string;
   phone: string | null;
   description: string | null;
-  verificationStatus:
-    | "PENDING"
-    | "APPROVED"
-    | "REJECTED"
-    | "SUSPENDED"
-    | "INFO_REQUESTED";
+  verificationStatus: verificationStatus;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -59,4 +63,95 @@ export const createRestaurantSchema = z.object({
   description: z.string().optional(),
 });
 
+export type AdminRestaurantProfileResponse = {
+  id: string;
+  profileId: string;
+  businessName: string;
+  address: string;
+  city: string;
+  province: string;
+  postalCode: string;
+  phone: string | null;
+  description: string | null;
+  verificationStatus: verificationStatus;
+  adminNotes: string | null;
+  verifiedAt: Date | null;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export const AdminRestaurantParamsSchema = z.object({
+  restaurantId: z.uuid(),
+});
+
+export const AdminRestaurantStatusQuerySchema = z.object({
+  status: verificationStatusSchema.optional(),
+});
+
+export const AdminVerificationActionSchema = z.object({
+  adminNotes: z.string().optional(),
+});
+
+export type AdminRestaurantParamsInput = z.infer<
+  typeof AdminRestaurantParamsSchema
+>;
+export type AdminRestaurantStatusQueryInput = z.infer<
+  typeof AdminRestaurantStatusQuerySchema
+>;
+export type AdminVerificationActionInput = z.infer<
+  typeof AdminVerificationActionSchema
+>;
 export type CreateRestaurantInput = z.infer<typeof createRestaurantSchema>;
+
+/* Listing */
+export type ListingStatus = "AVAILABLE" | "RESERVED" | "EXPIRED";
+
+export type AllergenResponse = {
+  id: string;
+  name: string;
+};
+
+export type FoodListingResponse = {
+  id: string;
+  restaurantId: string;
+  title: string;
+  description: string | null;
+  category: string | null;
+  quantityAvailable: number;
+  pickupStart: Date;
+  pickupEnd: Date;
+  pickupCode: string | null;
+  status: ListingStatus;
+  addressSnapShot: string | null;
+  latitude: string | null;
+  longitude: string | null;
+  storageNote: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  allergens?: AllergenResponse[];
+};
+
+export const createListingSchema = z.object({
+  title: z.string().min(1),
+  description: z.string().optional(),
+  category: z.string().optional(),
+  quantityAvailable: z.number().int().positive(),
+  pickupStart: z.coerce.date(),
+  pickupEnd: z.coerce.date(),
+  pickupCode: z.string().optional(),
+  addressSnapShot: z.string().optional(),
+  latitude: z.string().optional(),
+  longitude: z.string().optional(),
+  storageNote: z.string().optional(),
+  allergenIds: z.array(z.uuid()).optional(),
+});
+
+export const updateListingSchema = createListingSchema.partial();
+
+export const listingParamsSchema = z.object({
+  listingId: z.uuid(),
+});
+
+export type CreateListingInput = z.infer<typeof createListingSchema>;
+export type UpdateListingInput = z.infer<typeof updateListingSchema>;
+export type ListingParamsInput = z.infer<typeof listingParamsSchema>;

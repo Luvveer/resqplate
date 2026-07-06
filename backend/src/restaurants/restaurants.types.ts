@@ -40,3 +40,64 @@ export interface NewRestaurantProfile {
     | "SUSPENDED"
     | "INFO_REQUESTED";
 }
+
+/* Feature 2 */
+export type ListingStatus = "AVAILABLE" | "RESERVED" | "EXPIRED";
+
+export interface FoodListing {
+  id: string;
+  restaurantId: string;
+  title: string;
+  description: string | null;
+  category: string | null;
+  quantityAvailable: number;
+  pickupStart: Date;
+  pickupEnd: Date;
+  pickupCode: string | null;
+  status: ListingStatus;
+  addressSnapShot: string | null;
+  latitude: string | null;
+  longitude: string | null;
+  storageNote: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface NewFoodListing {
+  restaurantId: string;
+  title: string;
+  description?: string | null | undefined;
+  category?: string | null | undefined;
+  quantityAvailable: number;
+  pickupStart: Date;
+  pickupEnd: Date;
+  pickupCode?: string | null | undefined;
+  status?: ListingStatus;
+  addressSnapShot?: string | null | undefined;
+  latitude?: string | null | undefined;
+  longitude?: string | null | undefined;
+  storageNote?: string | null | undefined;
+}
+
+export interface UpdateFoodListing {
+  title?: string;
+  description?: string | null;
+  category?: string | null;
+  quantityAvailable?: number;
+  pickupStart?: Date;
+  pickupEnd?: Date;
+  pickupCode?: string | null;
+  addressSnapShot?: string | null;
+  latitude?: string | null;
+  longitude?: string | null;
+  storageNote?: string | null;
+}
+
+export interface Allergen {
+  id: string;
+  name: string;
+}
+
+export interface ListingWithAllergens extends FoodListing {
+  allergens: Allergen[];
+}
