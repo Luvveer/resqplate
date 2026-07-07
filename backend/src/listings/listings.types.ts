@@ -9,12 +9,6 @@ export interface RestaurantSummary {
   address: string;
   city: string;
   province: string;
-  // postalCode: string;
-  // phone: string | null;
-  // description: string | null;
-  // verificationStatus: "PENDING" | "VERIFIED" | "REJECTED";
-  // createdAt: Date;
-  // updatedAt: Date;
 }
 
 export interface PublicListing extends FoodListing {
