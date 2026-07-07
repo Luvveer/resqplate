@@ -1,13 +1,13 @@
 import { apiClient } from "./apiClient";
 import type {
-  ReservationResponce,
+  ReservationResponse,
   ReservationWithListingResponse,
 } from "@resqplate/shared";
 
 class ReservationsAPI {
   // Get the details of a specific reservation for the seeker to view (login needed here)
   async create(listingId: string) {
-    return apiClient.request<{ reservation: ReservationResponce }>(
+    return apiClient.request<{ reservation: ReservationResponse }>(
       "POST",
       `/reservations/${listingId}`,
     );
@@ -22,7 +22,7 @@ class ReservationsAPI {
 
   // Cancel the reservation for the seeker (login needed here as well)
   async cancel(reservationId: string) {
-    return apiClient.request<{ reservation: ReservationResponce }>(
+    return apiClient.request<{ reservation: ReservationResponse }>(
       "PATCH",
       `/reservations/${reservationId}/cancel`,
     );
