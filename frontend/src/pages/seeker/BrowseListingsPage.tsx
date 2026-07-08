@@ -149,8 +149,11 @@ export function BrowseListingsPage() {
                     <dd>{listing.quantityAvailable}</dd>
                   </div>
                   <div>
-                    <dt>Pickup by</dt>
-                    <dd>{new Date(listing.pickupEnd).toLocaleString()}</dd>
+                    <dt>Pickup window</dt>
+                    <dd>
+                      {new Date(listing.pickupStart).toLocaleString()} –{" "}
+                      {new Date(listing.pickupEnd).toLocaleString()}
+                    </dd>
                   </div>
                 </dl>
 
