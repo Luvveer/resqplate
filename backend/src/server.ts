@@ -4,6 +4,8 @@ import AuthRouter from "./auth/auth.routes.js";
 import RestaurantRouter from "./restaurants/restaurants.routes.js";
 import AdminRouter from "./admin/admin.routes.js";
 import morgan from "morgan";
+import ReservationRouter from "./reservations/reservations.routes.js";
+import ListingRouter from "./listings/listings.routes.js";
 
 const app = express();
 app.use(morgan("dev"));
@@ -24,7 +26,8 @@ app.get("/api/health", (req, res) => {
 app.use("/api/auth", AuthRouter);
 app.use("/api/restaurants", RestaurantRouter);
 app.use("/api/admin", AdminRouter);
-
+app.use("/api/reservations", ReservationRouter);
+app.use("/api/listings", ListingRouter);
 const port = process.env.PORT ?? 3000;
 
 app.listen(port, () => {
