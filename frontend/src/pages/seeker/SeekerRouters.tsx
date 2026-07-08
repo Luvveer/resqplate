@@ -12,7 +12,7 @@ export function SeekerRoutes() {
       <Route path="" element={<BrowseListingsPage />} />
 
       {/* this is for the seeker's own reservations */}
-      <Route path="my-reservations" element={<MyReservationsPage />} />
+      <Route path="reservations" element={<MyReservationsPage />} />
     </Routes>
   );
 }
