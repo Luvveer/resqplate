@@ -8,11 +8,11 @@ class ListingsAPI {
   //Lets get the public listing feed
   async browse(filters: Partial<BrowseListingsQuery> = {}) {
     const params = new URLSearchParams();
-    if (filters.city) params.set("City", filters.city);
-    if (filters.category) params.set("Category", filters.category);
-    if (filters.search) params.set("Search", filters.search);
+    if (filters.city) params.set("city", filters.city);
+    if (filters.category) params.set("category", filters.category);
+    if (filters.search) params.set("search", filters.search);
     if (filters.excludeAllergenIds && filters.excludeAllergenIds.length > 0) {
-      params.set("ExcludeAllergens", filters.excludeAllergenIds.join(","));
+      params.set("excludeAllergens", filters.excludeAllergenIds.join(","));
     } //since we expect to get a csv
 
     const queryString = params.toString();
