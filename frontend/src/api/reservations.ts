@@ -9,7 +9,8 @@ class ReservationsAPI {
   async create(listingId: string) {
     return apiClient.request<{ reservation: ReservationResponse }>(
       "POST",
-      `/reservations/${listingId}`,
+      "/reservations",
+      { listingId },
     );
   }
 
@@ -17,7 +18,7 @@ class ReservationsAPI {
   async getMine() {
     return apiClient.request<{
       reservations: ReservationWithListingResponse[];
-    }>("GET", "/reservations/mine");
+    }>("GET", "/reservations");
   }
 
   // Cancel the reservation for the seeker (login needed here as well)
