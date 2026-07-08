@@ -1,0 +1,203 @@
+/* Seeker pages — mirrors Business.css palette and components for consistency. */
+
+.seeker-page {
+  min-height: 100vh;
+  background: #f5f7f4;
+  color: #1f2933;
+}
+
+.seeker-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 32px;
+  background: white;
+  border-bottom: 1px solid #dfe7dc;
+}
+
+.seeker-brand h1 {
+  margin: 0;
+  color: #315c45;
+  font-size: 22px;
+}
+
+.seeker-brand p {
+  margin: 4px 0 0;
+  color: #667085;
+}
+
+.seeker-main {
+  width: min(1100px, calc(100% - 30px));
+  margin: 0 auto;
+  padding: 32px 0;
+}
+
+.seeker-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Buttons — same variants as business (primary / secondary / danger). */
+.seeker-button,
+.seeker-link-button {
+  border: none;
+  border-radius: 8px;
+  padding: 10px 14px;
+  background: #315c45;
+  color: white;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.seeker-button.secondary,
+.seeker-link-button.secondary {
+  background: white;
+  color: #315c45;
+  border: 1px solid #cfd8cf;
+}
+
+.seeker-button.danger {
+  background: white;
+  color: #b42318;
+  border: 1px solid #f0b8b8;
+}
+
+.seeker-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Filter bar. */
+.seeker-filters {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+}
+
+.seeker-input {
+  flex: 1 1 160px;
+  box-sizing: border-box;
+  border: 1px solid #cfd8cf;
+  border-radius: 8px;
+  padding: 11px 12px;
+  font: inherit;
+  color: #1f2933;
+  background: white;
+}
+
+.seeker-input:focus {
+  outline: 2px solid #88b99a;
+  border-color: #315c45;
+}
+
+/* Card grid — the seeker pages use cards instead of the business table. */
+.seeker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+}
+
+.seeker-card {
+  background: white;
+  border: 1px solid #dfe7dc;
+  border-radius: 10px;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.seeker-card h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.seeker-muted {
+  color: #667085;
+  font-size: 14px;
+}
+
+/* Definition-list metadata rows inside a card. */
+.seeker-meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 4px 0 0;
+}
+
+.seeker-meta dt {
+  color: #667085;
+  font-size: 12px;
+}
+
+.seeker-meta dd {
+  margin: 2px 0 0;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.seeker-allergens {
+  color: #936300;
+  background: #fff7df;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin: 0;
+}
+
+.seeker-code {
+  font-size: 15px;
+  margin: 0;
+}
+
+/* Status pills — identical colors to business statuses. */
+.seeker-status {
+  display: inline-block;
+  align-self: flex-start;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.seeker-status.reserved {
+  background: #eef4ff;
+  color: #2854a3;
+}
+
+.seeker-status.picked_up {
+  background: #e7f6ec;
+  color: #237a3b;
+}
+
+.seeker-status.cancelled,
+.seeker-status.expired,
+.seeker-status.no_show {
+  background: #fff1f1;
+  color: #b42318;
+}
+
+/* Banners. */
+.seeker-notice {
+  background: #e7f6ec;
+  color: #237a3b;
+  padding: 12px 14px;
+  border-radius: 8px;
+}
+
+.seeker-message {
+  background: #eef4ee;
+  color: #315c45;
+  padding: 12px 14px;
+  border-radius: 8px;
+}
+
+.seeker-error {
+  background: #fff1f1;
+  color: #b42318;
+  padding: 12px 14px;
+  border-radius: 8px;
+}
