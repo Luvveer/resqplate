@@ -6,6 +6,7 @@ import AdminRouter from "./admin/admin.routes.js";
 import morgan from "morgan";
 import ReservationRouter from "./reservations/reservations.routes.js";
 import ListingRouter from "./listings/listings.routes.js";
+import PickupRouter from "./pickups/pickups.routes.js";
 
 const app = express();
 app.use(morgan("dev"));
@@ -28,6 +29,8 @@ app.use("/api/restaurants", RestaurantRouter);
 app.use("/api/admin", AdminRouter);
 app.use("/api/reservations", ReservationRouter);
 app.use("/api/listings", ListingRouter);
+app.use("/api/pickups", PickupRouter);
+
 const port = process.env.PORT ?? 3000;
 
 app.listen(port, () => {
