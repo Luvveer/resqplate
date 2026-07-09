@@ -231,3 +231,13 @@ export type PublicListingResponse = FoodListingResponse & {
     // postalCode: string;
   } | null;
 };
+
+export const reservationStatusQuerySchema = z.object({
+  status: z
+    .enum(["RESERVED", "PICKED_UP", "CANCELLED", "EXPIRED", "NO_SHOW"])
+    .optional(),
+});
+
+export const confirmPickupSchema = z.object({
+  pickupCode: z.string().min(1),
+});
