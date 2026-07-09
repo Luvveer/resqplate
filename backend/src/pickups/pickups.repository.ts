@@ -48,18 +48,31 @@ export async function findReservationsByRestaurant(
 }
 
 export async function confirmReservationPickup(reservationId: string) {
-  const [reservation] = await db
-    .select()
-    .from(reservationTable)
-    .where(eq(reservationTable.id, reservationId));
-  if (reservation?.status !== "RESERVED") {
-    throw new Error("already handled");
-  }
   const [updated] = await db
     .update(reservationTable)
     .set({ status: "PICKED_UP", pickedUpAt: new Date() })
-    .where(eq(reservationTable.id, reservationId))
+    .where(
+      and(
+        eq(reservationTable.id, reservationId),
+        eq(reservationTable.status, "RESERVED"),
+      ),
+    )
     .returning();
 
   return updated;
+}
+
+export async function markReservationNoShow(reservationId: string) {
+  const [reservation] = await db
+    .update(reservationTable)
+    .set({ status: "NO_SHOW", noShowAt: new Date() })
+    .where(
+      and(
+        eq(reservationTable.id, reservationId),
+        eq(reservationTable.status, "RESERVED"),
+      ),
+    )
+    .returning();
+
+  return reservation;
 }
