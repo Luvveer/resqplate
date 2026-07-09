@@ -1,5 +1,9 @@
 import type { Request, Response } from "express";
-import { confirmPickup, getMyReservations } from "./pickups.service.js";
+import {
+  confirmPickup,
+  getMyReservations,
+  markNoShow,
+} from "./pickups.service.js";
 import {
   confirmPickupSchema,
   reservationParamsSchema,
@@ -34,6 +38,25 @@ export async function confirmPickupHandler(req: Request, res: Response) {
       return res.status(404).json({ error: "Reservation not found" });
     }
     return res.status(200).json({ reservation: confirm });
+  } catch (error) {
+    if (error instanceof Error) {
+      return res.status(409).json({ error: error.message });
+    }
+    throw error;
+  }
+}
+
+export async function markNoShowHandler(req: Request, res: Response) {
+  if (!req.profile) {
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+  const { reservationId } = reservationParamsSchema.parse(req.params);
+  try {
+    const noShow = await markNoShow(req.profile.id, reservationId);
+    if (!noShow) {
+      return res.status(404).json({ error: "Reservation not found" });
+    }
+    return res.status(200).json({ reservation: noShow });
   } catch (error) {
     if (error instanceof Error) {
       return res.status(409).json({ error: error.message });
