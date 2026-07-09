@@ -127,8 +127,14 @@ export function PickupManagementPage() {
                 <tr key={reservation.id}>
                   <td>{new Date(reservation.reservedAt).toLocaleString()}</td>
                   <td>{getListingTitle(reservation.listingId)}</td>
+
+                  {/* pick up code here is testing purposes only, in actual workflow the customer will provide the code and entering it
+                    should mark the listing as Picked up */}
                   <td>{reservation.pickupCodeDisplay}</td>
                   <td>{reservation.status}</td>
+                  {/**entering pickup code now fill each input box on the table, can be fixed in the next iteration.
+                   * Does not affect the functionality though, still only the targeted box updates status.
+                   */}
                   <td>
                     {reservation.status === "RESERVED" && (
                       <>

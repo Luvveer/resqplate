@@ -103,6 +103,9 @@ export function BusinessDashboard() {
             <Link className="business-link-button" to="/business/listings">
               Manage Listings
             </Link>
+            <Link className="business-link-button" to="/business/pickups">
+              Manage Reservations
+            </Link>
           </div>
         </section>
       </main>
