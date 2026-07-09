@@ -3,6 +3,7 @@ import {
   confirmReservationPickup,
   findReservationForRestaurant,
   findReservationsByRestaurant,
+  markReservationNoShow,
 } from "./pickups.repository.js";
 import type { ReservationStatus } from "./pickups.types.js";
 
@@ -53,4 +54,24 @@ export async function confirmPickup(
   }
 
   return confirmation;
+}
+
+export async function markNoShow(profileId: string, reservationId: string) {
+  const restaurant = await getRestaurantForProfile(profileId);
+  const reservation = await findReservationForRestaurant(
+    reservationId,
+    restaurant.id,
+  );
+
+  if (!reservation) {
+    return undefined;
+  }
+  if (reservation.status !== "RESERVED") {
+    throw new Error("This item is not reserved");
+  }
+  const noShow = await markReservationNoShow(reservation.id);
+  if (noShow === undefined) {
+    throw new Error("Reservation just updated, please retry");
+  }
+  return noShow;
 }
