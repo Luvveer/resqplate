@@ -4,7 +4,7 @@ import { BusinessDashboard } from "./BusinessDashboard";
 import { BusinessListingsPage } from "./BusinessListingsPage";
 import { CreateListingPage } from "./CreateListingPage";
 import { EditListingPage } from "./EditListingPage";
-
+import { PickupManagementPage } from "./PickupManagementPage";
 export function BusinessRoutes() {
   return (
     <Routes>
@@ -13,6 +13,7 @@ export function BusinessRoutes() {
       <Route path="listings" element={<BusinessListingsPage />} />
       <Route path="listings/new" element={<CreateListingPage />} />
       <Route path="listings/:listingId/edit" element={<EditListingPage />} />
+      <Route path="pickups" element={<PickupManagementPage />} />
     </Routes>
   );
 }
