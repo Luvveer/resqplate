@@ -1,0 +1,264 @@
+.business-page {
+  min-height: 100vh;
+  background: #f5f7f4;
+  color: #1f2933;
+}
+
+.business-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 32px;
+  background: white;
+  border-bottom: 1px solid #dfe7dc;
+}
+
+.business-brand h1 {
+  margin: 0;
+  color: #315c45;
+  font-size: 22px;
+}
+
+.business-brand p {
+  margin: 4px 0 0;
+  color: #667085;
+}
+
+.business-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.business-main {
+  width: min(1100px, calc(100% - 30px));
+  margin: 0 auto;
+  padding: 32px 0;
+}
+
+.business-card {
+  background: white;
+  border: 1px solid #dfe7dc;
+  border-radius: 10px;
+  padding: 22px;
+}
+
+.business-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 22px;
+}
+
+.business-header h2 {
+  margin: 0 0 6px;
+  font-size: 28px;
+}
+
+.business-header p {
+  margin: 0;
+  color: #5d6880;
+}
+
+.business-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.business-button,
+.business-link-button {
+  border: none;
+  border-radius: 8px;
+  padding: 10px 14px;
+  background: #315c45;
+  color: white;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.business-button.secondary,
+.business-link-button.secondary {
+  background: white;
+  color: #315c45;
+  border: 1px solid #cfd8cf;
+}
+
+.business-button.danger {
+  background: white;
+  color: #b42318;
+  border: 1px solid #f0b8b8;
+}
+
+.business-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.business-status {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.business-status.available,
+.business-status.approved {
+  background: #e7f6ec;
+  color: #237a3b;
+}
+
+.business-status.pending {
+  background: #fff7df;
+  color: #936300;
+}
+
+.business-status.reserved {
+  background: #eef4ff;
+  color: #2854a3;
+}
+
+.business-status.expired,
+.business-status.rejected,
+.business-status.suspended {
+  background: #fff1f1;
+  color: #b42318;
+}
+
+.business-message {
+  background: #eef4ee;
+  color: #315c45;
+  padding: 12px 14px;
+  border-radius: 8px;
+}
+
+.business-error {
+  background: #fff1f1;
+  color: #b42318;
+  padding: 12px 14px;
+  border-radius: 8px;
+}
+
+.business-table-wrap {
+  overflow-x: auto;
+  background: white;
+  border: 1px solid #dfe7dc;
+  border-radius: 10px;
+}
+
+.business-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.business-table th,
+.business-table td {
+  padding: 16px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid #edf1eb;
+}
+
+.business-table th {
+  background: #fafcf9;
+  color: #667085;
+  font-size: 13px;
+}
+
+.business-title {
+  font-weight: 800;
+}
+
+.business-muted {
+  color: #667085;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.business-form-page {
+  min-height: 100vh;
+  background: #f5f7f4;
+  color: #1f2933;
+}
+
+.business-form-shell {
+  width: min(820px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 32px 0;
+}
+
+.business-form-card {
+  background: white;
+  border: 1px solid #dfe7dc;
+  border-radius: 10px;
+  padding: 24px;
+}
+
+.business-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.business-form-header h1 {
+  margin: 0 0 6px;
+  font-size: 28px;
+}
+
+.business-form-header p {
+  margin: 0;
+  color: #667085;
+}
+
+.business-form {
+  display: grid;
+  gap: 18px;
+}
+
+.business-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.business-field {
+  display: grid;
+  gap: 8px;
+}
+
+.business-field label {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.business-field input,
+.business-field textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #cfd8cf;
+  border-radius: 8px;
+  padding: 11px 12px;
+  font: inherit;
+  color: #1f2933;
+  background: white;
+}
+
+.business-field textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.business-field input:focus,
+.business-field textarea:focus {
+  outline: 2px solid #88b99a;
+  border-color: #315c45;
+}
+
+.business-field-full {
+  grid-column: 1 / -1;
+}
