@@ -28,6 +28,8 @@ jobs:
         run: npm run build -w frontend
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
+      - name: Printing the index.html file
+        run: cat frontend/dist/index.html
       - name: Copy Pages Functions to dist
         run: cp -r frontend/functions frontend/dist/functions
       - name: Deploy to Cloudflare Pages
