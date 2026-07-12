@@ -1,0 +1,62 @@
+name: Migration
+
+on:
+  workflow_dispatch:
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run migrations on VM
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.GCP_VM_IP }}
+          username: ${{ secrets.GCP_VM_USER }}
+          key: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
+          script: |
+            set -Eeuo pipefail
+
+            MIGRATION_DIR="$HOME/app"
+
+            cd "$MIGRATION_DIR"
+            echo "Running migrations..."
+            npm run db:migrate -w backend
+
+            echo "Database migrations completed."
+
+            echo "Restarting PM2..."
+            cd "$APP/backend"
+            if pm2 describe "$PM2_NAME" >/dev/null 2>&1; then
+                pm2 restart resqplate-backend --update-env
+            else
+                pm2 start dist/server.js --name "$PM2_NAME"
+            fi
+
+            pm2 save
+
+            echo "Checking backend health..."
+            for attempt in $(seq 1 12); do
+            if curl --fail --silent \
+                http://127.0.0.1:3000/api/health \
+                >/dev/null; then
+                echo "Backend deployment succeded."
+                exit 0
+            fi
+
+            echo "Health check attempt $attempt failed."
+            sleep 5
+
+            done
+
+            echo "Backend failed health check..."
+            pm2 logs "$PM2_NAME" --lines 50 --nostream || true
+            exit 1

@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -Eeuo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ENV_FILE="$SCRIPT_DIR/.env"
@@ -19,7 +19,9 @@ gcloud config set project "$PROJECT_ID"
 echo "Enabling APIs..."
 gcloud services enable \
     sqladmin.googleapis.com \
-    compute.googleapis.com
+    compute.googleapis.com \
+    iam.googleapis.com \
+    secretmanager.googleapis.com
 echo "APIs enabled"
 
 echo "Creating Cloud SQL instance usually takes some time."
@@ -55,6 +57,21 @@ else
     echo "Database and users is created."
 fi
 
+SERVICE_ACCOUNT_NAME="resqplate-vm"
+SERVICE_ACCOUNT_EMAIL="${SERVICE_ACCOUNT_NAME}@${PROJECT_ID}.iam.gserviceaccount.com"
+
+if gcloud iam service-accounts describe "$SERVICE_ACCOUNT_EMAIL" --quiet >/dev/null 2>&1; then
+    echo "service account $SERVICE_ACCOUNT_EMAIL already exists, skipping."
+else
+    gcloud iam service-accounts create "$SERVICE_ACCOUNT_NAME" --display-name="Resqplate VM servce Account"
+    echo "Service account created."
+fi
+
+echo "Granting Secret Manager access ..."
+gcloud projects add-iam-policy-binding "$PROJECT_ID" \
+    --member="serviceAccount:$SERVICE_ACCOUNT_EMAIL" \
+    --role="roles/secretmanager.secretAccessor" \
+    --quiet
 
 if gcloud compute instances describe "$VM_NAME" --zone="$ZONE" --quiet > /dev/null 2>&1; then
     echo "VM $VM_NAME already exists, skipping."
@@ -67,12 +84,13 @@ else
         --image-project=ubuntu-os-cloud \
         --boot-disk-size=30GB \
         --boot-disk-type=pd-standard \
-        --tags=backend-server
+        --service-account="$SERVICE_ACCOUNT_EMAIL" \
+        --tags=backend-server \
+        --scopes=cloud-platform
     echo "VM instance created."
 fi
 
 echo "Secrets in Secret Manager..."
-gcloud services enable secretmanager.googleapis.com
 
 for SECRET_NAME in DATABASE_URL BETTER_AUTH_SECRET BETTER_AUTH_URL FRONTEND_URL; do
     if gcloud secrets describe "$SECRET_NAME" --quiet > /dev/null 2>&1; then
