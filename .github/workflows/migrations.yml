@@ -25,9 +25,10 @@ jobs:
           script: |
             set -Eeuo pipefail
 
-            MIGRATION_DIR="$HOME/app"
+            APP="$HOME/app"
+            PM2_NAME="resqplate-backend"
 
-            cd "$MIGRATION_DIR"
+            cd "$APP"
             echo "Running migrations..."
             npm run db:migrate -w backend
 
@@ -36,7 +37,7 @@ jobs:
             echo "Restarting PM2..."
             cd "$APP/backend"
             if pm2 describe "$PM2_NAME" >/dev/null 2>&1; then
-                pm2 restart resqplate-backend --update-env
+                pm2 restart "$PM2_NAME" --update-env
             else
                 pm2 start dist/server.js --name "$PM2_NAME"
             fi
