@@ -1,3 +1,5 @@
+// Added this line to test the backend deployment to VM
+
 import express from "express";
 import cors from "cors";
 import AuthRouter from "./auth/auth.routes.js";
