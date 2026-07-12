@@ -14,7 +14,7 @@
     "db:studio": "drizzle-kit studio",
     "test": "vitest run",
     "db:seed": "tsx src/db/seed.ts",
-    "db:seed:production": "node src/db/seed.js"
+    "db:seed:production": "node dist/db/seed.js"
   },
   "type": "module",
   "dependencies": {
