@@ -39,7 +39,7 @@ jobs:
 
             echo "Running Seed..."
             cd "$APP/backend"
-            npm run db:seed
+            npm run db:seed:production
             echo "Seeding completed"
 
             echo "Restarting PM2..."
