@@ -28,6 +28,9 @@ jobs:
             APP="$HOME/app"
             PM2_NAME="resqplate-backend"
 
+            echo "Loading DATABASE_URL..."
+            export DATABASE_URL="$(gcloud secrets versions access latest --secret=DATABSE_URL)"
+
             cd "$APP"
             echo "Running migrations..."
             npm run db:migrate -w backend
