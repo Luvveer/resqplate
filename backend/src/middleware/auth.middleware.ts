@@ -32,8 +32,9 @@ export async function getSession(
   res: Response,
   next: NextFunction,
 ) {
+  console.log("Cookie header:", req.headers.cookie ?? "NO COOKIE");
   const result = await auth.api.getSession({ headers: toHeaders(req.headers) });
-
+  console.log("session result", result ? `user: ${result.user.email}` : null);
   if (!result) {
     return next();
   }

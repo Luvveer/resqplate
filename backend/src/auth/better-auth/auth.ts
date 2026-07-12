@@ -10,6 +10,14 @@ export const auth = betterAuth({
     "https://resqplate.pages.dev",
     "https://resqplate-api.luvveerlamba.workers.dev",
   ],
+  advanced: {
+    useSecureCookies: true,
+    defaultCookieAttributes: {
+      sameSite: "none",
+      secure: true,
+      httpOnly: true,
+    },
+  },
   database: drizzleAdapter(db, {
     provider: "pg",
     schema: authSchema,

@@ -22,7 +22,7 @@ export DATABASE_URL=$(gcloud secrets versions access latest --secret=DATABASE_UR
 export BETTER_AUTH_SECRET=$(gcloud secrets versions access latest --secret=BETTER_AUTH_SECRET)
 export BETTER_AUTH_URL=$(gcloud secrets versions access latest --secret=BETTER_AUTH_URL)
 export FRONTEND_URL=$(gcloud secrets versions access latest --secret=FRONTEND_URL)
-export DATABASE_URL=2000
+export DATABASE_URL=3000
 echo "Loaded everything"
 
 echo "All done"
