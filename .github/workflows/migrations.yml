@@ -37,6 +37,11 @@ jobs:
 
             echo "Database migrations completed."
 
+            echo "Running Seed..."
+            cd "$APP/backend"
+            npm run db:seed
+            echo "Seeding completed"
+
             echo "Restarting PM2..."
             cd "$APP/backend"
             if pm2 describe "$PM2_NAME" >/dev/null 2>&1; then

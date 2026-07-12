@@ -14,6 +14,7 @@ import {
 
 const BUSINESS_EMAIL = "business@demo.com";
 const SEEKER_EMAIL = "seeker@demo.com";
+const ADMIN_EMAIL = "admin@demo.com";
 const DEMO_PASSWORD = "password123";
 
 //making a betterAuth user and the profile for the restaurant and the seeker
@@ -66,6 +67,11 @@ async function seed() {
   await ensureUser({
     email: SEEKER_EMAIL,
     name: "Demo Seeker",
+    role: "FOOD_SEEKER",
+  });
+  await ensureUser({
+    email: ADMIN_EMAIL,
+    name: "Demo ADMIN",
     role: "FOOD_SEEKER",
   });
   console.log("the user is ready"); //log the user
@@ -192,6 +198,7 @@ async function seed() {
   );
   console.log(`  Business login: ${BUSINESS_EMAIL} / ${DEMO_PASSWORD}`);
   console.log(`  Seeker login:   ${SEEKER_EMAIL} / ${DEMO_PASSWORD}`);
+  console.log(`  Admin login:   ${ADMIN_EMAIL} / ${DEMO_PASSWORD}`);
 }
 
 seed()
