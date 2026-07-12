@@ -29,7 +29,7 @@ jobs:
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
       - name: Copy Pages Functions to dist
-        run: cp -r frontend/functions frontend/dist/
+        run: cp -r frontend/functions frontend/dist/functions
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v4
         with:
@@ -37,3 +37,4 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           wranglerVersion: "4"
           command: pages deploy frontend/dist --project-name=resqplate
+          workingDirectory: frontend/dist
