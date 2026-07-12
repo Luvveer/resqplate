@@ -6,15 +6,13 @@ import * as authSchema from "../../db/auth-schema.js";
 
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL,
-  trustedOrigins: [
-    "https://resqplate.pages.dev",
-    "https://resqplate-api.luvveerlamba.workers.dev",
-  ],
+  trustedOrigins: ["https://resqplate.pages.dev", "https://app.resqplate.me"],
   advanced: {
     useSecureCookies: true,
     defaultCookieAttributes: {
-      sameSite: "none",
+      sameSite: "lax",
       secure: true,
+      path: "/",
       httpOnly: true,
     },
   },
