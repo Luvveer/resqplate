@@ -1,11 +1,16 @@
 name: Deploy Backend
 
 on:
+  workflow_dispatch:
+
   push:
     branches: [main]
     paths:
       - "backend/**"
       - "packages/shared/**"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/deployment-backend.yml"
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -15,19 +20,40 @@ jobs:
         with:
           node-version: 24
           cache: npm
-      - name: Install dependenccies
+      - name: Install dependencies
         run: npm ci
       - name: Build shared packages
         run: npm run build -w packages/shared
       - name: Build Backend
         run: npm run build -w backend
-      - name: Production package files
+      - name: Creating production files
         run: |
-          mkdir -p deploy-package/backend
+          set -Eeuo pipefail
+
+          rm -rf deploy-package
+
+          mkdir -p deploy-package/backend \
+            deploy-package/packages/shared
+
           cp -r backend/dist deploy-package/backend/dist
           cp backend/package.json deploy-package/backend/package.json
-          cp backend/package-lock.json deploy-package/backend/package-lock.json
+
           cp -r packages/shared/dist deploy-package/packages/shared/dist
+          cp packages/shared/package.json \
+             deploy-package/packages/shared/package.json
+
+          cp package.json deploy-package/package.json
+          cp package-lock.json deploy-package/package-lock.json
+
+      - name: Prepare incoming directory
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.GCP_VM_IP }}
+          username: ${{ secrets.GCP_VM_USER }}
+          key: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
+          script: |
+            rm -rf "$HOME/app-incoming"
+            mkdir -p "$HOME/app-incoming"
       - name: Copy files to VM
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -35,8 +61,9 @@ jobs:
           username: ${{ secrets.GCP_VM_USER }}
           key: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
           source: "deploy-package/"
-          target: "~/app-incoming"
+          target: "/home/${{ secrets.GCP_VM_USER }}/app-incoming"
           strip_components: 1
+          overwrite: true
       - name: Deploy and restart
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -44,26 +71,52 @@ jobs:
           username: ${{ secrets.GCP_VM_USER }}
           key: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
           script: |
-            set -e
+            set -Eeuo pipefail
+
+            APP="$HOME/app"
+            INCOMING="$HOME/app-incoming"
+            PM2_NAME="resqplate-backend"
 
             echo "Installing production dependencies..."
-            cd ~/app-incoming/backend
-            npm ci --omit=dev
+            cd "$INCOMING"
 
-            echo "Adding files to backend"
-            rm -rf ~/app/backend/dist ~/app/backend/node_modules
-            cp -r ~/app-incoming/backend/dist ~/app/backend/dist 
-            cp -r ~/app-incoming/backend/node_modules ~/app/backend/node_modules
+            npm ci --omit=dev --ignore-scripts \
+                --workspace=backend --workspace=packages/shared --include-workspace-root
+
+            echo "Verifying runtime dependencies..."
+            cd "$INCOMING/backend"
+
+            node -e "console.log(import.meta.resolve('better-auth'))"
+            node -e "console.log(import.meta.resolve('@resqplate/shared'))"
+
+            echo "Replacing deployed application..."
+            rm -rf "$APP"
+            mv "$INCOMING" "$APP"
 
             echo "Restarting PM2..."
-            if pm2 list | grep -q resqplate-backend; then
-                pm2 restart resqplate-backend
+            cd "$APP/backend"
+            if pm2 describe "$PM2_NAME" >/dev/null 2>&1; then
+                pm2 restart resqplate-backend --update-env
             else
-                cd ~/app/backend && pm2 start dist/server.js --name resqplate-backend
-                pm2 startup | tail -1 | sudo bash
-                pm2 save
+                pm2 start dist/server.js --name "$PM2_NAME"
             fi
 
-            echo "Verifying PM2 backend..."
-            sleep 2
-            pm2 list | grep resqplate-backend
+            pm2 save
+
+            echo "Checking backend health..."
+            for attempt in $(seq 1 12); do
+              if curl --fail --silent \
+                http://127.0.0.1:3000/api/health \
+                >/dev/null; then
+                echo "Backend deployment succeded."
+                exit 0
+              fi
+
+            echo "Health check attempt $attempt failed."
+            sleep 5
+
+            done
+
+            echo "Backend failed health check..."
+            pm2 logs "$PM2_NAME" --lines 50 --nostream || true
+            exit 1

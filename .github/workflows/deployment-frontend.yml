@@ -1,11 +1,13 @@
 name: Deploy Frontend
 
 on:
+  workflow_dispatch:
   push:
     branches: [main]
     paths:
       - "frontend/**"
       - "packages/shared/**"
+      - ".github/workflows/deployment-frontend.yml"
 jobs:
   deploy:
     runs-on: ubuntu-latest
