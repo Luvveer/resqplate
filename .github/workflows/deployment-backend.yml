@@ -38,6 +38,8 @@ jobs:
           cp -r backend/dist deploy-package/backend/dist
           cp backend/package.json deploy-package/backend/package.json
 
+          cp -r backend/drizzle.config.ts deploy-package/backend/drizzle.config.ts
+
           cp -r packages/shared/dist deploy-package/packages/shared/dist
           cp packages/shared/package.json \
              deploy-package/packages/shared/package.json
