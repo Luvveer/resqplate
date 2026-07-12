@@ -3,6 +3,11 @@ export async function onRequest(context) {
   const VM_IP = "136.118.195.126.nip.io";
   const VM_PORT = "3000";
 
+  const url = new URL(request.url);
+  if (!url.pathname.startsWith("/api/")) {
+    return context.next();
+  }
+
   if (request.method === "OPTIONS") {
     return new Response(null, {
       status: 204,
@@ -16,7 +21,6 @@ export async function onRequest(context) {
     });
   }
 
-  const url = new URL(request.url);
   const targetUrl = `http://${VM_IP}:${VM_PORT}${url.pathname}${url.search}`;
 
   const response = await fetch(targetUrl, {
