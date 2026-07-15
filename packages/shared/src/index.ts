@@ -241,3 +241,21 @@ export const reservationStatusQuerySchema = z.object({
 export const confirmPickupSchema = z.object({
   pickupCode: z.string().min(1),
 });
+
+export const requestPasswordResetSchema = z.object({
+  email: z.email(),
+  redirectTo: z.string(),
+});
+
+export type requestPasswordResetInput = z.infer<
+  typeof requestPasswordResetSchema
+>;
+
+export const confirmPasswordResetSchema = z.object({
+  newPassword: z.string().min(8),
+  token: z.string(),
+});
+
+export type confirmPasswordResetInput = z.infer<
+  typeof confirmPasswordResetSchema
+>;

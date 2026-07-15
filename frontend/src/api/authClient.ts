@@ -48,6 +48,28 @@ class AuthAPI {
       "/auth/profile/me",
     );
   }
+
+  async requestPasswordReset(email: string) {
+    return await apiClient.request<{ message: string }>(
+      "POST",
+      "/auth/password-reset/request",
+      {
+        email,
+        redirectTo: `${window.location.origin}/reset-password`,
+      },
+    );
+  }
+
+  async confirmPasswordReset(newPassword: string, token: string) {
+    return await apiClient.request<{ message: string }>(
+      "POST",
+      "/auth/password-reset/confirm",
+      {
+        newPassword,
+        token,
+      },
+    );
+  }
 }
 
 export const authApi = new AuthAPI();
