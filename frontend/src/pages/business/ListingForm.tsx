@@ -8,7 +8,6 @@ type ListingFormValues = {
   quantityAvailable: string;
   pickupStart: string;
   pickupEnd: string;
-  pickupCode: string;
   addressSnapShot: string;
   latitude: string;
   longitude: string;
@@ -50,7 +49,6 @@ export function ListingForm({
     quantityAvailable: initialValues?.quantityAvailable ?? "1",
     pickupStart: toDatetimeLocalValue(initialValues?.pickupStart),
     pickupEnd: toDatetimeLocalValue(initialValues?.pickupEnd),
-    pickupCode: initialValues?.pickupCode ?? "",
     addressSnapShot: initialValues?.addressSnapShot ?? "",
     latitude: initialValues?.latitude ?? "",
     longitude: initialValues?.longitude ?? "",
@@ -74,7 +72,6 @@ export function ListingForm({
       quantityAvailable: Number(values.quantityAvailable),
       pickupStart: new Date(values.pickupStart),
       pickupEnd: new Date(values.pickupEnd),
-      pickupCode: values.pickupCode || undefined,
       addressSnapShot: values.addressSnapShot || undefined,
       latitude: values.latitude || undefined,
       longitude: values.longitude || undefined,
@@ -146,15 +143,6 @@ export function ListingForm({
             value={values.pickupEnd}
             onChange={(event) => updateField("pickupEnd", event.target.value)}
             required
-          />
-        </div>
-
-        <div className="business-field">
-          <label htmlFor="listing-pickup-code">Pickup code</label>
-          <input
-            id="listing-pickup-code"
-            value={values.pickupCode}
-            onChange={(event) => updateField("pickupCode", event.target.value)}
           />
         </div>
 

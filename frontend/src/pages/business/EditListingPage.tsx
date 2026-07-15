@@ -95,7 +95,6 @@ export function EditListingPage() {
                 quantityAvailable: String(listing.quantityAvailable),
                 pickupStart: listing.pickupStart,
                 pickupEnd: listing.pickupEnd,
-                pickupCode: listing.pickupCode ?? "",
                 addressSnapShot: listing.addressSnapShot ?? "",
                 latitude: listing.latitude ?? "",
                 longitude: listing.longitude ?? "",

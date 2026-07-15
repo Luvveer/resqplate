@@ -120,7 +120,6 @@ export type FoodListingResponse = {
   quantityAvailable: number;
   pickupStart: Date;
   pickupEnd: Date;
-  pickupCode: string | null;
   status: ListingStatus;
   addressSnapShot: string | null;
   latitude: string | null;
@@ -138,7 +137,6 @@ export const createListingSchema = z.object({
   quantityAvailable: z.number().int().positive(),
   pickupStart: z.coerce.date(),
   pickupEnd: z.coerce.date(),
-  pickupCode: z.string().optional(),
   addressSnapShot: z.string().optional(),
   latitude: z.string().optional(),
   longitude: z.string().optional(),

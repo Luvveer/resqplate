@@ -53,7 +53,6 @@ export interface FoodListing {
   quantityAvailable: number;
   pickupStart: Date;
   pickupEnd: Date;
-  pickupCode: string | null;
   status: ListingStatus;
   addressSnapShot: string | null;
   latitude: string | null;
