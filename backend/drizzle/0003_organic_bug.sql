@@ -1,0 +1,1 @@
+ALTER TABLE "restaurant_profiles" DROP COLUMN "postal_code";
