@@ -95,9 +95,6 @@ export function EditListingPage() {
                 quantityAvailable: String(listing.quantityAvailable),
                 pickupStart: listing.pickupStart,
                 pickupEnd: listing.pickupEnd,
-                addressSnapShot: listing.addressSnapShot ?? "",
-                latitude: listing.latitude ?? "",
-                longitude: listing.longitude ?? "",
                 storageNote: listing.storageNote ?? "",
               }}
               submitLabel="Update Listing"

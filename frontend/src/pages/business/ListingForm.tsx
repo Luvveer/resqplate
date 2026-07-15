@@ -8,9 +8,6 @@ type ListingFormValues = {
   quantityAvailable: string;
   pickupStart: string;
   pickupEnd: string;
-  addressSnapShot: string;
-  latitude: string;
-  longitude: string;
   storageNote: string;
 };
 
@@ -49,9 +46,6 @@ export function ListingForm({
     quantityAvailable: initialValues?.quantityAvailable ?? "1",
     pickupStart: toDatetimeLocalValue(initialValues?.pickupStart),
     pickupEnd: toDatetimeLocalValue(initialValues?.pickupEnd),
-    addressSnapShot: initialValues?.addressSnapShot ?? "",
-    latitude: initialValues?.latitude ?? "",
-    longitude: initialValues?.longitude ?? "",
     storageNote: initialValues?.storageNote ?? "",
   });
 
@@ -72,9 +66,6 @@ export function ListingForm({
       quantityAvailable: Number(values.quantityAvailable),
       pickupStart: new Date(values.pickupStart),
       pickupEnd: new Date(values.pickupEnd),
-      addressSnapShot: values.addressSnapShot || undefined,
-      latitude: values.latitude || undefined,
-      longitude: values.longitude || undefined,
       storageNote: values.storageNote || undefined,
     });
   }
@@ -143,35 +134,6 @@ export function ListingForm({
             value={values.pickupEnd}
             onChange={(event) => updateField("pickupEnd", event.target.value)}
             required
-          />
-        </div>
-
-        <div className="business-field">
-          <label htmlFor="listing-address">Pickup address</label>
-          <input
-            id="listing-address"
-            value={values.addressSnapShot}
-            onChange={(event) =>
-              updateField("addressSnapShot", event.target.value)
-            }
-          />
-        </div>
-
-        <div className="business-field">
-          <label htmlFor="listing-latitude">Latitude</label>
-          <input
-            id="listing-latitude"
-            value={values.latitude}
-            onChange={(event) => updateField("latitude", event.target.value)}
-          />
-        </div>
-
-        <div className="business-field">
-          <label htmlFor="listing-longitude">Longitude</label>
-          <input
-            id="listing-longitude"
-            value={values.longitude}
-            onChange={(event) => updateField("longitude", event.target.value)}
           />
         </div>
 

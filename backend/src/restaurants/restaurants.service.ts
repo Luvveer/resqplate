@@ -21,6 +21,7 @@ import type {
   CreateListingInput,
   UpdateListingInput,
 } from "@resqplate/shared";
+import { geocodeAddress } from "../geocoding/geocoding.service.js";
 
 export async function getMyRestaurant(
   profileId: string,
@@ -36,7 +37,22 @@ export async function createMyRestaurant(
   if (existing) {
     throw new Error("Restaurant profile already exists for this account");
   }
-  return createRestaurant({ ...input, profileId });
+  const completeAddress = [
+    input.address,
+    input.city,
+    input.province,
+    input.postalCode,
+    "Canada",
+  ].join(", ");
+
+  const location = await geocodeAddress(completeAddress);
+
+  return createRestaurant({
+    ...input,
+    profileId,
+    latitude: location.latitude,
+    longitude: location.longitude,
+  });
 }
 
 /* Feature 2 */
@@ -126,9 +142,23 @@ export async function createMyListing(
   assertPickupWindow(listingInput.pickupStart, listingInput.pickupEnd);
   await validateAllergenIds(allergenIds);
 
+  if (!restaurant.latitude || !restaurant.longitude) {
+    throw new Error("Restaurant does not have valid location");
+  }
+
+  const addressSnapShot = [
+    restaurant.address,
+    restaurant.city,
+    restaurant.province,
+    restaurant.postalCode,
+  ].join(", ");
+
   const listing = await createListing({
     ...listingInput,
     restaurantId: restaurant.id,
+    addressSnapShot,
+    latitude: restaurant.latitude,
+    longitude: restaurant.longitude,
     status: "AVAILABLE",
   });
 

@@ -137,9 +137,6 @@ export const createListingSchema = z.object({
   quantityAvailable: z.number().int().positive(),
   pickupStart: z.coerce.date(),
   pickupEnd: z.coerce.date(),
-  addressSnapShot: z.string().optional(),
-  latitude: z.string().optional(),
-  longitude: z.string().optional(),
   storageNote: z.string().optional(),
   allergenIds: z.array(z.uuid()).optional(),
 });

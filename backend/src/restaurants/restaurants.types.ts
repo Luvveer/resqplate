@@ -70,7 +70,6 @@ export interface NewFoodListing {
   quantityAvailable: number;
   pickupStart: Date;
   pickupEnd: Date;
-  pickupCode?: string | null | undefined;
   status?: ListingStatus;
   addressSnapShot?: string | null | undefined;
   latitude?: string | null | undefined;
@@ -85,10 +84,6 @@ export interface UpdateFoodListing {
   quantityAvailable?: number;
   pickupStart?: Date;
   pickupEnd?: Date;
-  pickupCode?: string | null;
-  addressSnapShot?: string | null;
-  latitude?: string | null;
-  longitude?: string | null;
   storageNote?: string | null;
 }
 
