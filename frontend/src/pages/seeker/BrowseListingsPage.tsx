@@ -44,8 +44,29 @@ export function BrowseListingsPage() {
 
   // Initial load on mount
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    loadListings();
+    let cancelled = false;
+
+    listingsApi
+      .browse({})
+      .then((result) => {
+        if (!cancelled) setListings(result.listings);
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setError(
+            err instanceof Error
+              ? err.message
+              : "Sorry!! failed to load listings",
+          );
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    }; // Cleanup function to prevent state updates if like the user navigates away before the API call completes
   }, []);
 
   async function handleReserve(listingId: string) {
