@@ -52,7 +52,15 @@ export function BusinessDashboard() {
             <div className="business-header">
               <div>
                 <h2>Business Dashboard</h2>
-                <p>Your restaurant profile is waiting for admin review.</p>
+                <p>
+                  {restaurant?.verificationStatus === "INFO_REQUESTED"
+                    ? "Admin has requested additional information."
+                    : restaurant?.verificationStatus === "REJECTED"
+                      ? "Your profile is Rejected."
+                      : restaurant?.verificationStatus === "SUSPENDED"
+                        ? "Your profile has been suspended."
+                        : "Your profile is waiting for admin review."}
+                </p>
               </div>
 
               <span className="business-status pending">
@@ -60,10 +68,28 @@ export function BusinessDashboard() {
               </span>
             </div>
 
-            <p className="business-message">
-              Once your profile is approved, you will be able to create and
-              manage food listings.
-            </p>
+            {restaurant?.verificationStatus === "INFO_REQUESTED" ? (
+              <div className="business-info-requested">
+                <h3>More information required</h3>
+                <p>
+                  Admin needs additional information before approving your
+                  restaurant.
+                </p>
+                {restaurant.adminNotes ? (
+                  <div className="business-admin-notes">
+                    <strong>Message from Admin</strong>
+                    <p>{restaurant.adminNotes}</p>
+                  </div>
+                ) : (
+                  <p>No additional instruction were provided.</p>
+                )}
+              </div>
+            ) : (
+              <p className="business-message">
+                Once your profile is approved, you will be able to create and
+                manage food listings.
+              </p>
+            )}
           </section>
         </main>
       </div>
