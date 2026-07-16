@@ -26,11 +26,40 @@ interface ListingFormProps {
   onSubmit: (input: CreateListingInput | UpdateListingInput) => Promise<void>;
 }
 
+function toLocalDatetimeValue(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+}
+
 function toDatetimeLocalValue(value?: string | Date | null) {
-  if (!value) return "";
+  if (!value) {
+    return "";
+  }
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "";
-  return date.toISOString().slice(0, 16);
+  if (Number.isNaN(date.getTime())) {
+    return "";
+  }
+  return toLocalDatetimeValue(date);
+}
+
+function getMaxPickupEnd(pickupStart: string) {
+  if (!pickupStart) {
+    return undefined;
+  }
+  const start = new Date(pickupStart);
+
+  if (Number.isNaN(start.getTime())) {
+    return undefined;
+  }
+
+  const maxEndtime = new Date(start.getTime() + 24 * 60 * 60 * 1000);
+
+  return toLocalDatetimeValue(maxEndtime);
 }
 
 export function ListingForm({
@@ -132,6 +161,8 @@ export function ListingForm({
             id="listing-pickup-end"
             type="datetime-local"
             value={values.pickupEnd}
+            min={values.pickupStart || undefined}
+            max={getMaxPickupEnd(values.pickupStart)}
             onChange={(event) => updateField("pickupEnd", event.target.value)}
             required
           />
