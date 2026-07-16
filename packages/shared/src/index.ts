@@ -119,6 +119,7 @@ export type FoodListingResponse = {
   restaurantId: string;
   title: string;
   description: string | null;
+  imagePath: string | null;
   category: string | null;
   quantityAvailable: number;
   pickupStart: Date;
