@@ -201,3 +201,12 @@
   padding: 12px 14px;
   border-radius: 8px;
 }
+
+.seeker-slot-label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: #667085;
+  font-weight: 700;
+}
