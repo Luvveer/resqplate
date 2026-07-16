@@ -128,6 +128,8 @@ export const reservationTable = pgTable("reservations", {
   listingId: uuid("listing_id")
     .notNull()
     .references(() => foodListingsTable.id, { onDelete: "cascade" }),
+  pickupSlotStart: timestamp("pickup_slot_start").notNull(),
+  pickupSlotEnd: timestamp("pickup_slot_end").notNull(),
   pickupCodeDisplay: varchar("pickup_code_display", { length: 50 }),
   status: reservationStatusEnum("status").default("RESERVED").notNull(),
   reservedAt: timestamp("reserved_at").defaultNow().notNull(),

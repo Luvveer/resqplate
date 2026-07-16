@@ -1,10 +1,20 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import type { PublicListingResponse } from "@resqplate/shared";
+import type { PublicListingResponse, PickupSlot } from "@resqplate/shared";
 import { listingsApi } from "../../api/listings";
 import { reservationsApi } from "../../api/reservations";
 import { useAuth } from "../../auth/useAuth";
-// import "./Seeker.css";
+import "./Seeker.css";
+import { generatePickupSlots } from "@resqplate/shared";
+
+//Function for seeker's local time zone to be used for the pickup window
+function formatSlot(slot: PickupSlot): string {
+  const options: Intl.DateTimeFormatOptions = {
+    hour: "numeric",
+    minute: "2-digit",
+  };
+  return `${slot.start.toLocaleTimeString([], options)} - ${slot.end.toLocaleTimeString([], options)}`;
+}
 
 export function BrowseListingsPage() {
   const { logout } = useAuth();
@@ -20,6 +30,9 @@ export function BrowseListingsPage() {
   // per-listing reserve state
   const [reservingId, setReservingId] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const [selectedSlots, setSelectedSlots] = useState<Record<string, string>>(
+    {},
+  ); // mapping of listingId to selected pickup slot start time
 
   //load listing
   async function loadListings() {
@@ -44,26 +57,60 @@ export function BrowseListingsPage() {
 
   // Initial load on mount
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    loadListings();
+    let cancelled = false;
+
+    listingsApi
+      .browse({})
+      .then((result) => {
+        if (!cancelled) setListings(result.listings);
+      })
+      .catch((err) => {
+        if (!cancelled) {
+          setError(
+            err instanceof Error
+              ? err.message
+              : "Sorry!! failed to load listings",
+          );
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setIsLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    }; // Cleanup function to prevent state updates if like the user navigates away before the API call completes
   }, []);
 
   async function handleReserve(listingId: string) {
+    const slotStart = selectedSlots[listingId];
+    if (!slotStart) {
+      setNotice("You have to select a pickup slot before reserving.");
+      return;
+    }
     setNotice(null);
-    setError(null);
     setReservingId(listingId);
+    setError(null);
     try {
-      const { reservation } = await reservationsApi.create(listingId);
-      setNotice(
-        `             Yess !! Successfully reserved listing! Pickup code: ${reservation.pickupCodeDisplay ?? "N/A"}`,
+      const { reservation } = await reservationsApi.create(
+        listingId,
+        new Date(slotStart),
       );
-      // Optionally, you might want to add a refresh the listings or update the UI to reflect the reservation as well
-      await loadListings(); // Refresh listings after reservation attempt
+      setNotice(
+        ` Yes !! Reservation successful! Your pickup code is: ${reservation.pickupCodeDisplay}`,
+      );
+      // clear the choice after a successful reservation
+      setSelectedSlots((prev) => {
+        const next = { ...prev };
+        delete next[listingId];
+        return next;
+      });
+      await loadListings(); // Refresh the listings to reflect the updated quantity
     } catch (err) {
       setError(
         err instanceof Error
           ? err.message
-          : "Sorry!! failed to reserve listing",
+          : "Sorry!! failed to create reservation",
       );
     } finally {
       setReservingId(null);
@@ -130,48 +177,97 @@ export function BrowseListingsPage() {
           </section>
         ) : (
           <div className="seeker-grid">
-            {listings.map((listing) => (
-              <article key={listing.id} className="seeker-card">
-                <h2>{listing.title}</h2>
-                <p className="seeker-muted">
-                  {listing.restaurant?.businessName ?? "Unknown"} ·{" "}
-                  {listing.restaurant?.city ?? ""}
-                </p>
-                <p>{listing.description || "No description"}</p>
+            {listings.map((listing) => {
+              // Same shared function the backend validates against, so the
+              // dropdown can never offer a slot the server would reject.
+              const slots = generatePickupSlots(
+                listing.pickupStart,
+                listing.pickupEnd,
+              );
 
-                <dl className="seeker-meta">
-                  <div>
-                    <dt>Category</dt>
-                    <dd>{listing.category || "Uncategorized"}</dd>
-                  </div>
-                  <div>
-                    <dt>Available</dt>
-                    <dd>{listing.quantityAvailable}</dd>
-                  </div>
-                  <div>
-                    <dt>Pickup window</dt>
-                    <dd>
-                      {new Date(listing.pickupStart).toLocaleString()} –{" "}
-                      {new Date(listing.pickupEnd).toLocaleString()}
-                    </dd>
-                  </div>
-                </dl>
-
-                {listing.allergens && listing.allergens.length > 0 && (
-                  <p className="seeker-allergens">
-                    Contains: {listing.allergens.map((a) => a.name).join(", ")}
+              return (
+                <article key={listing.id} className="seeker-card">
+                  <h2>{listing.title}</h2>
+                  <p className="seeker-muted">
+                    {listing.restaurant?.businessName ?? "Unknown"} ·{" "}
+                    {listing.restaurant?.city ?? ""}
                   </p>
-                )}
+                  <p>{listing.description || "No description"}</p>
 
-                <button
-                  className="seeker-button"
-                  onClick={() => handleReserve(listing.id)}
-                  disabled={reservingId === listing.id}
-                >
-                  {reservingId === listing.id ? "Reserving..." : "Reserve"}
-                </button>
-              </article>
-            ))}
+                  <dl className="seeker-meta">
+                    <div>
+                      <dt>Category</dt>
+                      <dd>{listing.category || "Uncategorized"}</dd>
+                    </div>
+                    <div>
+                      <dt>Available</dt>
+                      <dd>{listing.quantityAvailable}</dd>
+                    </div>
+                    <div>
+                      <dt>Pickup window</dt>
+                      <dd>
+                        {new Date(listing.pickupStart).toLocaleString()} –{" "}
+                        {new Date(listing.pickupEnd).toLocaleString()}
+                      </dd>
+                    </div>
+                  </dl>
+
+                  {listing.allergens && listing.allergens.length > 0 && (
+                    <p className="seeker-allergens">
+                      Contains:{" "}
+                      {listing.allergens.map((a) => a.name).join(", ")}
+                    </p>
+                  )}
+
+                  {/* Slot picker. If every slot has already passed there's
+                      nothing to reserve, so show a message instead. */}
+                  {slots.length === 0 ? (
+                    <p className="seeker-muted">
+                      No pickup times remaining for this listing.
+                    </p>
+                  ) : (
+                    <>
+                      <label className="seeker-slot-label">
+                        Choose a pickup time
+                        <select
+                          className="seeker-input"
+                          value={selectedSlots[listing.id] ?? ""}
+                          onChange={(e) =>
+                            setSelectedSlots((prev) => ({
+                              ...prev,
+                              [listing.id]: e.target.value,
+                            }))
+                          }
+                        >
+                          <option value="">Select a time...</option>
+                          {slots.map((slot) => (
+                            <option
+                              key={slot.start.toISOString()}
+                              value={slot.start.toISOString()}
+                            >
+                              {formatSlot(slot)}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+
+                      <button
+                        className="seeker-button"
+                        onClick={() => handleReserve(listing.id)}
+                        disabled={
+                          reservingId === listing.id ||
+                          !selectedSlots[listing.id]
+                        }
+                      >
+                        {reservingId === listing.id
+                          ? "Reserving..."
+                          : "Reserve"}
+                      </button>
+                    </>
+                  )}
+                </article>
+              );
+            })}
           </div>
         )}
       </main>

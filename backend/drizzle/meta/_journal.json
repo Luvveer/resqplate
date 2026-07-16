@@ -36,6 +36,13 @@
       "when": 1784141525153,
       "tag": "0004_lyrical_wildside",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1784175895204,
+      "tag": "0005_unknown_green_goblin",
+      "breakpoints": true
     }
   ]
 }

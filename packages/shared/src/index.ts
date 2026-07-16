@@ -193,9 +193,73 @@ export const browseListingsQuerySchema = z.object({
 
 export type BrowseListingsQuery = z.infer<typeof browseListingsQuerySchema>; //single unit for listing
 
+//The Pickup timeSlot window and workflow
+export const PICKUP_SLOT_MINUTES = 60;
+const SLOT_MS = PICKUP_SLOT_MINUTES * 60 * 1000;
+
+export type PickupSlot = {
+  start: Date;
+  end: Date;
+};
+
+//make the slot of the pickup time window for the listing
+export function generatePickupSlots(
+  pickupStart: Date | string,
+  pickupEnd: Date | string,
+  now: Date = new Date(),
+): PickupSlot[] {
+  const windowStart = new Date(pickupStart);
+  const windowEnd = new Date(pickupEnd);
+  const slots: PickupSlot[] = [];
+
+  // Guard against a malformed / inverted window.
+  if (
+    Number.isNaN(windowStart.getTime()) ||
+    Number.isNaN(windowEnd.getTime()) ||
+    windowEnd.getTime() <= windowStart.getTime()
+  ) {
+    return slots;
+  }
+
+  let cursor = windowStart.getTime();
+  const endMs = windowEnd.getTime();
+
+  while (cursor < endMs) {
+    // Clamp the last slot to the window end so partial tails survive.
+    const slotEnd = Math.min(cursor + SLOT_MS, endMs);
+
+    // Hide slots that have already finished.
+    if (slotEnd > now.getTime()) {
+      slots.push({ start: new Date(cursor), end: new Date(slotEnd) });
+    }
+
+    cursor = slotEnd;
+  }
+
+  return slots;
+}
+//This is the function to find the matching pickup slot for a given listing and pickup time window is correctly valid and matched
+export function findMatchingPickupSlot(
+  pickupStart: Date | string,
+  pickupEnd: Date | string,
+  slotStart: Date | string,
+  now: Date = new Date(),
+): PickupSlot | undefined {
+  const target = new Date(slotStart).getTime();
+  if (Number.isNaN(target)) {
+    return undefined;
+  }
+  return generatePickupSlots(pickupStart, pickupEnd, now).find(
+    (slot) => slot.start.getTime() === target,
+  );
+}
+
 export const createReservationSchema = z.object({
   listingId: z.uuid(),
   // pickupCode: z.string().min(1),
+
+  //Now start the seeker's chosen one hour time slot for the pickup window, which is a required field for the reservation
+  pickupSlotStart: z.coerce.date(),
 });
 
 export type CreateReservationInput = z.infer<typeof createReservationSchema>;
@@ -226,6 +290,8 @@ export type ReservationResponse = {
   noShowAt: Date | null;
   // createdAt: Date;
   // updatedAt: Date;
+  pickupSlotStart: Date;
+  pickupSlotEnd: Date;
 };
 
 // Reserved by the seeker and what was reserved and the pickup code

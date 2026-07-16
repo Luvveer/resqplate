@@ -4,6 +4,20 @@ import type { ReservationWithListingResponse } from "@resqplate/shared";
 import { reservationsApi } from "../../api/reservations";
 import "./Seeker.css";
 
+// Show the reserved time slot for the seeker
+function formatSlotRange(start: Date | string, end: Date | string): string {
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+  const timeOptions: Intl.DateTimeFormatOptions = {
+    hour: "numeric",
+    minute: "2-digit",
+  };
+  const dateLabel = startDate.toLocaleDateString([], {
+    month: "short",
+    day: "numeric",
+  });
+  return `${dateLabel}, ${startDate.toLocaleTimeString([], timeOptions)} - ${endDate.toLocaleTimeString([], timeOptions)}`;
+}
 export function MyReservationsPage() {
   const [reservations, setReservations] = useState<
     ReservationWithListingResponse[]
@@ -104,20 +118,21 @@ export function MyReservationsPage() {
                 )}
 
                 <dl className="seeker-meta">
+                  {/* The slot the seeker committed to. NOT NULL in the DB, so
+                      no null guard needed — it's always present. */}
+                  <div>
+                    <dt>Pickup slot</dt>
+                    <dd>
+                      {formatSlotRange(
+                        reservation.pickupSlotStart,
+                        reservation.pickupSlotEnd,
+                      )}
+                    </dd>
+                  </div>
                   <div>
                     <dt>Reserved</dt>
                     <dd>{new Date(reservation.reservedAt).toLocaleString()}</dd>
                   </div>
-                  {reservation.listing && (
-                    <div>
-                      <dt>Pickup by</dt>
-                      <dd>
-                        {new Date(
-                          reservation.listing.pickupEnd,
-                        ).toLocaleString()}
-                      </dd>
-                    </div>
-                  )}
                 </dl>
 
                 {/* Only a RESERVED reservation can be cancelled. */}
