@@ -279,3 +279,43 @@
   margin: 0.5rem 0 0;
   white-space: pre-wrap;
 }
+
+.business-allergen-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-top: 0.7rem;
+}
+
+.business-allergen-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.4rem;
+  cursor: pointer;
+  background: white;
+}
+
+.business-allergen-option:hover {
+  border-color: #315c45;
+  background: #f5f7f4;
+}
+
+.business-allergen-option input {
+  width: auto;
+  margin: 0;
+}
+
+.business-field-help {
+  margin: 0.4rem 0;
+  color: #676f81;
+  font-size: 0.9rem;
+}
+
+.business-listing-allergens {
+  color: #936300;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}

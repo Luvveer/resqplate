@@ -110,6 +110,14 @@ export function BusinessListingsPage() {
                       <div className="business-muted">
                         {listing.description || "No description"}
                       </div>
+                      <div className="business-listing-allergens">
+                        <strong>Allergens:</strong>{" "}
+                        {listing.allergens && listing.allergens.length > 0
+                          ? listing.allergens
+                              .map((allergen) => allergen.name)
+                              .join(", ")
+                          : "No allergen"}
+                      </div>
                     </td>
 
                     <td>{listing.category || "Uncategorized"}</td>

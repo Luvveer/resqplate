@@ -20,7 +20,7 @@ class ListingsAPI {
     if (filters.category) params.set("category", filters.category);
     if (filters.search) params.set("search", filters.search);
     if (filters.excludeAllergenIds && filters.excludeAllergenIds.length > 0) {
-      params.set("excludeAllergens", filters.excludeAllergenIds.join(","));
+      params.set("excludeAllergenIds", filters.excludeAllergenIds.join(","));
     } //since we expect to get a csv
 
     const queryString = params.toString();

@@ -84,6 +84,16 @@ export function BusinessDashboard() {
                   <p>No additional instruction were provided.</p>
                 )}
               </div>
+            ) : restaurant?.verificationStatus === "SUSPENDED" ? (
+              <p className="business-message">
+                Your restaurant has been suspended. You cannot create or manage
+                food listing at this time.
+              </p>
+            ) : restaurant?.verificationStatus === "REJECTED" ? (
+              <p className="business-message">
+                Your restaurant has been rejected. You cannot create or manage
+                food listing at this time.
+              </p>
             ) : (
               <p className="business-message">
                 Once your profile is approved, you will be able to create and

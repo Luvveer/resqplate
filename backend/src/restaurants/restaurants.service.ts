@@ -176,7 +176,7 @@ export async function createMyListing(
     status: "AVAILABLE",
   });
 
-  if (allergenIds) {
+  if (allergenIds !== undefined) {
     await replaceListingAllergens(listing.id, allergenIds);
   }
 
@@ -217,7 +217,7 @@ export async function updateMyListing(
     return undefined;
   }
 
-  if (allergenIds) {
+  if (allergenIds !== undefined) {
     await replaceListingAllergens(updatedlisting.id, allergenIds);
   }
 

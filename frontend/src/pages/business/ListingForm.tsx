@@ -1,5 +1,10 @@
-import { useState, type FormEvent } from "react";
-import type { CreateListingInput, UpdateListingInput } from "@resqplate/shared";
+import { useState, type FormEvent, useEffect } from "react";
+import type {
+  CreateListingInput,
+  UpdateListingInput,
+  AllergenResponse,
+} from "@resqplate/shared";
+import { listingsApi } from "../../api/listings";
 
 type ListingFormValues = {
   title: string;
@@ -9,6 +14,7 @@ type ListingFormValues = {
   pickupStart: string;
   pickupEnd: string;
   storageNote: string;
+  allergenIds: string[];
 };
 
 type ListingFormInitialValues = Omit<
@@ -76,7 +82,43 @@ export function ListingForm({
     pickupStart: toDatetimeLocalValue(initialValues?.pickupStart),
     pickupEnd: toDatetimeLocalValue(initialValues?.pickupEnd),
     storageNote: initialValues?.storageNote ?? "",
+    allergenIds: initialValues?.allergenIds ?? [],
   });
+
+  const [allergenOptions, setAllergenOptions] = useState<AllergenResponse[]>(
+    [],
+  );
+  const [allergenError, setAllergenError] = useState<string | null>(null);
+  const [areAllergenLoading, setAreAllergenLoading] = useState(true);
+
+  useEffect(() => {
+    let current = true;
+
+    async function loadAllergens() {
+      try {
+        const answer = await listingsApi.getAllergens();
+
+        if (current) {
+          setAllergenOptions(answer.allergens);
+        }
+      } catch (error) {
+        if (current) {
+          setAllergenError(
+            error instanceof Error ? error.message : "Failed to load allergen",
+          );
+        }
+      } finally {
+        if (current) {
+          setAreAllergenLoading(false);
+        }
+      }
+    }
+    void loadAllergens();
+
+    return () => {
+      current = false;
+    };
+  }, []);
 
   function updateField(name: keyof ListingFormValues, value: string) {
     setValues((current) => ({
@@ -96,6 +138,20 @@ export function ListingForm({
       pickupStart: new Date(values.pickupStart),
       pickupEnd: new Date(values.pickupEnd),
       storageNote: values.storageNote || undefined,
+      allergenIds: values.allergenIds,
+    });
+  }
+
+  function AllergenToogle(allergenId: string) {
+    setValues((current) => {
+      const selected = current.allergenIds.includes(allergenId);
+
+      return {
+        ...current,
+        allergenIds: selected
+          ? current.allergenIds.filter((id) => id !== allergenId)
+          : [...current.allergenIds, allergenId],
+      };
     });
   }
 
@@ -129,6 +185,34 @@ export function ListingForm({
             onChange={(event) => updateField("category", event.target.value)}
           />
         </div>
+
+        <fieldset className="business-field business-field-full">
+          <legend>Contains allergen</legend>
+
+          <p className="business-field-help">
+            Select allergen contained in this food
+          </p>
+          {areAllergenLoading && (
+            <p className="business-message">Loading allergen...</p>
+          )}
+
+          {allergenError && <p className="business-error">{allergenError}</p>}
+
+          {!areAllergenLoading && !allergenError && (
+            <div className="business-allergen-options">
+              {allergenOptions.map((allergen) => (
+                <label key={allergen.id} className="business-allergen-option">
+                  <input
+                    type="checkbox"
+                    checked={values.allergenIds.includes(allergen.id)}
+                    onChange={() => AllergenToogle(allergen.id)}
+                  />
+                  <span>{allergen.name}</span>
+                </label>
+              ))}
+            </div>
+          )}
+        </fieldset>
 
         <div className="business-field">
           <label htmlFor="listing-quantity">Quantity</label>

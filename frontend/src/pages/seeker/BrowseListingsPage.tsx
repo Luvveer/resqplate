@@ -162,6 +162,10 @@ export function BrowseListingsPage() {
             Apply Filters
           </button>
         </section>
+        <p className="seeker-muted">
+          Allergen information is provided by restaurant. Cross-contamination
+          may be possible
+        </p>
 
         {notice && <p className="seeker-notice">{notice}</p>}
         {error && <p className="seeker-error">{error}</p>}
@@ -212,12 +216,13 @@ export function BrowseListingsPage() {
                     </div>
                   </dl>
 
-                  {listing.allergens && listing.allergens.length > 0 && (
-                    <p className="seeker-allergens">
-                      Contains:{" "}
-                      {listing.allergens.map((a) => a.name).join(", ")}
-                    </p>
-                  )}
+                  <p className="seeker-allergens">
+                    {listing.allergens && listing.allergens.length > 0
+                      ? `Contains: ${listing.allergens
+                          .map((a) => a.name)
+                          .join(", ")}`
+                      : "No allergen"}
+                  </p>
 
                   {/* Slot picker. If every slot has already passed there's
                       nothing to reserve, so show a message instead. */}

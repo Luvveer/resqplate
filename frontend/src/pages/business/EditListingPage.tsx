@@ -96,6 +96,8 @@ export function EditListingPage() {
                 pickupStart: listing.pickupStart,
                 pickupEnd: listing.pickupEnd,
                 storageNote: listing.storageNote ?? "",
+                allergenIds:
+                  listing.allergens?.map((allergen) => allergen.id) ?? [],
               }}
               submitLabel="Update Listing"
               isSubmitting={isSubmitting}
