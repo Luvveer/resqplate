@@ -7,6 +7,13 @@ import type {
 
 class ListingsAPI {
   //Lets get the public listing feed
+  async getAllergens() {
+    return apiClient.request<{ allergens: AllergenResponse[] }>(
+      "GET",
+      "/listings/allergens",
+    );
+  }
+
   async browse(filters: Partial<BrowseListingsQuery> = {}) {
     const params = new URLSearchParams();
     if (filters.city) params.set("city", filters.city);
@@ -30,13 +37,6 @@ class ListingsAPI {
     return apiClient.request<{ listing: PublicListingResponse }>(
       "GET",
       `/listings/${listingId}`,
-    );
-  }
-
-  async getAllergens() {
-    return apiClient.request<{ allergens: AllergenResponse[] }>(
-      "GET",
-      "/listings/allergens",
     );
   }
 }
