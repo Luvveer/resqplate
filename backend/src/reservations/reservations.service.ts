@@ -11,6 +11,7 @@ import type {
   Reservation,
   ReservationWithListing,
 } from "./reservations.types.js";
+import { findMatchingPickupSlot } from "@resqplate/shared";
 import type { CreateReservationInput } from "@resqplate/shared";
 
 // Constraint for the pickup code to be a 6 6 chars from a 31-char alphabet
@@ -57,6 +58,16 @@ export async function createReservation(
       "You have already reserved this listing currently. Please pick it up or cancel the reservation before making a new one.",
     );
   }
+  const slot = findMatchingPickupSlot(
+    listing.pickupStart,
+    listing.pickupEnd,
+    input.pickupSlotStart,
+  );
+  if (!slot) {
+    throw new Error(
+      "Sorry !! The selected pickup slot is not valid. Please select a valid pickup slot.",
+    );
+  }
 
   const pickupCodeDisplay = generatePickupCode();
 
@@ -65,6 +76,8 @@ export async function createReservation(
     profileId,
     listingId: input.listingId,
     pickupCodeDisplay,
+    pickupSlotStart: slot.start,
+    pickupSlotEnd: slot.end,
   });
 
   return reservation;
