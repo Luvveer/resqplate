@@ -107,6 +107,7 @@ export const foodListingsTable = pgTable("food_listings", {
     .references(() => restaurantProfilesTable.id, { onDelete: "cascade" }),
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),
+  imagePath: text("image_path"),
   category: varchar("category", { length: 100 }),
   quantityAvailable: integer("quantity_available").notNull(),
   pickupStart: timestamp("pickup_start").notNull(),
