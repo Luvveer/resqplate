@@ -49,6 +49,7 @@ export interface FoodListing {
   restaurantId: string;
   title: string;
   description: string | null;
+  imagePath: string | null;
   category: string | null;
   quantityAvailable: number;
   pickupStart: Date;
@@ -66,6 +67,7 @@ export interface NewFoodListing {
   restaurantId: string;
   title: string;
   description?: string | null | undefined;
+  imagePath?: string | null;
   category?: string | null | undefined;
   quantityAvailable: number;
   pickupStart: Date;
@@ -80,6 +82,7 @@ export interface NewFoodListing {
 export interface UpdateFoodListing {
   title?: string;
   description?: string | null;
+  imagePath?: string | null;
   category?: string | null;
   quantityAvailable?: number;
   pickupStart?: Date;
