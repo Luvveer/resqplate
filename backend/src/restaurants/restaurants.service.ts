@@ -57,9 +57,23 @@ export async function createMyRestaurant(
 
 /* Feature 2 */
 
+const MAX_PICKUP_WINDOW = 24 * 60 * 60 * 1000;
+
 function assertPickupWindow(pickupStart: Date, pickupEnd: Date) {
+  if (
+    Number.isNaN(pickupStart.getTime()) ||
+    Number.isNaN(pickupEnd.getTime())
+  ) {
+    throw new Error("Pickup start and end time must be valid date.");
+  }
   if (pickupEnd <= pickupStart) {
     throw new Error("Pickup end time must be after pickup start time");
+  }
+
+  const pickupWindowDuration = pickupEnd.getTime() - pickupStart.getTime();
+
+  if (pickupWindowDuration > MAX_PICKUP_WINDOW) {
+    throw new Error("Pickup window cannot be longer than 24 hours.");
   }
 }
 
