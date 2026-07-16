@@ -1,5 +1,6 @@
 import { apiClient } from "./apiClient";
 import type {
+  AllergenResponse,
   PublicListingResponse,
   BrowseListingsQuery,
 } from "@resqplate/shared";
@@ -29,6 +30,13 @@ class ListingsAPI {
     return apiClient.request<{ listing: PublicListingResponse }>(
       "GET",
       `/listings/${listingId}`,
+    );
+  }
+
+  async getAllergens() {
+    return apiClient.request<{ allergens: AllergenResponse[] }>(
+      "GET",
+      "/listings/allergens",
     );
   }
 }
