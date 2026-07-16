@@ -262,3 +262,20 @@
 .business-field-full {
   grid-column: 1 / -1;
 }
+
+.business-info-requested {
+  margin-top: 1rem;
+}
+
+.business-admin-notes {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-left: 4px solid #d97706;
+  border-radius: 0.4rem;
+  background: #fffbeb;
+}
+
+.business-admin-notes p {
+  margin: 0.5rem 0 0;
+  white-space: pre-wrap;
+}
