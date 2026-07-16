@@ -48,7 +48,10 @@ export type RestaurantProfileResponse = {
   postalCode: string;
   phone: string | null;
   description: string | null;
+  latitude: string | null;
+  longitude: string | null;
   verificationStatus: verificationStatus;
+  adminNotes: string | null;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -130,7 +133,7 @@ export type FoodListingResponse = {
   allergens?: AllergenResponse[];
 };
 
-export const createListingSchema = z.object({
+const listingFieldSchema = z.object({
   title: z.string().min(1),
   description: z.string().optional(),
   category: z.string().optional(),
@@ -141,7 +144,22 @@ export const createListingSchema = z.object({
   allergenIds: z.array(z.uuid()).optional(),
 });
 
-export const updateListingSchema = createListingSchema.partial();
+export const createListingSchema = listingFieldSchema
+  .refine((input) => input.pickupEnd > input.pickupStart, {
+    message: "Pickup end time must be after pickup start time",
+    path: ["pickupEnd"],
+  })
+  .refine(
+    (input) =>
+      input.pickupEnd.getTime() - input.pickupStart.getTime() <=
+      24 * 60 * 60 * 1000,
+    {
+      message: "Pickup window cannot be longer than 24 hours.",
+      path: ["pickupEnd"],
+    },
+  );
+
+export const updateListingSchema = listingFieldSchema.partial();
 
 export const listingParamsSchema = z.object({
   listingId: z.uuid(),
