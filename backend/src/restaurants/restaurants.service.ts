@@ -21,7 +21,7 @@ import type {
   CreateListingInput,
   UpdateListingInput,
 } from "@resqplate/shared";
-import { geocodeAddress } from "../geocoding/geocoding.service.js";
+import { geocodeAddress } from "../external-services/geocoding/geocoding.service.js";
 
 export async function getMyRestaurant(
   profileId: string,
