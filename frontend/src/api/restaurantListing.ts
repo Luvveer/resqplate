@@ -30,6 +30,15 @@ class RestaurantListingAPI {
     }>("PATCH", `/restaurants/listings/${listingId}`, input);
   }
 
+  async uploadListingImage(listingId: string, imageFile: File) {
+    const formData = new FormData();
+    formData.append("image", imageFile);
+
+    return apiClient.requestFormData<{
+      listing: FoodListingResponse;
+    }>("PUT", `/restaurants/listings/${listingId}/image`, formData);
+  }
+
   async expireListing(listingId: string) {
     return await apiClient.request<{
       listing: FoodListingResponse;
