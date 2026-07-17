@@ -339,3 +339,63 @@
   object-fit: cover;
   background: #edf1eb;
 }
+
+.address-autocomplete {
+  position: relative;
+  display: grid;
+  gap: 9px;
+}
+
+.address-autocomplete > label {
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.address-autocomplete > input {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #cfd8cf;
+  border-radius: 9px;
+  padding: 10px 12px;
+  font: inherit;
+  color: #1f2933;
+  background: white;
+}
+
+.address-suggestions {
+  position: absolute;
+  z-index: 20;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: 240px;
+  margin: 4px 0 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+  background: white;
+  border: 1px solid #cfd8cf;
+  border-radius: 7px;
+  box-shadow: 0 12px 25px rgb(0 0 0 / 10%);
+}
+
+.address-suggestions li + li {
+  border-top: 1px solid #edf1eb;
+}
+
+.address-suggestions button {
+  width: 100%;
+  padding: 15px;
+  border: 0;
+  background: white;
+  color: #1f2933;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.address-suggestions button:hover,
+.address-suggestions button:focus {
+  background: #f5f7f4;
+  outline: none;
+}
