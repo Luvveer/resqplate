@@ -22,6 +22,7 @@ import type {
   UpdateListingInput,
 } from "@resqplate/shared";
 import { geocodeAddress } from "../external-services/geocoding/geocoding.service.js";
+import { deleteFile, saveImage } from "../filesystem/filesystem.js";
 
 export async function getMyRestaurant(
   profileId: string,
@@ -219,6 +220,49 @@ export async function updateMyListing(
 
   if (allergenIds !== undefined) {
     await replaceListingAllergens(updatedlisting.id, allergenIds);
+  }
+
+  return attachAllergens(updatedlisting);
+}
+
+export async function updateMyListingImage(
+  profileId: string,
+  listingId: string,
+  file: Express.Multer.File,
+): Promise<ListingWithAllergens | undefined> {
+  const restaurant = await getApprovedRestaurantForProfile(profileId);
+
+  const existingListing = await findListingByRestaurantId(
+    listingId,
+    restaurant.id,
+  );
+
+  if (!existingListing) {
+    return undefined;
+  }
+
+  assertListingEditable(existingListing);
+
+  const newImagePath = await saveImage(file.buffer, file.mimetype, "listings");
+
+  let updatedlisting: FoodListing | undefined;
+
+  try {
+    updatedlisting = await updateListing(listingId, {
+      imagePath: newImagePath,
+    });
+  } catch (error) {
+    await deleteFile(newImagePath).catch(() => undefined);
+    throw error;
+  }
+
+  if (!updatedlisting) {
+    await deleteFile(newImagePath).catch(() => undefined);
+    return undefined;
+  }
+
+  if (existingListing.imagePath) {
+    await deleteFile(existingListing.imagePath).catch(() => undefined);
   }
 
   return attachAllergens(updatedlisting);

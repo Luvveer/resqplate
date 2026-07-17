@@ -8,7 +8,9 @@ import {
   createListingHandler,
   updateListingHandler,
   expireListingHandler,
+  updateListingImageHandler,
 } from "./restaurants.handler.js";
+import { uploadSingleImage } from "../middleware/upload.middleware.js";
 
 const RestaurantRouter = Router();
 
@@ -47,6 +49,14 @@ RestaurantRouter.patch(
   getSession,
   isBusiness,
   updateListingHandler,
+);
+
+RestaurantRouter.put(
+  "/listings/:listingId/image",
+  getSession,
+  isBusiness,
+  uploadSingleImage,
+  updateListingImageHandler,
 );
 
 RestaurantRouter.patch(
