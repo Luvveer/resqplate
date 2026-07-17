@@ -9,6 +9,7 @@ import {
   updateListingHandler,
   expireListingHandler,
   updateListingImageHandler,
+  addressSuggestionsHandler,
 } from "./restaurants.handler.js";
 import { uploadSingleImage } from "../middleware/upload.middleware.js";
 
@@ -19,6 +20,12 @@ RestaurantRouter.get(
   getSession,
   isBusiness,
   getRestaurantHandler,
+);
+RestaurantRouter.post(
+  "/address-suggestions",
+  getSession,
+  isBusiness,
+  addressSuggestionsHandler,
 );
 RestaurantRouter.post(
   "/signup",

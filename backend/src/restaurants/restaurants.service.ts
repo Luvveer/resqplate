@@ -21,13 +21,23 @@ import type {
   CreateListingInput,
   UpdateListingInput,
 } from "@resqplate/shared";
-import { geocodeAddress } from "../external-services/geocoding/geocoding.service.js";
 import { deleteFile, saveImage } from "../filesystem/filesystem.js";
+import {
+  autocompleteAddress,
+  resolveAddress,
+} from "../external-services/places/places.service.js";
 
 export async function getMyRestaurant(
   profileId: string,
 ): Promise<RestaurantProfile | undefined> {
   return findRestaurantByProfileId(profileId);
+}
+
+export async function getAddressSuggestions(
+  input: string,
+  sessionToken: string,
+) {
+  return autocompleteAddress(input, sessionToken);
 }
 
 export async function createMyRestaurant(
@@ -38,21 +48,14 @@ export async function createMyRestaurant(
   if (existing) {
     throw new Error("Restaurant profile already exists for this account");
   }
-  const completeAddress = [
-    input.address,
-    input.city,
-    input.province,
-    input.postalCode,
-    "Canada",
-  ].join(", ");
+  const { placeId, sessionToken, ...restaurantInput } = input;
 
-  const location = await geocodeAddress(completeAddress);
+  const resolvedAddress = await resolveAddress(placeId, sessionToken);
 
   return createRestaurant({
-    ...input,
+    ...restaurantInput,
+    ...resolvedAddress,
     profileId,
-    latitude: location.latitude,
-    longitude: location.longitude,
   });
 }
 

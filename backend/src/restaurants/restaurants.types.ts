@@ -6,6 +6,7 @@ export interface RestaurantProfile {
   city: string;
   province: string;
   postalCode: string;
+  googlePlaceId: string | null;
   phone: string | null;
   description: string | null;
   latitude: string | null;
@@ -29,6 +30,7 @@ export interface NewRestaurantProfile {
   city: string;
   province: string;
   postalCode: string;
+  googlePlaceId?: string | null;
   phone?: string | null | undefined;
   description?: string | null | undefined;
   latitude?: string | null | undefined;
