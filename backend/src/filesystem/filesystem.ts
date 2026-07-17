@@ -15,7 +15,7 @@ export async function saveImage(
   mimeType: string,
   subfolder: "listings",
 ): Promise<string> {
-  const ext = extensionType;
+  const ext = extensionType[mimeType];
 
   if (!ext) {
     throw new Error("Only JPEG, PNG and Webp images are allowed");
@@ -31,10 +31,17 @@ export async function saveImage(
 export async function deleteFile(relativePath: string): Promise<void> {
   const normalizedpath = relativePath.replaceAll("\\", "/");
 
-  if (normalizedpath.startsWith("/") || normalizedpath.startsWith("..")) {
+  if (normalizedpath.startsWith("/") || normalizedpath.includes("\0")) {
     throw new Error("Invalid image path");
   }
 
-  const fullpath = path.join(UPLOADS_ROOT, normalizedpath);
+  const fullpath = path.resolve(UPLOADS_ROOT, normalizedpath);
+
+  const uploadsRootWithSep = path.resolve(UPLOADS_ROOT) + path.sep;
+
+  if (!fullpath.startsWith(uploadsRootWithSep)) {
+    throw new Error("Invalid image path");
+  }
+
   await fs.rm(fullpath, { force: true });
 }
