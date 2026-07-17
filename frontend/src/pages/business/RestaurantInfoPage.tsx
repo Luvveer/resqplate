@@ -1,14 +1,13 @@
 import { useState, type SubmitEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { companyApi } from "../../api/restaurant";
+import { AddressAutocomplete } from "./AddressAutocomplete";
 
 export function RestaurantInfoPage() {
   const navigate = useNavigate();
   const [businessName, setBusinessName] = useState("");
-  const [address, setAddress] = useState("");
-  const [city, setCity] = useState("");
-  const [province, setProvince] = useState("");
-  const [postalCode, setPostalCode] = useState("");
+  const [placeId, setPlaceId] = useState("");
+  const [sessionToken] = useState(() => crypto.randomUUID());
   const [phone, setPhone] = useState("");
   const [description, setDescription] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -16,15 +15,18 @@ export function RestaurantInfoPage() {
 
   async function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (!placeId) {
+      setError("Please select address from suggestions");
+      SetIsSubmitting(false);
+      return;
+    }
     setError(null);
     SetIsSubmitting(true);
     try {
       await companyApi.createRestaurant({
         businessName,
-        address,
-        city,
-        province,
-        postalCode,
+        placeId,
+        sessionToken,
         phone: phone || undefined,
         description: description || undefined,
       });
@@ -66,44 +68,14 @@ export function RestaurantInfoPage() {
               />
             </div>
 
-            <div className="business-field">
-              <label htmlFor="address">Address</label>
-              <input
-                id="address"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                required
-              />
-            </div>
-
             <div className="business-form-grid">
               <div className="business-field">
-                <label htmlFor="city">City</label>
-                <input
-                  id="city"
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className="business-field">
-                <label htmlFor="province">Province</label>
-                <input
-                  id="province"
-                  value={province}
-                  onChange={(e) => setProvince(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className="business-field">
-                <label htmlFor="postalCode">Postal Code</label>
-                <input
-                  id="postalCode"
-                  value={postalCode}
-                  onChange={(e) => setPostalCode(e.target.value)}
-                  required
+                <AddressAutocomplete
+                  sessionToken={sessionToken}
+                  selectedPlaceId={placeId}
+                  onSelect={(newPlaceId) => {
+                    setPlaceId(newPlaceId);
+                  }}
                 />
               </div>
 
