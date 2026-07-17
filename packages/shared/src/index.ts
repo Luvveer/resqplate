@@ -58,13 +58,25 @@ export type RestaurantProfileResponse = {
 
 export const createRestaurantSchema = z.object({
   businessName: z.string().min(1),
-  address: z.string().min(1),
-  city: z.string().min(1),
-  province: z.string().min(1),
-  postalCode: z.string().min(1),
+  placeId: z.string().trim().min(1),
+  sessionToken: z.string().trim().min(1).max(36),
   phone: z.string().optional(),
   description: z.string().optional(),
 });
+
+export const addressAutocompleteSchema = z.object({
+  input: z.string().trim().min(3).max(200),
+  sessionToken: z.string().trim().min(1).max(36),
+});
+
+export type AddressAutocompleteInput = z.infer<
+  typeof addressAutocompleteSchema
+>;
+
+export type AddressSuggestion = {
+  placeId: string;
+  description: string;
+};
 
 export type AdminRestaurantProfileResponse = {
   id: string;
