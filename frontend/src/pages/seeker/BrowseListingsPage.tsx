@@ -6,6 +6,7 @@ import { reservationsApi } from "../../api/reservations";
 import { useAuth } from "../../auth/useAuth";
 import "./Seeker.css";
 import { generatePickupSlots } from "@resqplate/shared";
+import { getAssetUrl } from "../../api/assets";
 
 //Function for seeker's local time zone to be used for the pickup window
 function formatSlot(slot: PickupSlot): string {
@@ -191,6 +192,13 @@ export function BrowseListingsPage() {
 
               return (
                 <article key={listing.id} className="seeker-card">
+                  {listing.imagePath && (
+                    <img
+                      className="seeker-listing-image"
+                      src={getAssetUrl(listing.imagePath) ?? undefined}
+                      alt={listing.title}
+                    />
+                  )}
                   <h2>{listing.title}</h2>
                   <p className="seeker-muted">
                     {listing.restaurant?.businessName ?? "Unknown"} ·{" "}
