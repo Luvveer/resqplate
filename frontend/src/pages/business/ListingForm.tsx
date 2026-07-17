@@ -29,7 +29,10 @@ interface ListingFormProps {
   initialValues?: Partial<ListingFormInitialValues>;
   submitLabel: string;
   isSubmitting: boolean;
-  onSubmit: (input: CreateListingInput | UpdateListingInput) => Promise<void>;
+  onSubmit: (
+    input: CreateListingInput | UpdateListingInput,
+    imageFile: File | null,
+  ) => Promise<void>;
 }
 
 function toLocalDatetimeValue(date: Date) {
@@ -90,6 +93,7 @@ export function ListingForm({
   );
   const [allergenError, setAllergenError] = useState<string | null>(null);
   const [areAllergenLoading, setAreAllergenLoading] = useState(true);
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   useEffect(() => {
     let current = true;
@@ -130,16 +134,19 @@ export function ListingForm({
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    await onSubmit({
-      title: values.title,
-      description: values.description || undefined,
-      category: values.category || undefined,
-      quantityAvailable: Number(values.quantityAvailable),
-      pickupStart: new Date(values.pickupStart),
-      pickupEnd: new Date(values.pickupEnd),
-      storageNote: values.storageNote || undefined,
-      allergenIds: values.allergenIds,
-    });
+    await onSubmit(
+      {
+        title: values.title,
+        description: values.description || undefined,
+        category: values.category || undefined,
+        quantityAvailable: Number(values.quantityAvailable),
+        pickupStart: new Date(values.pickupStart),
+        pickupEnd: new Date(values.pickupEnd),
+        storageNote: values.storageNote || undefined,
+        allergenIds: values.allergenIds,
+      },
+      imageFile,
+    );
   }
 
   function AllergenToogle(allergenId: string) {
@@ -174,6 +181,20 @@ export function ListingForm({
           value={values.description}
           onChange={(event) => updateField("description", event.target.value)}
         />
+      </div>
+      <div className="business-field">
+        <label htmlFor="listing-image">Food Image</label>
+        <input
+          id="listing-image"
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          onChange={(event) => {
+            setImageFile(event.target.files?.[0] ?? null);
+          }}
+        />
+        <p className="business-field-help">
+          Optional, JPEG, PNG or Webp and Maximum 5 MB.
+        </p>
       </div>
 
       <div className="business-form-grid">
