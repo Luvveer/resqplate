@@ -87,6 +87,7 @@ export const restaurantProfilesTable = pgTable("restaurant_profiles", {
   city: varchar("city", { length: 100 }).notNull(),
   province: varchar("province", { length: 100 }).notNull(),
   postalCode: varchar("postal_code", { length: 20 }).notNull(),
+  googlePlaceId: text("google_place_id"),
   phone: varchar("phone", { length: 30 }),
   description: text("description"),
   latitude: numeric("latitude", { precision: 8, scale: 6 }),
