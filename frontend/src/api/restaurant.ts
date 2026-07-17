@@ -2,6 +2,8 @@ import { apiClient } from "./apiClient";
 import type {
   RestaurantProfileResponse,
   CreateRestaurantInput,
+  AddressAutocompleteInput,
+  AddressSuggestion,
 } from "@resqplate/shared";
 
 class CompanyAPI {
@@ -9,6 +11,14 @@ class CompanyAPI {
     return await apiClient.request<{ restaurant: RestaurantProfileResponse }>(
       "GET",
       "/restaurants/profileres",
+    );
+  }
+
+  async getAddressSuggestions(input: AddressAutocompleteInput) {
+    return apiClient.request<{ suggestions: AddressSuggestion[] }>(
+      "POST",
+      "/restaurants/address-suggestions",
+      input,
     );
   }
 
