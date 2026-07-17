@@ -3,7 +3,11 @@ import {
   browseListingsQuerySchema,
   listingParamsSchema,
 } from "@resqplate/shared";
-import { browseListings, getPublicListing } from "./listings.service.js";
+import {
+  browseListings,
+  getPublicListing,
+  getAllAllergens,
+} from "./listings.service.js";
 
 // The get API for listings
 
@@ -26,4 +30,9 @@ export async function getPublicListingHandler(req: Request, res: Response) {
       .json({ error: "Sorry!! Your requested food listing was not found" });
   }
   return res.status(200).json({ listing });
+}
+
+export async function getAllAllergensHandler(req: Request, res: Response) {
+  const allergens = await getAllAllergens();
+  return res.status(200).json({ allergens });
 }

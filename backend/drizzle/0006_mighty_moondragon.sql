@@ -1,0 +1,1 @@
+ALTER TABLE "food_listings" ADD COLUMN "image_path" text;

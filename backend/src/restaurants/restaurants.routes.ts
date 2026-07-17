@@ -8,7 +8,10 @@ import {
   createListingHandler,
   updateListingHandler,
   expireListingHandler,
+  updateListingImageHandler,
+  addressSuggestionsHandler,
 } from "./restaurants.handler.js";
+import { uploadSingleImage } from "../middleware/upload.middleware.js";
 
 const RestaurantRouter = Router();
 
@@ -17,6 +20,12 @@ RestaurantRouter.get(
   getSession,
   isBusiness,
   getRestaurantHandler,
+);
+RestaurantRouter.post(
+  "/address-suggestions",
+  getSession,
+  isBusiness,
+  addressSuggestionsHandler,
 );
 RestaurantRouter.post(
   "/signup",
@@ -47,6 +56,14 @@ RestaurantRouter.patch(
   getSession,
   isBusiness,
   updateListingHandler,
+);
+
+RestaurantRouter.put(
+  "/listings/:listingId/image",
+  getSession,
+  isBusiness,
+  uploadSingleImage,
+  updateListingImageHandler,
 );
 
 RestaurantRouter.patch(

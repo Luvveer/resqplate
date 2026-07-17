@@ -61,6 +61,8 @@ export async function reserveListingAtomically(input: {
   profileId: string;
   listingId: string;
   pickupCodeDisplay: string;
+  pickupSlotStart: Date;
+  pickupSlotEnd: Date;
 }): Promise<{ reservation: Reservation; listing: FoodListing }> {
   return db.transaction(async (tx) => {
     //Check if the listing is still available
@@ -107,6 +109,8 @@ export async function reserveListingAtomically(input: {
         listingId: input.listingId,
         pickupCodeDisplay: input.pickupCodeDisplay,
         status: "RESERVED",
+        pickupSlotStart: input.pickupSlotStart,
+        pickupSlotEnd: input.pickupSlotEnd,
       })
       .returning();
 

@@ -87,6 +87,7 @@ export const restaurantProfilesTable = pgTable("restaurant_profiles", {
   city: varchar("city", { length: 100 }).notNull(),
   province: varchar("province", { length: 100 }).notNull(),
   postalCode: varchar("postal_code", { length: 20 }).notNull(),
+  googlePlaceId: text("google_place_id"),
   phone: varchar("phone", { length: 30 }),
   description: text("description"),
   latitude: numeric("latitude", { precision: 8, scale: 6 }),
@@ -107,6 +108,7 @@ export const foodListingsTable = pgTable("food_listings", {
     .references(() => restaurantProfilesTable.id, { onDelete: "cascade" }),
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),
+  imagePath: text("image_path"),
   category: varchar("category", { length: 100 }),
   quantityAvailable: integer("quantity_available").notNull(),
   pickupStart: timestamp("pickup_start").notNull(),
@@ -128,6 +130,8 @@ export const reservationTable = pgTable("reservations", {
   listingId: uuid("listing_id")
     .notNull()
     .references(() => foodListingsTable.id, { onDelete: "cascade" }),
+  pickupSlotStart: timestamp("pickup_slot_start").notNull(),
+  pickupSlotEnd: timestamp("pickup_slot_end").notNull(),
   pickupCodeDisplay: varchar("pickup_code_display", { length: 50 }),
   status: reservationStatusEnum("status").default("RESERVED").notNull(),
   reservedAt: timestamp("reserved_at").defaultNow().notNull(),

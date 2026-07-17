@@ -1,5 +1,10 @@
-import { useState, type FormEvent } from "react";
-import type { CreateListingInput, UpdateListingInput } from "@resqplate/shared";
+import { useState, type FormEvent, useEffect } from "react";
+import type {
+  CreateListingInput,
+  UpdateListingInput,
+  AllergenResponse,
+} from "@resqplate/shared";
+import { listingsApi } from "../../api/listings";
 
 type ListingFormValues = {
   title: string;
@@ -8,10 +13,8 @@ type ListingFormValues = {
   quantityAvailable: string;
   pickupStart: string;
   pickupEnd: string;
-  addressSnapShot: string;
-  latitude: string;
-  longitude: string;
   storageNote: string;
+  allergenIds: string[];
 };
 
 type ListingFormInitialValues = Omit<
@@ -26,14 +29,46 @@ interface ListingFormProps {
   initialValues?: Partial<ListingFormInitialValues>;
   submitLabel: string;
   isSubmitting: boolean;
-  onSubmit: (input: CreateListingInput | UpdateListingInput) => Promise<void>;
+  onSubmit: (
+    input: CreateListingInput | UpdateListingInput,
+    imageFile: File | null,
+  ) => Promise<void>;
+}
+
+function toLocalDatetimeValue(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
 }
 
 function toDatetimeLocalValue(value?: string | Date | null) {
-  if (!value) return "";
+  if (!value) {
+    return "";
+  }
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "";
-  return date.toISOString().slice(0, 16);
+  if (Number.isNaN(date.getTime())) {
+    return "";
+  }
+  return toLocalDatetimeValue(date);
+}
+
+function getMaxPickupEnd(pickupStart: string) {
+  if (!pickupStart) {
+    return undefined;
+  }
+  const start = new Date(pickupStart);
+
+  if (Number.isNaN(start.getTime())) {
+    return undefined;
+  }
+
+  const maxEndtime = new Date(start.getTime() + 24 * 60 * 60 * 1000);
+
+  return toLocalDatetimeValue(maxEndtime);
 }
 
 export function ListingForm({
@@ -49,11 +84,45 @@ export function ListingForm({
     quantityAvailable: initialValues?.quantityAvailable ?? "1",
     pickupStart: toDatetimeLocalValue(initialValues?.pickupStart),
     pickupEnd: toDatetimeLocalValue(initialValues?.pickupEnd),
-    addressSnapShot: initialValues?.addressSnapShot ?? "",
-    latitude: initialValues?.latitude ?? "",
-    longitude: initialValues?.longitude ?? "",
     storageNote: initialValues?.storageNote ?? "",
+    allergenIds: initialValues?.allergenIds ?? [],
   });
+
+  const [allergenOptions, setAllergenOptions] = useState<AllergenResponse[]>(
+    [],
+  );
+  const [allergenError, setAllergenError] = useState<string | null>(null);
+  const [areAllergenLoading, setAreAllergenLoading] = useState(true);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+
+  useEffect(() => {
+    let current = true;
+
+    async function loadAllergens() {
+      try {
+        const answer = await listingsApi.getAllergens();
+
+        if (current) {
+          setAllergenOptions(answer.allergens);
+        }
+      } catch (error) {
+        if (current) {
+          setAllergenError(
+            error instanceof Error ? error.message : "Failed to load allergen",
+          );
+        }
+      } finally {
+        if (current) {
+          setAreAllergenLoading(false);
+        }
+      }
+    }
+    void loadAllergens();
+
+    return () => {
+      current = false;
+    };
+  }, []);
 
   function updateField(name: keyof ListingFormValues, value: string) {
     setValues((current) => ({
@@ -65,17 +134,31 @@ export function ListingForm({
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    await onSubmit({
-      title: values.title,
-      description: values.description || undefined,
-      category: values.category || undefined,
-      quantityAvailable: Number(values.quantityAvailable),
-      pickupStart: new Date(values.pickupStart),
-      pickupEnd: new Date(values.pickupEnd),
-      addressSnapShot: values.addressSnapShot || undefined,
-      latitude: values.latitude || undefined,
-      longitude: values.longitude || undefined,
-      storageNote: values.storageNote || undefined,
+    await onSubmit(
+      {
+        title: values.title,
+        description: values.description || undefined,
+        category: values.category || undefined,
+        quantityAvailable: Number(values.quantityAvailable),
+        pickupStart: new Date(values.pickupStart),
+        pickupEnd: new Date(values.pickupEnd),
+        storageNote: values.storageNote || undefined,
+        allergenIds: values.allergenIds,
+      },
+      imageFile,
+    );
+  }
+
+  function AllergenToogle(allergenId: string) {
+    setValues((current) => {
+      const selected = current.allergenIds.includes(allergenId);
+
+      return {
+        ...current,
+        allergenIds: selected
+          ? current.allergenIds.filter((id) => id !== allergenId)
+          : [...current.allergenIds, allergenId],
+      };
     });
   }
 
@@ -99,6 +182,20 @@ export function ListingForm({
           onChange={(event) => updateField("description", event.target.value)}
         />
       </div>
+      <div className="business-field">
+        <label htmlFor="listing-image">Food Image</label>
+        <input
+          id="listing-image"
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          onChange={(event) => {
+            setImageFile(event.target.files?.[0] ?? null);
+          }}
+        />
+        <p className="business-field-help">
+          Optional, JPEG, PNG or Webp and Maximum 5 MB.
+        </p>
+      </div>
 
       <div className="business-form-grid">
         <div className="business-field">
@@ -109,6 +206,34 @@ export function ListingForm({
             onChange={(event) => updateField("category", event.target.value)}
           />
         </div>
+
+        <fieldset className="business-field business-field-full">
+          <legend>Contains allergen</legend>
+
+          <p className="business-field-help">
+            Select allergen contained in this food
+          </p>
+          {areAllergenLoading && (
+            <p className="business-message">Loading allergen...</p>
+          )}
+
+          {allergenError && <p className="business-error">{allergenError}</p>}
+
+          {!areAllergenLoading && !allergenError && (
+            <div className="business-allergen-options">
+              {allergenOptions.map((allergen) => (
+                <label key={allergen.id} className="business-allergen-option">
+                  <input
+                    type="checkbox"
+                    checked={values.allergenIds.includes(allergen.id)}
+                    onChange={() => AllergenToogle(allergen.id)}
+                  />
+                  <span>{allergen.name}</span>
+                </label>
+              ))}
+            </div>
+          )}
+        </fieldset>
 
         <div className="business-field">
           <label htmlFor="listing-quantity">Quantity</label>
@@ -141,37 +266,10 @@ export function ListingForm({
             id="listing-pickup-end"
             type="datetime-local"
             value={values.pickupEnd}
+            min={values.pickupStart || undefined}
+            max={getMaxPickupEnd(values.pickupStart)}
             onChange={(event) => updateField("pickupEnd", event.target.value)}
             required
-          />
-        </div>
-
-        <div className="business-field">
-          <label htmlFor="listing-address">Pickup address</label>
-          <input
-            id="listing-address"
-            value={values.addressSnapShot}
-            onChange={(event) =>
-              updateField("addressSnapShot", event.target.value)
-            }
-          />
-        </div>
-
-        <div className="business-field">
-          <label htmlFor="listing-latitude">Latitude</label>
-          <input
-            id="listing-latitude"
-            value={values.latitude}
-            onChange={(event) => updateField("latitude", event.target.value)}
-          />
-        </div>
-
-        <div className="business-field">
-          <label htmlFor="listing-longitude">Longitude</label>
-          <input
-            id="listing-longitude"
-            value={values.longitude}
-            onChange={(event) => updateField("longitude", event.target.value)}
           />
         </div>
 

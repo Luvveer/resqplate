@@ -6,11 +6,11 @@ import type {
 
 class ReservationsAPI {
   // Get the details of a specific reservation for the seeker to view (login needed here)
-  async create(listingId: string) {
+  async create(listingId: string, pickupSlotStart: Date) {
     return apiClient.request<{ reservation: ReservationResponse }>(
       "POST",
       "/reservations",
-      { listingId },
+      { listingId, pickupSlotStart: pickupSlotStart.toISOString() },
     );
   }
 

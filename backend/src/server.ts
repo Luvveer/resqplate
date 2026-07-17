@@ -9,6 +9,7 @@ import morgan from "morgan";
 import ReservationRouter from "./reservations/reservations.routes.js";
 import ListingRouter from "./listings/listings.routes.js";
 import PickupRouter from "./pickups/pickups.routes.js";
+import path from "path";
 
 const app = express();
 app.use(morgan("dev"));
@@ -23,6 +24,8 @@ app.use(
   }),
 );
 app.use(express.json());
+
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok" });
