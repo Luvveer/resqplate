@@ -1,4 +1,4 @@
-import { and, eq, gt, ilike, inArray, sql } from "drizzle-orm";
+import { and, eq, gt, ilike, inArray, sql, asc } from "drizzle-orm";
 import { db } from "../db/index.js";
 import {
   foodListingsTable,
@@ -54,6 +54,16 @@ async function getAllergensByListingIds(
 // function inArrayListing(listingIds: string[]) {
 //   return inArray(listingAllergensTable.listingId, listingIds);
 // }
+
+export async function findallAllergens(): Promise<Allergen[]> {
+  return db
+    .select({
+      id: allergensTable.id,
+      name: allergensTable.name,
+    })
+    .from(allergensTable)
+    .orderBy(asc(allergensTable.name));
+}
 
 // Take a look at the avaliable listings for the seekers to browse, with the option to filter by category, search term, and allergens to exclude
 export async function findAvailableListings(

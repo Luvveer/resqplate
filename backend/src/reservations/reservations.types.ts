@@ -20,6 +20,8 @@ export interface Reservation {
   pickedUpAt: Date | null;
   cancelledAt: Date | null;
   noShowAt: Date | null;
+  pickupSlotStart: Date;
+  pickupSlotEnd: Date;
 }
 
 // Function for the new reservation request subset we give to the repo on the insert
@@ -28,6 +30,8 @@ export interface NewReservation {
   pofileId: string;
   pickupCodeDisplay: string | null | undefined;
   status?: ReservationStatus | undefined;
+  pickupSlotStart: Date;
+  pickupSlotEnd: Date;
 }
 
 // A extention to the reservation response object to include the listing details

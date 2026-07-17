@@ -1,18 +1,26 @@
 import { apiClient } from "./apiClient";
 import type {
+  AllergenResponse,
   PublicListingResponse,
   BrowseListingsQuery,
 } from "@resqplate/shared";
 
 class ListingsAPI {
   //Lets get the public listing feed
+  async getAllergens() {
+    return apiClient.request<{ allergens: AllergenResponse[] }>(
+      "GET",
+      "/listings/allergens",
+    );
+  }
+
   async browse(filters: Partial<BrowseListingsQuery> = {}) {
     const params = new URLSearchParams();
     if (filters.city) params.set("city", filters.city);
     if (filters.category) params.set("category", filters.category);
     if (filters.search) params.set("search", filters.search);
     if (filters.excludeAllergenIds && filters.excludeAllergenIds.length > 0) {
-      params.set("excludeAllergens", filters.excludeAllergenIds.join(","));
+      params.set("excludeAllergenIds", filters.excludeAllergenIds.join(","));
     } //since we expect to get a csv
 
     const queryString = params.toString();

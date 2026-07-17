@@ -1,7 +1,12 @@
 import { auth } from "./better-auth/auth.js";
 import { createProfile, findProfileByAuthId } from "./auth.repository.js";
 import type { Profile } from "./auth.types.js";
-import type { SignupInput, LoginInput } from "@resqplate/shared";
+import type {
+  SignupInput,
+  LoginInput,
+  requestPasswordResetInput,
+  confirmPasswordResetInput,
+} from "@resqplate/shared";
 
 export async function signup(
   input: SignupInput,
@@ -43,4 +48,16 @@ export async function logout(headers: Headers): Promise<Headers> {
     returnHeaders: true,
   });
   return responseHeaders;
+}
+
+export async function requestPasswordReset(input: requestPasswordResetInput) {
+  await auth.api.requestPasswordReset({
+    body: { email: input.email, redirectTo: input.redirectTo },
+  });
+}
+
+export async function confirmPasswordReset(input: confirmPasswordResetInput) {
+  await auth.api.resetPassword({
+    body: { newPassword: input.newPassword, token: input.token },
+  });
 }

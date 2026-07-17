@@ -21,11 +21,23 @@ import type {
   CreateListingInput,
   UpdateListingInput,
 } from "@resqplate/shared";
+import { deleteFile, saveImage } from "../filesystem/filesystem.js";
+import {
+  autocompleteAddress,
+  resolveAddress,
+} from "../external-services/places/places.service.js";
 
 export async function getMyRestaurant(
   profileId: string,
 ): Promise<RestaurantProfile | undefined> {
   return findRestaurantByProfileId(profileId);
+}
+
+export async function getAddressSuggestions(
+  input: string,
+  sessionToken: string,
+) {
+  return autocompleteAddress(input, sessionToken);
 }
 
 export async function createMyRestaurant(
@@ -36,14 +48,36 @@ export async function createMyRestaurant(
   if (existing) {
     throw new Error("Restaurant profile already exists for this account");
   }
-  return createRestaurant({ ...input, profileId });
+  const { placeId, sessionToken, ...restaurantInput } = input;
+
+  const resolvedAddress = await resolveAddress(placeId, sessionToken);
+
+  return createRestaurant({
+    ...restaurantInput,
+    ...resolvedAddress,
+    profileId,
+  });
 }
 
 /* Feature 2 */
 
+const MAX_PICKUP_WINDOW = 24 * 60 * 60 * 1000;
+
 function assertPickupWindow(pickupStart: Date, pickupEnd: Date) {
+  if (
+    Number.isNaN(pickupStart.getTime()) ||
+    Number.isNaN(pickupEnd.getTime())
+  ) {
+    throw new Error("Pickup start and end time must be valid date.");
+  }
   if (pickupEnd <= pickupStart) {
     throw new Error("Pickup end time must be after pickup start time");
+  }
+
+  const pickupWindowDuration = pickupEnd.getTime() - pickupStart.getTime();
+
+  if (pickupWindowDuration > MAX_PICKUP_WINDOW) {
+    throw new Error("Pickup window cannot be longer than 24 hours.");
   }
 }
 
@@ -126,13 +160,27 @@ export async function createMyListing(
   assertPickupWindow(listingInput.pickupStart, listingInput.pickupEnd);
   await validateAllergenIds(allergenIds);
 
+  if (!restaurant.latitude || !restaurant.longitude) {
+    throw new Error("Restaurant does not have valid location");
+  }
+
+  const addressSnapShot = [
+    restaurant.address,
+    restaurant.city,
+    restaurant.province,
+    restaurant.postalCode,
+  ].join(", ");
+
   const listing = await createListing({
     ...listingInput,
     restaurantId: restaurant.id,
+    addressSnapShot,
+    latitude: restaurant.latitude,
+    longitude: restaurant.longitude,
     status: "AVAILABLE",
   });
 
-  if (allergenIds) {
+  if (allergenIds !== undefined) {
     await replaceListingAllergens(listing.id, allergenIds);
   }
 
@@ -173,8 +221,51 @@ export async function updateMyListing(
     return undefined;
   }
 
-  if (allergenIds) {
+  if (allergenIds !== undefined) {
     await replaceListingAllergens(updatedlisting.id, allergenIds);
+  }
+
+  return attachAllergens(updatedlisting);
+}
+
+export async function updateMyListingImage(
+  profileId: string,
+  listingId: string,
+  file: Express.Multer.File,
+): Promise<ListingWithAllergens | undefined> {
+  const restaurant = await getApprovedRestaurantForProfile(profileId);
+
+  const existingListing = await findListingByRestaurantId(
+    listingId,
+    restaurant.id,
+  );
+
+  if (!existingListing) {
+    return undefined;
+  }
+
+  assertListingEditable(existingListing);
+
+  const newImagePath = await saveImage(file.buffer, file.mimetype, "listings");
+
+  let updatedlisting: FoodListing | undefined;
+
+  try {
+    updatedlisting = await updateListing(listingId, {
+      imagePath: newImagePath,
+    });
+  } catch (error) {
+    await deleteFile(newImagePath).catch(() => undefined);
+    throw error;
+  }
+
+  if (!updatedlisting) {
+    await deleteFile(newImagePath).catch(() => undefined);
+    return undefined;
+  }
+
+  if (existingListing.imagePath) {
+    await deleteFile(existingListing.imagePath).catch(() => undefined);
   }
 
   return attachAllergens(updatedlisting);

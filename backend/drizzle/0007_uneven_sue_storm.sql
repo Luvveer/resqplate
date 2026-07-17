@@ -1,0 +1,1 @@
+ALTER TABLE "restaurant_profiles" ADD COLUMN "google_place_id" text;
