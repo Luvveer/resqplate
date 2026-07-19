@@ -321,6 +321,8 @@ export type PublicListingResponse = FoodListingResponse & {
     city: string;
     province: string;
     // postalCode: string;
+    latitude: string | null; //for the map feature
+    longitude: string | null;
   } | null;
 };
 
