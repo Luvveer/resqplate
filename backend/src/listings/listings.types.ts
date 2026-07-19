@@ -10,6 +10,8 @@ export interface RestaurantSummary {
   address: string;
   city: string;
   province: string;
+  latitude: string | null; //for the map feature
+  longitude: string | null;
 }
 
 // A view of the listing for the seekers on the page
