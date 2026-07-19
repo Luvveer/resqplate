@@ -94,6 +94,8 @@ async function seed() {
         postalCode: "V5A 1S6",
         phone: "123-456-7890",
         description: "A demo bakery for testing purposes as data.",
+        latitude: "49.248800",
+        longitude: "-123.001600",
         verificationStatus: "APPROVED",
         verifiedAt: new Date(),
       })
