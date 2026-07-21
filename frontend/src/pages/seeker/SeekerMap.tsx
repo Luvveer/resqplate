@@ -9,10 +9,15 @@ import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 
 //Match the default icon of leaflet with the marker icon in the vite, the bundle shoudl not overwirt e the path
-L.Icon.Default.mergeOptions({
+const markerIconInstance = L.icon({
   iconRetinaUrl: markerIcon2x,
   iconUrl: markerIcon,
   shadowUrl: markerShadow,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+  tooltipAnchor: [16, -28],
 });
 
 // For a main address use Burnaby, BC
@@ -118,7 +123,11 @@ export function SeekerMap({ listings }: { listings: PublicListingResponse[] }) {
         <InvalidateOnResize trigger={isFullscreen} />
 
         {mappable.map((listing) => (
-          <Marker key={listing.id} position={[listing._lat, listing._lng]}>
+          <Marker
+            key={listing.id}
+            position={[listing._lat, listing._lng]}
+            icon={markerIconInstance}
+          >
             <Popup>
               <strong>{listing.title}</strong>
               <br />
