@@ -79,16 +79,16 @@ export function SeekerMap({ listings }: { listings: PublicListingResponse[] }) {
   return (
     <div
       className={`seeker-map-wrap${isFullscreen ? " seeker-map-wrap--full" : ""}`}
-      style={
-        isFullscreen
-          ? { position: "fixed", inset: 0, zIndex: 1000 }
-          : { position: "relative", width: "100%", height: 420 }
-      }
+      //   style={
+      //     isFullscreen
+      //       ? { position: "fixed", inset: 0, zIndex: 1000 }
+      //       : { position: "relative", width: "100%", height: 420 }
+      //   }
     >
       <button
         type="button"
         className="seeker-map-toggle"
-        style={{ position: "absolute", top: 12, right: 12, zIndex: 1001 }}
+        // style={{ position: "absolute", top: 12, right: 12, zIndex: 1001 }}
         onClick={() => setIsFullscreen((prev) => !prev)}
       >
         {isFullscreen ? "Exit full screen" : "Full screen"}
@@ -97,13 +97,13 @@ export function SeekerMap({ listings }: { listings: PublicListingResponse[] }) {
       {mappable.length === 0 && (
         <p
           className="seeker-map-empty"
-          style={{
-            position: "absolute",
-            top: 12,
-            left: 12,
-            zIndex: 1001,
-            margin: 0,
-          }}
+          //   style={{
+          //     position: "absolute",
+          //     top: 12,
+          //     left: 12,
+          //     zIndex: 1001,
+          //     margin: 0,
+          //   }}
         >
           No listings have a location yet.
         </p>
@@ -113,7 +113,7 @@ export function SeekerMap({ listings }: { listings: PublicListingResponse[] }) {
         center={center}
         zoom={13}
         scrollWheelZoom
-        style={{ height: "100%", width: "100%" }}
+        // style={{ height: "100%", width: "100%" }}
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
