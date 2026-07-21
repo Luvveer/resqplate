@@ -7,6 +7,7 @@ import { useAuth } from "../../auth/useAuth";
 import "./Seeker.css";
 import { generatePickupSlots } from "@resqplate/shared";
 import { getAssetUrl } from "../../api/assets";
+import { SeekerMap } from "./SeekerMap";
 
 //Function for seeker's local time zone to be used for the pickup window
 function formatSlot(slot: PickupSlot): string {
@@ -22,6 +23,9 @@ export function BrowseListingsPage() {
   const [listings, setListings] = useState<PublicListingResponse[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  //toggle between the map and the list view
+  const [viewMode, setViewMode] = useState<"list" | "map">("list");
 
   //The filter input
   const [city, setCity] = useState("");
@@ -126,6 +130,14 @@ export function BrowseListingsPage() {
           <p>Browse and reserve surplus food near you.</p>
         </div>
         <div className="seeker-actions">
+          <button
+            className="seeker-link-button secondary"
+            onClick={() =>
+              setViewMode((mode) => (mode === "list" ? "map" : "list"))
+            }
+          >
+            {viewMode === "list" ? "Map view" : "List view"}
+          </button>
           <Link
             className="seeker-link-button secondary"
             to="/seeker/reservations"
@@ -180,6 +192,8 @@ export function BrowseListingsPage() {
               Try clearing your filters or check back later.
             </p>
           </section>
+        ) : viewMode === "map" ? (
+          <SeekerMap listings={listings} />
         ) : (
           <div className="seeker-grid">
             {listings.map((listing) => {
