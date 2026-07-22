@@ -23,6 +23,14 @@ class ListingsAPI {
       params.set("excludeAllergenIds", filters.excludeAllergenIds.join(","));
     } //since we expect to get a csv
 
+    //Map feature
+    if (filters.lat !== undefined) params.set("lat", String(filters.lat));
+    if (filters.lng !== undefined) params.set("lng", String(filters.lng));
+    if (filters.radiusKm !== undefined) {
+      params.set("radiusKm", String(filters.radiusKm));
+    }
+    if (filters.sort !== undefined) params.set("sort", filters.sort);
+
     const queryString = params.toString();
     const path = queryString ? `/listings?${queryString}` : "/listings";
 
