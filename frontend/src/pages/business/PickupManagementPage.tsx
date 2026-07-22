@@ -15,6 +15,10 @@ export function PickupManagementPage() {
   const [listings, setListings] = useState<FoodListingResponse[]>([]);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [pickupCodeInput, setpickupCodeInput] = useState("");
+  const [searchEmail, setSearchEmail] = useState("");
+  const [searchResult, setSearchResult] = useState<ReservationResponse[]>([]);
+  const [hasSearched, setHadSearched] = useState(false);
+  const displayedReservations = hasSearched ? searchResult : reservations;
 
   async function loadReservations() {
     setError(null);
@@ -33,6 +37,17 @@ export function PickupManagementPage() {
     } finally {
       setIsLoading(false);
     }
+  }
+
+  async function handleSearch() {
+    const result = await pickupApi.findByEmail(searchEmail);
+    setSearchResult(result.reservations);
+    setHadSearched(true);
+  }
+
+  async function viewAll() {
+    setSearchEmail("");
+    setHadSearched(false);
   }
 
   useEffect(() => {
@@ -77,6 +92,9 @@ export function PickupManagementPage() {
       await pickupApi.confirm(reservationId, pickupCodeInput);
       setpickupCodeInput("");
       await loadReservations();
+      if (hasSearched) {
+        await handleSearch();
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to confirm");
     } finally {
@@ -109,6 +127,19 @@ export function PickupManagementPage() {
       </header>
       <main className="business-main">
         {error && <p className="business-error">{error}</p>}
+        <input
+          type="text"
+          placeholder="Search by email"
+          value={searchEmail}
+          onChange={(e) => setSearchEmail(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleSearch();
+            }
+          }}
+        />
+        <button onClick={handleSearch}>Search</button>
+        <button onClick={viewAll}>View All</button>
         {isLoading ? (
           <p className="business-message"> Loading reservations</p>
         ) : (
@@ -118,10 +149,11 @@ export function PickupManagementPage() {
                 <th>Pick up Item</th>
                 <th>Status</th>
                 <th>Actions</th>
+                <th>Pickup Slot</th>
               </tr>
             </thead>
             <tbody>
-              {reservations.map((reservation) => (
+              {displayedReservations.map((reservation) => (
                 <tr key={reservation.id}>
                   <td>{getListingTitle(reservation.listingId)}</td>
                   <td>{reservation.status}</td>
@@ -153,6 +185,17 @@ export function PickupManagementPage() {
                             : "No-show"}
                         </button>
                       </>
+                    )}
+                  </td>
+                  <td>
+                    {new Date(reservation.pickupSlotStart).toLocaleTimeString(
+                      [],
+                      { hour: "2-digit", minute: "2-digit" },
+                    )}
+                    {" - "}
+                    {new Date(reservation.pickupSlotEnd).toLocaleTimeString(
+                      [],
+                      { hour: "2-digit", minute: "2-digit" },
                     )}
                   </td>
                 </tr>
