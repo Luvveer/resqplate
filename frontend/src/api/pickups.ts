@@ -9,6 +9,13 @@ class PickupsAPI {
     );
   }
 
+  async findByEmail(email: string) {
+    return await apiClient.request<{ reservations: ReservationResponse[] }>(
+      "GET",
+      `/pickups/search?email=${encodeURIComponent(email)}`,
+    );
+  }
+
   async confirm(reservationId: string, pickupCode: string) {
     return await apiClient.request<{ reservation: ReservationResponse }>(
       "POST",
