@@ -18,4 +18,5 @@ export interface RestaurantSummary {
 export interface PublicListing extends FoodListing {
   allergens: Allergen[];
   restaurant: RestaurantSummary | null;
+  distanceKm?: number | null;
 }
