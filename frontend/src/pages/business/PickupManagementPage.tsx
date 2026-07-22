@@ -18,6 +18,9 @@ export function PickupManagementPage() {
   const [searchEmail, setSearchEmail] = useState("");
   const [searchResult, setSearchResult] = useState<ReservationResponse[]>([]);
   const [hasSearched, setHadSearched] = useState(false);
+  const [confirmId, setconfirmId] = useState<string | null>(null);
+  const [confirmNoShow, setconfirmNoShow] = useState<string | null>(null);
+
   const displayedReservations = hasSearched ? searchResult : reservations;
 
   async function loadReservations() {
@@ -78,6 +81,11 @@ export function PickupManagementPage() {
     try {
       await pickupApi.markNoShow(reservationId);
       await loadReservations();
+      setconfirmNoShow(null);
+      setconfirmId(null);
+      if (hasSearched) {
+        await handleSearch();
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to mark no show");
     } finally {
@@ -91,6 +99,7 @@ export function PickupManagementPage() {
     try {
       await pickupApi.confirm(reservationId, pickupCodeInput);
       setpickupCodeInput("");
+      setconfirmId(null);
       await loadReservations();
       if (hasSearched) {
         await handleSearch();
@@ -148,8 +157,8 @@ export function PickupManagementPage() {
               <tr>
                 <th>Pick up Item</th>
                 <th>Status</th>
+                <th>Pickup Start &nbsp;&nbsp;&nbsp; Pickup End</th>
                 <th>Actions</th>
-                <th>Pickup Slot</th>
               </tr>
             </thead>
             <tbody>
@@ -157,45 +166,89 @@ export function PickupManagementPage() {
                 <tr key={reservation.id}>
                   <td>{getListingTitle(reservation.listingId)}</td>
                   <td>{reservation.status}</td>
-                  <td>
-                    {reservation.status === "RESERVED" && (
-                      <>
-                        <input
-                          type="text"
-                          placeholder="Enter code"
-                          value={pickupCodeInput}
-                          onChange={(e) => setpickupCodeInput(e.target.value)}
-                        />
-                        <button
-                          className="business-button"
-                          disabled={updatingId === reservation.id}
-                          onClick={() => handleConfirm(reservation.id)}
-                        >
-                          {updatingId === reservation.id
-                            ? "Updating..."
-                            : "Picked Up"}
-                        </button>
-                        <button
-                          className="business-button"
-                          disabled={updatingId === reservation.id}
-                          onClick={() => handleNoShow(reservation.id)}
-                        >
-                          {updatingId === reservation.id
-                            ? "Updating..."
-                            : "No-show"}
-                        </button>
-                      </>
-                    )}
-                  </td>
+
                   <td>
                     {new Date(reservation.pickupSlotStart).toLocaleTimeString(
                       [],
                       { hour: "2-digit", minute: "2-digit" },
                     )}
-                    {" - "}
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     {new Date(reservation.pickupSlotEnd).toLocaleTimeString(
                       [],
                       { hour: "2-digit", minute: "2-digit" },
+                    )}
+                  </td>
+                  <td>
+                    {reservation.status === "RESERVED" && (
+                      <>
+                        {confirmId === reservation.id ? (
+                          <>
+                            <input
+                              type="text"
+                              placeholder="Enter code"
+                              value={pickupCodeInput}
+                              onChange={(e) =>
+                                setpickupCodeInput(e.target.value)
+                              }
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                  handleConfirm(reservation.id);
+                                }
+                              }}
+                            />
+                            <button
+                              className="business-button"
+                              disabled={updatingId === reservation.id}
+                              onClick={() => handleConfirm(reservation.id)}
+                            >
+                              {updatingId === reservation.id
+                                ? "Updating..."
+                                : "Confirm"}
+                            </button>
+                            <button
+                              className="business-button"
+                              onClick={() => setconfirmId(null)}
+                            >
+                              Cancel
+                            </button>
+                          </>
+                        ) : (
+                          <button
+                            className="business-button"
+                            onClick={() => setconfirmId(reservation.id)}
+                          >
+                            Pick up
+                          </button>
+                        )}
+
+                        {confirmId !== reservation.id &&
+                          (confirmNoShow === reservation.id ? (
+                            <>
+                              <button
+                                className="business-button"
+                                disabled={updatingId === reservation.id}
+                                onClick={() => handleNoShow(reservation.id)}
+                              >
+                                {updatingId === reservation.id
+                                  ? "Updating..."
+                                  : "Confirm No-show"}
+                              </button>
+                              <button
+                                className="business-button"
+                                onClick={() => setconfirmNoShow(null)}
+                              >
+                                Cancel
+                              </button>
+                            </>
+                          ) : (
+                            <button
+                              className="business-button"
+                              onClick={() => setconfirmNoShow(reservation.id)}
+                            >
+                              No-Show
+                            </button>
+                          ))}
+                      </>
                     )}
                   </td>
                 </tr>
