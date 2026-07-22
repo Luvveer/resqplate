@@ -1,6 +1,10 @@
 import { and, eq } from "drizzle-orm";
 import { db } from "../db/index.js";
-import { foodListingsTable, reservationTable } from "../db/schema.js";
+import {
+  foodListingsTable,
+  ProfileTable,
+  reservationTable,
+} from "../db/schema.js";
 import type { ReservationStatus } from "./pickups.types.js";
 
 export async function findReservationForRestaurant(
@@ -75,4 +79,28 @@ export async function markReservationNoShow(reservationId: string) {
     .returning();
 
   return reservation;
+}
+
+export async function findReservationByEmail(
+  resturantId: string,
+  email: string,
+) {
+  const rows = await db
+    .select({ reservation: reservationTable, seekerEmail: ProfileTable.email })
+    .from(reservationTable)
+    .innerJoin(
+      foodListingsTable,
+      eq(reservationTable.listingId, foodListingsTable.id),
+    )
+    .innerJoin(ProfileTable, eq(reservationTable.profileId, ProfileTable.id))
+    .where(
+      and(
+        eq(foodListingsTable.restaurantId, resturantId),
+        eq(ProfileTable.email, email),
+      ),
+    );
+  return rows.map((row) => ({
+    ...row.reservation,
+    seekerEmail: row.seekerEmail,
+  }));
 }
