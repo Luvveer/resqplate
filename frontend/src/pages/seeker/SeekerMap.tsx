@@ -23,25 +23,74 @@ const markerIconInstance = L.icon({
 // For a main address use Burnaby, BC
 const DEFAULT_CENTER: LatLngTuple = [49.2488, -123.0016];
 
-//Get the cordinates of the listings and return the bounds of the map
-type MappableListing = PublicListingResponse & { _lat: number; _lng: number };
-
-//keep only the listings that have valid coordinates and return them as a new array
-function toMappable(listings: PublicListingResponse[]): MappableListing[] {
-  const out: MappableListing[] = [];
-  for (const listing of listings) {
-    const rawLat = listing.restaurant?.latitude;
-    const rawLng = listing.restaurant?.longitude;
-    if (rawLat == null || rawLng == null) continue;
-    const lat = Number(rawLat);
-    const lng = Number(rawLng);
-    if (Number.isNaN(lat) || Number.isNaN(lng)) continue;
-    out.push({ ...listing, _lat: lat, _lng: lng });
-  }
-  return out;
+//Ensure that there is one marker per restaurant, even if there are multiple listings for that restaurant. Use the first listing for that restaurant to get the coordinates.
+interface RestaurantMarker {
+  restaurantId: string;
+  businessName: string;
+  address: string;
+  city: string;
+  lat: number;
+  lng: number;
+  listings: PublicListingResponse[];
 }
 
-//Check to see if the listing has valid coordinates and only keep them
+// edge case for empty and non-finite values
+function parseCoordinate(value: string | null | undefined): number | null {
+  if (value === null || value === undefined) return null;
+  const trimmed = value.trim();
+  if (trimmed === "") return null;
+  const parsed = Number(trimmed);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function resolvePoint(
+  listing: PublicListingResponse,
+): { lat: number; lng: number } | null {
+  type RawCoordinate = string | null | undefined;
+  const candidates: [RawCoordinate, RawCoordinate][] = [
+    [listing.latitude, listing.longitude],
+    [listing.restaurant?.latitude, listing.restaurant?.longitude],
+  ];
+
+  for (const [rawLat, rawLng] of candidates) {
+    const lat = parseCoordinate(rawLat);
+    const lng = parseCoordinate(rawLng);
+    if (lat !== null && lng !== null) {
+      return { lat, lng };
+    }
+  }
+  return null;
+}
+
+// Function to collapse the feed into one per restaurant
+function toRestaurantMarkers(
+  listings: PublicListingResponse[],
+): RestaurantMarker[] {
+  const byRestaurant = new Map<string, RestaurantMarker>();
+  for (const listing of listings) {
+    const restaurant = listing.restaurant;
+    if (!restaurant) continue;
+    const point = resolvePoint(listing);
+    if (point === null) continue;
+    const existing = byRestaurant.get(restaurant.id);
+    if (existing) {
+      existing.listings.push(listing);
+      continue;
+    }
+    byRestaurant.set(restaurant.id, {
+      restaurantId: restaurant.id,
+      businessName: restaurant.businessName,
+      address: restaurant.address,
+      city: restaurant.city,
+      lat: point.lat,
+      lng: point.lng,
+      listings: [listing],
+    });
+  }
+  return [...byRestaurant.values()];
+}
+
+// Make it sure that it fit the viewport to every marker whenever the set changes (empty-safe).
 function FitToMarkers({ points }: { points: LatLngTuple[] }) {
   const map = useMap();
   useEffect(() => {
@@ -56,7 +105,7 @@ function FitToMarkers({ points }: { points: LatLngTuple[] }) {
   return null;
 }
 
-// The map component that shows the listings on the map but has to recomute evertime the user uses fullscreen
+// Leaflet mis-sizes its canvas when the container resizes while mounted
 function InvalidateOnResize({ trigger }: { trigger: boolean }) {
   const map = useMap();
   useEffect(() => {
@@ -66,12 +115,21 @@ function InvalidateOnResize({ trigger }: { trigger: boolean }) {
   return null;
 }
 
-export function SeekerMap({ listings }: { listings: PublicListingResponse[] }) {
+export function SeekerMap({
+  listings,
+  onSelectRestaurant,
+}: {
+  listings: PublicListingResponse[];
+  // Called when the seeker asks to see a restaurant's listings. Optional so
+  // the map still renders standalone.
+  onSelectRestaurant?: (restaurantId: string) => void;
+}) {
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const mappable = useMemo(() => toMappable(listings), [listings]);
+
+  const markers = useMemo(() => toRestaurantMarkers(listings), [listings]);
   const points = useMemo<LatLngTuple[]>(
-    () => mappable.map((listing) => [listing._lat, listing._lng]),
-    [mappable],
+    () => markers.map((marker) => [marker.lat, marker.lng]),
+    [markers],
   );
 
   const center = points[0] ?? DEFAULT_CENTER;
@@ -79,42 +137,20 @@ export function SeekerMap({ listings }: { listings: PublicListingResponse[] }) {
   return (
     <div
       className={`seeker-map-wrap${isFullscreen ? " seeker-map-wrap--full" : ""}`}
-      //   style={
-      //     isFullscreen
-      //       ? { position: "fixed", inset: 0, zIndex: 1000 }
-      //       : { position: "relative", width: "100%", height: 420 }
-      //   }
     >
       <button
         type="button"
         className="seeker-map-toggle"
-        // style={{ position: "absolute", top: 12, right: 12, zIndex: 1001 }}
         onClick={() => setIsFullscreen((prev) => !prev)}
       >
         {isFullscreen ? "Exit full screen" : "Full screen"}
       </button>
 
-      {mappable.length === 0 && (
-        <p
-          className="seeker-map-empty"
-          //   style={{
-          //     position: "absolute",
-          //     top: 12,
-          //     left: 12,
-          //     zIndex: 1001,
-          //     margin: 0,
-          //   }}
-        >
-          No listings have a location yet.
-        </p>
+      {markers.length === 0 && (
+        <p className="seeker-map-empty">No listings have a location yet.</p>
       )}
 
-      <MapContainer
-        center={center}
-        zoom={13}
-        scrollWheelZoom
-        // style={{ height: "100%", width: "100%" }}
-      >
+      <MapContainer center={center} zoom={13} scrollWheelZoom>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -122,18 +158,40 @@ export function SeekerMap({ listings }: { listings: PublicListingResponse[] }) {
         <FitToMarkers points={points} />
         <InvalidateOnResize trigger={isFullscreen} />
 
-        {mappable.map((listing) => (
+        {markers.map((marker) => (
           <Marker
-            key={listing.id}
-            position={[listing._lat, listing._lng]}
+            key={marker.restaurantId}
+            position={[marker.lat, marker.lng]}
             icon={markerIconInstance}
           >
             <Popup>
-              <strong>{listing.title}</strong>
+              <strong>{marker.businessName}</strong>
               <br />
-              {listing.restaurant?.businessName}
-              <br />
-              {listing.restaurant?.address}
+              <span className="seeker-map-popup-address">
+                {marker.address}, {marker.city}
+              </span>
+
+              <ul className="seeker-map-popup-list">
+                {marker.listings.map((listing) => (
+                  <li key={listing.id}>
+                    {listing.title} — {listing.quantityAvailable} left
+                    {listing.distanceKm != null &&
+                      ` · ${listing.distanceKm} km`}
+                  </li>
+                ))}
+              </ul>
+
+              {onSelectRestaurant && (
+                <button
+                  type="button"
+                  className="seeker-map-popup-button"
+                  onClick={() => onSelectRestaurant(marker.restaurantId)}
+                >
+                  {marker.listings.length === 1
+                    ? "View this listing"
+                    : `View these ${marker.listings.length} listings`}
+                </button>
+              )}
             </Popup>
           </Marker>
         ))}
