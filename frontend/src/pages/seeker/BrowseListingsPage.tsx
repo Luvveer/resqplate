@@ -35,6 +35,11 @@ export function BrowseListingsPage() {
   const [radiusKm, setRadiusKm] = useState("");
   const [isLocating, setIsLocating] = useState(false);
 
+  //Only show the restaurant listing after the map popup
+  const [focusedRestaurantId, setFocusedRestaurantId] = useState<string | null>(
+    null,
+  );
+
   //The filter input
   const [city, setCity] = useState("");
   const [category, setCategory] = useState("");
@@ -94,6 +99,7 @@ export function BrowseListingsPage() {
           lng: position.coords.longitude,
         };
         setOrigin(next);
+        setFocusedRestaurantId(null);
         setIsLocating(false);
         loadListings(next);
       },
@@ -113,7 +119,25 @@ export function BrowseListingsPage() {
   function handleClearLocation() {
     setOrigin(null);
     setRadiusKm("");
+    setFocusedRestaurantId(null);
     loadListings(null); // not to reply on the state that we just set incase
+  }
+
+  // Recalculated after everypopup
+  const visibleListings = focusedRestaurantId
+    ? listings.filter(
+        (listing) => listing.restaurant?.id === focusedRestaurantId,
+      )
+    : listings;
+
+  const focusedRestaurantName =
+    listings.find((listing) => listing.restaurant?.id === focusedRestaurantId)
+      ?.restaurant?.businessName ?? "this restaurant";
+
+  // ask to only see one restaurant food, so make the list view
+  function handleSelectRestaurant(restaurantId: string) {
+    setFocusedRestaurantId(restaurantId);
+    setViewMode("list");
   }
 
   // Initial load on mount
@@ -260,7 +284,13 @@ export function BrowseListingsPage() {
             </button>
           )}
 
-          <button className="seeker-button" onClick={() => loadListings()}>
+          <button
+            className="seeker-button"
+            onClick={() => {
+              setFocusedRestaurantId(null);
+              loadListings();
+            }}
+          >
             Apply Filters
           </button>
         </section>
@@ -287,116 +317,151 @@ export function BrowseListingsPage() {
             </p>
           </section>
         ) : viewMode === "map" ? (
-          <SeekerMap listings={listings} />
+          // The map always receives the full feed, never the focused subset,
+          // otherwise focusing one restaurant would erase the other markers.
+          <SeekerMap
+            listings={listings}
+            onSelectRestaurant={handleSelectRestaurant}
+          />
         ) : (
-          <div className="seeker-grid">
-            {listings.map((listing) => {
-              // Same shared function the backend validates against, so the
-              // dropdown can never offer a slot the server would reject.
-              const slots = generatePickupSlots(
-                listing.pickupStart,
-                listing.pickupEnd,
-              );
+          <>
+            {focusedRestaurantId && (
+              <div className="seeker-focus-banner">
+                <p className="seeker-muted">
+                  Showing listings from {focusedRestaurantName}.
+                </p>
+                <button
+                  className="seeker-link-button secondary"
+                  onClick={() => setFocusedRestaurantId(null)}
+                >
+                  Show all restaurants
+                </button>
+              </div>
+            )}
 
-              return (
-                <article key={listing.id} className="seeker-card">
-                  {listing.imagePath && (
-                    <img
-                      className="seeker-listing-image"
-                      src={getAssetUrl(listing.imagePath) ?? undefined}
-                      alt={listing.title}
-                    />
-                  )}
-                  <h2>{listing.title}</h2>
-                  <p className="seeker-muted">
-                    {listing.restaurant?.businessName ?? "Unknown"} ·{" "}
-                    {listing.restaurant?.city ?? ""}
-                  </p>
+            {/* The outer guard only knows the feed is non-empty. Focusing a
+                restaurant can still narrow it to nothing — e.g. its last item
+                was reserved by someone else between load and click. */}
+            {visibleListings.length === 0 ? (
+              <section className="seeker-card">
+                <h2>No listings from this restaurant</h2>
+                <p className="seeker-muted">
+                  They may have just been reserved. Try showing all restaurants.
+                </p>
+              </section>
+            ) : (
+              <div className="seeker-grid">
+                {visibleListings.map((listing) => {
+                  // Same shared function the backend validates against, so the
+                  // dropdown can never offer a slot the server would reject.
+                  const slots = generatePickupSlots(
+                    listing.pickupStart,
+                    listing.pickupEnd,
+                  );
 
-                  {/* distanceKm is number | null | undefined, so `!= null`
-                      rules out both null and undefined in one check. */}
-                  {listing.distanceKm != null && (
-                    <p className="seeker-muted">{listing.distanceKm} km away</p>
-                  )}
+                  return (
+                    <article key={listing.id} className="seeker-card">
+                      {listing.imagePath && (
+                        <img
+                          className="seeker-listing-image"
+                          src={getAssetUrl(listing.imagePath) ?? undefined}
+                          alt={listing.title}
+                        />
+                      )}
+                      <h2>{listing.title}</h2>
+                      <p className="seeker-muted">
+                        {listing.restaurant?.businessName ?? "Unknown"} ·{" "}
+                        {listing.restaurant?.city ?? ""}
+                      </p>
 
-                  <p>{listing.description || "No description"}</p>
+                      {/* distanceKm is number | null | undefined, so `!= null`
+                          rules out both null and undefined in one check. */}
+                      {listing.distanceKm != null && (
+                        <p className="seeker-muted">
+                          {listing.distanceKm} km away
+                        </p>
+                      )}
 
-                  <dl className="seeker-meta">
-                    <div>
-                      <dt>Category</dt>
-                      <dd>{listing.category || "Uncategorized"}</dd>
-                    </div>
-                    <div>
-                      <dt>Available</dt>
-                      <dd>{listing.quantityAvailable}</dd>
-                    </div>
-                    <div>
-                      <dt>Pickup window</dt>
-                      <dd>
-                        {new Date(listing.pickupStart).toLocaleString()} –{" "}
-                        {new Date(listing.pickupEnd).toLocaleString()}
-                      </dd>
-                    </div>
-                  </dl>
+                      <p>{listing.description || "No description"}</p>
 
-                  <p className="seeker-allergens">
-                    {listing.allergens && listing.allergens.length > 0
-                      ? `Contains: ${listing.allergens
-                          .map((a) => a.name)
-                          .join(", ")}`
-                      : "No allergen"}
-                  </p>
+                      <dl className="seeker-meta">
+                        <div>
+                          <dt>Category</dt>
+                          <dd>{listing.category || "Uncategorized"}</dd>
+                        </div>
+                        <div>
+                          <dt>Available</dt>
+                          <dd>{listing.quantityAvailable}</dd>
+                        </div>
+                        <div>
+                          <dt>Pickup window</dt>
+                          <dd>
+                            {new Date(listing.pickupStart).toLocaleString()} –{" "}
+                            {new Date(listing.pickupEnd).toLocaleString()}
+                          </dd>
+                        </div>
+                      </dl>
 
-                  {/* Slot picker. If every slot has already passed there's
-                      nothing to reserve, so show a message instead. */}
-                  {slots.length === 0 ? (
-                    <p className="seeker-muted">
-                      No pickup times remaining for this listing.
-                    </p>
-                  ) : (
-                    <>
-                      <label className="seeker-slot-label">
-                        Choose a pickup time
-                        <select
-                          className="seeker-input"
-                          value={selectedSlots[listing.id] ?? ""}
-                          onChange={(e) =>
-                            setSelectedSlots((prev) => ({
-                              ...prev,
-                              [listing.id]: e.target.value,
-                            }))
-                          }
-                        >
-                          <option value="">Select a time...</option>
-                          {slots.map((slot) => (
-                            <option
-                              key={slot.start.toISOString()}
-                              value={slot.start.toISOString()}
+                      <p className="seeker-allergens">
+                        {listing.allergens && listing.allergens.length > 0
+                          ? `Contains: ${listing.allergens
+                              .map((a) => a.name)
+                              .join(", ")}`
+                          : "No allergen"}
+                      </p>
+
+                      {/* Slot picker. If every slot has already passed there's
+                          nothing to reserve, so show a message instead. */}
+                      {slots.length === 0 ? (
+                        <p className="seeker-muted">
+                          No pickup times remaining for this listing.
+                        </p>
+                      ) : (
+                        <>
+                          <label className="seeker-slot-label">
+                            Choose a pickup time
+                            <select
+                              className="seeker-input"
+                              value={selectedSlots[listing.id] ?? ""}
+                              onChange={(e) =>
+                                setSelectedSlots((prev) => ({
+                                  ...prev,
+                                  [listing.id]: e.target.value,
+                                }))
+                              }
                             >
-                              {formatSlot(slot)}
-                            </option>
-                          ))}
-                        </select>
-                      </label>
+                              <option value="">Select a time...</option>
+                              {slots.map((slot) => (
+                                <option
+                                  key={slot.start.toISOString()}
+                                  value={slot.start.toISOString()}
+                                >
+                                  {formatSlot(slot)}
+                                </option>
+                              ))}
+                            </select>
+                          </label>
 
-                      <button
-                        className="seeker-button"
-                        onClick={() => handleReserve(listing.id)}
-                        disabled={
-                          reservingId === listing.id ||
-                          !selectedSlots[listing.id]
-                        }
-                      >
-                        {reservingId === listing.id
-                          ? "Reserving..."
-                          : "Reserve"}
-                      </button>
-                    </>
-                  )}
-                </article>
-              );
-            })}
-          </div>
+                          <button
+                            className="seeker-button"
+                            onClick={() => handleReserve(listing.id)}
+                            disabled={
+                              reservingId === listing.id ||
+                              !selectedSlots[listing.id]
+                            }
+                          >
+                            {reservingId === listing.id
+                              ? "Reserving..."
+                              : "Reserve"}
+                          </button>
+                        </>
+                      )}
+                    </article>
+                  );
+                })}
+              </div>
+            )}
+          </>
         )}
       </main>
     </div>
