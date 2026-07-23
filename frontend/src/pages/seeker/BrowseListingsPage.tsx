@@ -9,6 +9,9 @@ import { generatePickupSlots } from "@resqplate/shared";
 import { getAssetUrl } from "../../api/assets";
 import { SeekerMap } from "./SeekerMap";
 
+// Here is the seeker's origin point
+type Origin = { lat: number; lng: number };
+
 //Function for seeker's local time zone to be used for the pickup window
 function formatSlot(slot: PickupSlot): string {
   const options: Intl.DateTimeFormatOptions = {
@@ -27,6 +30,11 @@ export function BrowseListingsPage() {
   //toggle between the map and the list view
   const [viewMode, setViewMode] = useState<"list" | "map">("list");
 
+  // The seeker's origin point
+  const [origin, setOrigin] = useState<Origin | null>(null);
+  const [radiusKm, setRadiusKm] = useState("");
+  const [isLocating, setIsLocating] = useState(false);
+
   //The filter input
   const [city, setCity] = useState("");
   const [category, setCategory] = useState("");
@@ -40,7 +48,7 @@ export function BrowseListingsPage() {
   ); // mapping of listingId to selected pickup slot start time
 
   //load listing
-  async function loadListings() {
+  async function loadListings(nextOrigin: Origin | null = origin) {
     setError(null);
     setIsLoading(true);
     try {
@@ -49,6 +57,15 @@ export function BrowseListingsPage() {
         ...(city.trim() ? { city: city.trim() } : {}),
         ...(category.trim() ? { category: category.trim() } : {}),
         ...(search.trim() ? { search: search.trim() } : {}),
+        //For the map
+        ...(nextOrigin
+          ? {
+              lat: nextOrigin.lat,
+              lng: nextOrigin.lng,
+              sort: "distance" as const,
+            }
+          : {}),
+        ...(nextOrigin && radiusKm ? { radiusKm: Number(radiusKm) } : {}),
       });
       setListings(result.listings);
     } catch (err) {
@@ -58,6 +75,45 @@ export function BrowseListingsPage() {
     } finally {
       setIsLoading(false);
     }
+  }
+
+  // Use the location from the browser and then resort the listing
+  function handleUseMyLocation() {
+    if (!("geolocation" in navigator)) {
+      setError(
+        "Sorry !! The needed geolocation support is not supported by your browser.",
+      );
+      return;
+    }
+    setIsLocating(true);
+    setError(null);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const next: Origin = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        };
+        setOrigin(next);
+        setIsLocating(false);
+        loadListings(next);
+      },
+      (geoError) => {
+        setIsLocating(false);
+        setError(
+          geoError.code === geoError.PERMISSION_DENIED
+            ? "Sorry !! You denied the location access. Please allow it to use this feature."
+            : "Sorry !! Failed to get your location. Please try again.",
+        );
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 },
+    );
+  }
+
+  //The dropback to the default listings
+  function handleClearLocation() {
+    setOrigin(null);
+    setRadiusKm("");
+    loadListings(null); // not to reply on the state that we just set incase
   }
 
   // Initial load on mount
@@ -171,14 +227,52 @@ export function BrowseListingsPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
+
+          {/* Radius is meaningless without an origin, so it stays disabled
+              until the seeker shares a location. */}
+          <select
+            className="seeker-input"
+            value={radiusKm}
+            onChange={(e) => setRadiusKm(e.target.value)}
+            disabled={!origin}
+          >
+            <option value="">Any distance</option>
+            <option value="2">Within 2 km</option>
+            <option value="5">Within 5 km</option>
+            <option value="10">Within 10 km</option>
+            <option value="25">Within 25 km</option>
+          </select>
+
+          <button
+            className="seeker-button"
+            onClick={() => handleUseMyLocation()}
+            disabled={isLocating}
+          >
+            {isLocating ? "Locating..." : "Near me"}
+          </button>
+
+          {origin && (
+            <button
+              className="seeker-link-button secondary"
+              onClick={() => handleClearLocation()}
+            >
+              Clear location
+            </button>
+          )}
+
           <button className="seeker-button" onClick={() => loadListings()}>
             Apply Filters
           </button>
         </section>
+
         <p className="seeker-muted">
           Allergen information is provided by restaurant. Cross-contamination
           may be possible
         </p>
+
+        {origin && (
+          <p className="seeker-muted">Sorted by distance from your location.</p>
+        )}
 
         {notice && <p className="seeker-notice">{notice}</p>}
         {error && <p className="seeker-error">{error}</p>}
@@ -218,6 +312,13 @@ export function BrowseListingsPage() {
                     {listing.restaurant?.businessName ?? "Unknown"} ·{" "}
                     {listing.restaurant?.city ?? ""}
                   </p>
+
+                  {/* distanceKm is number | null | undefined, so `!= null`
+                      rules out both null and undefined in one check. */}
+                  {listing.distanceKm != null && (
+                    <p className="seeker-muted">{listing.distanceKm} km away</p>
+                  )}
+
                   <p>{listing.description || "No description"}</p>
 
                   <dl className="seeker-meta">
