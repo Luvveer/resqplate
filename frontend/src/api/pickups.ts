@@ -1,19 +1,20 @@
 import { apiClient } from "./apiClient";
-import type { ReservationResponse } from "@resqplate/shared";
+import type {
+  ReservationEmailResponse,
+  ReservationResponse,
+} from "@resqplate/shared";
 
 class PickupsAPI {
   async getPickup() {
-    return await apiClient.request<{ reservations: ReservationResponse[] }>(
-      "GET",
-      "/pickups",
-    );
+    return await apiClient.request<{
+      reservations: ReservationEmailResponse[];
+    }>("GET", "/pickups");
   }
 
   async findByEmail(email: string) {
-    return await apiClient.request<{ reservations: ReservationResponse[] }>(
-      "GET",
-      `/pickups/search?email=${encodeURIComponent(email)}`,
-    );
+    return await apiClient.request<{
+      reservations: ReservationEmailResponse[];
+    }>("GET", `/pickups/search?email=${encodeURIComponent(email)}`);
   }
 
   async confirm(reservationId: string, pickupCode: string) {

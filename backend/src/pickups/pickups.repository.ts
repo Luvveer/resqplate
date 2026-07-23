@@ -40,15 +40,19 @@ export async function findReservationsByRestaurant(
     conditions.push(eq(reservationTable.status, status));
   }
   const rows = await db
-    .select({ reservation: reservationTable })
+    .select({ reservation: reservationTable, seekerEmail: ProfileTable.email })
     .from(reservationTable)
     .innerJoin(
       foodListingsTable,
       eq(reservationTable.listingId, foodListingsTable.id),
     )
+    .innerJoin(ProfileTable, eq(ProfileTable.id, reservationTable.profileId))
     .where(and(...conditions));
 
-  return rows.map((row) => row.reservation);
+  return rows.map((row) => ({
+    ...row.reservation,
+    seekerEmail: row.seekerEmail,
+  }));
 }
 
 export async function confirmReservationPickup(reservationId: string) {

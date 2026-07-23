@@ -2,21 +2,25 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import type {
   FoodListingResponse,
-  ReservationResponse,
+  ReservationEmailResponse,
 } from "@resqplate/shared";
 import { pickupApi } from "../../api/pickups";
 import "./Business.css";
 import { restaurantListingApi } from "../../api/restaurantListing";
 
 export function PickupManagementPage() {
-  const [reservations, setReservations] = useState<ReservationResponse[]>([]);
+  const [reservations, setReservations] = useState<ReservationEmailResponse[]>(
+    [],
+  );
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [listings, setListings] = useState<FoodListingResponse[]>([]);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [pickupCodeInput, setpickupCodeInput] = useState("");
   const [searchEmail, setSearchEmail] = useState("");
-  const [searchResult, setSearchResult] = useState<ReservationResponse[]>([]);
+  const [searchResult, setSearchResult] = useState<ReservationEmailResponse[]>(
+    [],
+  );
   const [hasSearched, setHadSearched] = useState(false);
   const [confirmId, setconfirmId] = useState<string | null>(null);
   const [confirmNoShow, setconfirmNoShow] = useState<string | null>(null);
@@ -120,6 +124,15 @@ export function PickupManagementPage() {
 
     return matchingListing.title;
   }
+  function getEmail(reservationId: string) {
+    const reservationEmail = reservations.find(
+      (reservation) => reservation.id === reservationId,
+    );
+    if (!reservationEmail) {
+      return "Unknow Email";
+    }
+    return reservationEmail.seekerEmail;
+  }
 
   return (
     <div className="business-page">
@@ -138,6 +151,7 @@ export function PickupManagementPage() {
         {error && <p className="business-error">{error}</p>}
         <input
           type="text"
+          className="business-link-button secondary"
           placeholder="Search by email"
           value={searchEmail}
           onChange={(e) => setSearchEmail(e.target.value)}
@@ -147,8 +161,12 @@ export function PickupManagementPage() {
             }
           }}
         />
-        <button onClick={handleSearch}>Search</button>
-        <button onClick={viewAll}>View All</button>
+        <button onClick={handleSearch} className="business-link-button">
+          Search
+        </button>
+        <button onClick={viewAll} className="business-link-button secondary">
+          View All
+        </button>
         {isLoading ? (
           <p className="business-message"> Loading reservations</p>
         ) : (
@@ -157,6 +175,7 @@ export function PickupManagementPage() {
               <tr>
                 <th>Pick up Item</th>
                 <th>Status</th>
+                <th>Email</th>
                 <th>Pickup Start &nbsp;&nbsp;&nbsp; Pickup End</th>
                 <th>Actions</th>
               </tr>
@@ -166,7 +185,7 @@ export function PickupManagementPage() {
                 <tr key={reservation.id}>
                   <td>{getListingTitle(reservation.listingId)}</td>
                   <td>{reservation.status}</td>
-
+                  <td>{getEmail(reservation.id)}</td>
                   <td>
                     {new Date(reservation.pickupSlotStart).toLocaleTimeString(
                       [],
@@ -185,6 +204,7 @@ export function PickupManagementPage() {
                           <>
                             <input
                               type="text"
+                              className="business-link-button secondary"
                               placeholder="Enter code"
                               value={pickupCodeInput}
                               onChange={(e) =>
@@ -206,7 +226,7 @@ export function PickupManagementPage() {
                                 : "Confirm"}
                             </button>
                             <button
-                              className="business-button"
+                              className="business-link-button secondary"
                               onClick={() => setconfirmId(null)}
                             >
                               Cancel
@@ -225,7 +245,7 @@ export function PickupManagementPage() {
                           (confirmNoShow === reservation.id ? (
                             <>
                               <button
-                                className="business-button"
+                                className="business-link-button secondary"
                                 disabled={updatingId === reservation.id}
                                 onClick={() => handleNoShow(reservation.id)}
                               >
