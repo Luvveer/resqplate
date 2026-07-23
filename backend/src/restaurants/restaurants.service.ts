@@ -26,6 +26,7 @@ import {
   autocompleteAddress,
   resolveAddress,
 } from "../external-services/places/places.service.js";
+import { expireReservationForFoodListing } from "../reservations/reservations.repository.js";
 
 export async function getMyRestaurant(
   profileId: string,
@@ -294,6 +295,8 @@ export async function expireMyListing(
   if (!updatedlisting) {
     return undefined;
   }
+
+  await expireReservationForFoodListing(listingId);
 
   return attachAllergens(updatedlisting);
 }

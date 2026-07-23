@@ -134,6 +134,15 @@ export function PickupManagementPage() {
     return reservationEmail.seekerEmail;
   }
 
+  const sortedReservations = [...displayedReservations].sort((a, b) => {
+    if (a.status === "RESERVED" && b.status !== "RESERVED") {
+      return -1;
+    }
+    if (a.status !== "RESERVED" && b.status === "RESERVED") {
+      return 1;
+    }
+    return 0;
+  });
   return (
     <div className="business-page">
       <header className="business-topbar">
@@ -181,7 +190,7 @@ export function PickupManagementPage() {
               </tr>
             </thead>
             <tbody>
-              {displayedReservations.map((reservation) => (
+              {sortedReservations.map((reservation) => (
                 <tr key={reservation.id}>
                   <td>{getListingTitle(reservation.listingId)}</td>
                   <td>{reservation.status}</td>
