@@ -351,3 +351,11 @@ export const confirmPasswordResetSchema = z.object({
 export type confirmPasswordResetInput = z.infer<
   typeof confirmPasswordResetSchema
 >;
+
+export const searchReservationEmailSchema = z.object({
+  email: z.email(),
+});
+
+export type ReservationEmailResponse = ReservationResponse & {
+  seekerEmail: string;
+};

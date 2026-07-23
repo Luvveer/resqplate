@@ -171,3 +171,17 @@ export async function cancelReservationAtomically(
     return reservation;
   });
 }
+
+export async function expireReservationForFoodListing(
+  listingId: string,
+): Promise<void> {
+  await db
+    .update(reservationTable)
+    .set({ status: "EXPIRED" })
+    .where(
+      and(
+        eq(reservationTable.listingId, listingId),
+        eq(reservationTable.status, "RESERVED"),
+      ),
+    );
+}

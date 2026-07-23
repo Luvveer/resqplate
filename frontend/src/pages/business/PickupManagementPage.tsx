@@ -2,19 +2,30 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import type {
   FoodListingResponse,
-  ReservationResponse,
+  ReservationEmailResponse,
 } from "@resqplate/shared";
 import { pickupApi } from "../../api/pickups";
 import "./Business.css";
 import { restaurantListingApi } from "../../api/restaurantListing";
 
 export function PickupManagementPage() {
-  const [reservations, setReservations] = useState<ReservationResponse[]>([]);
+  const [reservations, setReservations] = useState<ReservationEmailResponse[]>(
+    [],
+  );
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [listings, setListings] = useState<FoodListingResponse[]>([]);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const [pickupCodeInput, setpickupCodeInput] = useState("");
+  const [searchEmail, setSearchEmail] = useState("");
+  const [searchResult, setSearchResult] = useState<ReservationEmailResponse[]>(
+    [],
+  );
+  const [hasSearched, setHadSearched] = useState(false);
+  const [confirmId, setconfirmId] = useState<string | null>(null);
+  const [confirmNoShow, setconfirmNoShow] = useState<string | null>(null);
+
+  const displayedReservations = hasSearched ? searchResult : reservations;
 
   async function loadReservations() {
     setError(null);
@@ -33,6 +44,17 @@ export function PickupManagementPage() {
     } finally {
       setIsLoading(false);
     }
+  }
+
+  async function handleSearch() {
+    const result = await pickupApi.findByEmail(searchEmail);
+    setSearchResult(result.reservations);
+    setHadSearched(true);
+  }
+
+  async function viewAll() {
+    setSearchEmail("");
+    setHadSearched(false);
   }
 
   useEffect(() => {
@@ -63,6 +85,11 @@ export function PickupManagementPage() {
     try {
       await pickupApi.markNoShow(reservationId);
       await loadReservations();
+      setconfirmNoShow(null);
+      setconfirmId(null);
+      if (hasSearched) {
+        await handleSearch();
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to mark no show");
     } finally {
@@ -76,7 +103,11 @@ export function PickupManagementPage() {
     try {
       await pickupApi.confirm(reservationId, pickupCodeInput);
       setpickupCodeInput("");
+      setconfirmId(null);
       await loadReservations();
+      if (hasSearched) {
+        await handleSearch();
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to confirm");
     } finally {
@@ -93,7 +124,25 @@ export function PickupManagementPage() {
 
     return matchingListing.title;
   }
+  function getEmail(reservationId: string) {
+    const reservationEmail = reservations.find(
+      (reservation) => reservation.id === reservationId,
+    );
+    if (!reservationEmail) {
+      return "Unknow Email";
+    }
+    return reservationEmail.seekerEmail;
+  }
 
+  const sortedReservations = [...displayedReservations].sort((a, b) => {
+    if (a.status === "RESERVED" && b.status !== "RESERVED") {
+      return -1;
+    }
+    if (a.status !== "RESERVED" && b.status === "RESERVED") {
+      return 1;
+    }
+    return 0;
+  });
   return (
     <div className="business-page">
       <header className="business-topbar">
@@ -109,59 +158,125 @@ export function PickupManagementPage() {
       </header>
       <main className="business-main">
         {error && <p className="business-error">{error}</p>}
+        <input
+          type="text"
+          className="business-link-button secondary"
+          placeholder="Search by email"
+          value={searchEmail}
+          onChange={(e) => setSearchEmail(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleSearch();
+            }
+          }}
+        />
+        <button onClick={handleSearch} className="business-link-button">
+          Search
+        </button>
+        <button onClick={viewAll} className="business-link-button secondary">
+          View All
+        </button>
         {isLoading ? (
           <p className="business-message"> Loading reservations</p>
         ) : (
           <table className="business-table">
             <thead>
               <tr>
-                <th>Reserved At</th>
                 <th>Pick up Item</th>
-                <th>Pickup Code</th>
                 <th>Status</th>
+                <th>Email</th>
+                <th>Pickup Start &nbsp;&nbsp;&nbsp; Pickup End</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {reservations.map((reservation) => (
+              {sortedReservations.map((reservation) => (
                 <tr key={reservation.id}>
-                  <td>{new Date(reservation.reservedAt).toLocaleString()}</td>
                   <td>{getListingTitle(reservation.listingId)}</td>
-
-                  {/* pick up code here is testing purposes only, in actual workflow the customer will provide the code and entering it
-                    should mark the listing as Picked up */}
-                  <td>{reservation.pickupCodeDisplay}</td>
                   <td>{reservation.status}</td>
-                  {/**entering pickup code now fill each input box on the table, can be fixed in the next iteration.
-                   * Does not affect the functionality though, still only the targeted box updates status.
-                   */}
+                  <td>{getEmail(reservation.id)}</td>
+                  <td>
+                    {new Date(reservation.pickupSlotStart).toLocaleTimeString(
+                      [],
+                      { hour: "2-digit", minute: "2-digit" },
+                    )}
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    {new Date(reservation.pickupSlotEnd).toLocaleTimeString(
+                      [],
+                      { hour: "2-digit", minute: "2-digit" },
+                    )}
+                  </td>
                   <td>
                     {reservation.status === "RESERVED" && (
                       <>
-                        <input
-                          type="text"
-                          placeholder="Enter code"
-                          value={pickupCodeInput}
-                          onChange={(e) => setpickupCodeInput(e.target.value)}
-                        />
-                        <button
-                          className="business-button"
-                          disabled={updatingId === reservation.id}
-                          onClick={() => handleConfirm(reservation.id)}
-                        >
-                          {updatingId === reservation.id
-                            ? "Updating..."
-                            : "Picked Up"}
-                        </button>
-                        <button
-                          className="business-button"
-                          disabled={updatingId === reservation.id}
-                          onClick={() => handleNoShow(reservation.id)}
-                        >
-                          {updatingId === reservation.id
-                            ? "Updating..."
-                            : "No-show"}
-                        </button>
+                        {confirmId === reservation.id ? (
+                          <>
+                            <input
+                              type="text"
+                              className="business-link-button secondary"
+                              placeholder="Enter code"
+                              value={pickupCodeInput}
+                              onChange={(e) =>
+                                setpickupCodeInput(e.target.value)
+                              }
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                  handleConfirm(reservation.id);
+                                }
+                              }}
+                            />
+                            <button
+                              className="business-button"
+                              disabled={updatingId === reservation.id}
+                              onClick={() => handleConfirm(reservation.id)}
+                            >
+                              {updatingId === reservation.id
+                                ? "Updating..."
+                                : "Confirm"}
+                            </button>
+                            <button
+                              className="business-link-button secondary"
+                              onClick={() => setconfirmId(null)}
+                            >
+                              Cancel
+                            </button>
+                          </>
+                        ) : (
+                          <button
+                            className="business-button"
+                            onClick={() => setconfirmId(reservation.id)}
+                          >
+                            Pick up
+                          </button>
+                        )}
+
+                        {confirmId !== reservation.id &&
+                          (confirmNoShow === reservation.id ? (
+                            <>
+                              <button
+                                className="business-link-button secondary"
+                                disabled={updatingId === reservation.id}
+                                onClick={() => handleNoShow(reservation.id)}
+                              >
+                                {updatingId === reservation.id
+                                  ? "Updating..."
+                                  : "Confirm No-show"}
+                              </button>
+                              <button
+                                className="business-button"
+                                onClick={() => setconfirmNoShow(null)}
+                              >
+                                Cancel
+                              </button>
+                            </>
+                          ) : (
+                            <button
+                              className="business-button"
+                              onClick={() => setconfirmNoShow(reservation.id)}
+                            >
+                              No-Show
+                            </button>
+                          ))}
                       </>
                     )}
                   </td>

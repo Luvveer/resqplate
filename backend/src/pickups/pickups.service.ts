@@ -1,6 +1,7 @@
 import { findRestaurantByProfileId } from "../restaurants/restaurants.repository.js";
 import {
   confirmReservationPickup,
+  findReservationByEmail,
   findReservationForRestaurant,
   findReservationsByRestaurant,
   markReservationNoShow,
@@ -74,4 +75,13 @@ export async function markNoShow(profileId: string, reservationId: string) {
     throw new Error("Reservation just updated, please retry");
   }
   return noShow;
+}
+
+export async function searchReservationbyEmail(
+  profileId: string,
+  email: string,
+) {
+  const restaurant = await getRestaurantForProfile(profileId);
+  const reservation = await findReservationByEmail(restaurant.id, email);
+  return reservation;
 }

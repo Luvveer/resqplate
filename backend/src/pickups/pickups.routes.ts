@@ -4,11 +4,14 @@ import {
   getReservationHandler,
   confirmPickupHandler,
   markNoShowHandler,
+  searchReservationHandler,
 } from "./pickups.handler.js";
 
 const PickupRouter = Router();
 
 PickupRouter.get("/", getSession, isBusiness, getReservationHandler);
+
+PickupRouter.get("/search", getSession, isBusiness, searchReservationHandler);
 
 PickupRouter.post(
   "/:reservationId/confirm",
