@@ -39,7 +39,7 @@ npm run db:studio         # use the link to view the database & can run SQL comm
 # in one terminal run from the root.
 npm run dev -w frontend
 
-# in another terminal run from the root.
+# in another terminal run from the root first.
 npm run dev -w backend
 
 # Backend health check: http://localhost:3000/api/health
