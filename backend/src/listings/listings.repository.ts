@@ -17,6 +17,8 @@ const restaurantSummarySelection = {
   address: restaurantProfilesTable.address,
   city: restaurantProfilesTable.city,
   province: restaurantProfilesTable.province,
+  latitude: restaurantProfilesTable.latitude,
+  longitude: restaurantProfilesTable.longitude,
 };
 
 // The allergens that the seeks should be able to see on the listing page

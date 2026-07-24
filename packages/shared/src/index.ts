@@ -184,25 +184,47 @@ export type ListingParamsInput = z.infer<typeof listingParamsSchema>;
 
 // Feature 3 -Food listing (the browser and search for food items) + reservations)
 
+// For the maps lets add a cordiate helper
+const coordinateQueryParam = z
+  .string()
+  .trim()
+  .min(1)
+  .transform((value) => Number(value))
+  .pipe(z.number().finite());
+
 //Function to match on the restaurant's city, listing category, and free text search
-export const browseListingsQuerySchema = z.object({
-  city: z.string().trim().min(1).optional(),
-  category: z.string().trim().min(1).optional(),
-  search: z.string().trim().min(1).optional(),
-  // Constraint for the allergens to be excluded from the search results.
-  excludeAllergenIds: z
-    .string()
-    .optional()
-    .transform((value) =>
-      value
-        ? value
-            .split(",")
-            .map((part) => part.trim())
-            .filter(Boolean)
-        : [],
-    )
-    .pipe(z.array(z.uuid())),
-});
+export const browseListingsQuerySchema = z
+  .object({
+    city: z.string().trim().min(1).optional(),
+    category: z.string().trim().min(1).optional(),
+    search: z.string().trim().min(1).optional(),
+    // Constraint for the allergens to be excluded from the search results.
+    excludeAllergenIds: z
+      .string()
+      .optional()
+      .transform((value) =>
+        value
+          ? value
+              .split(",")
+              .map((part) => part.trim())
+              .filter(Boolean)
+          : [],
+      )
+      .pipe(z.array(z.uuid())),
+    //the seeker's origin point for the distance mapping and radius for the appropirate listing
+    lat: coordinateQueryParam.pipe(z.number().min(-90).max(90)).optional(),
+    lng: coordinateQueryParam.pipe(z.number().min(-180).max(180)).optional(),
+    // option for the seeker to choose the within n kn filter
+    radiusKm: coordinateQueryParam
+      .pipe(z.number().positive().max(500))
+      .optional(),
+    sort: z.enum(["distance", "pickupEnd"]).optional(),
+  })
+  .refine((query) => (query.lat === undefined) === (query.lng === undefined), {
+    message: "Sorry !! Both lat and lng must be provided together.",
+    path: ["lat"],
+    // path: ["lng"], // This is the other path
+  });
 
 export type BrowseListingsQuery = z.infer<typeof browseListingsQuerySchema>; //single unit for listing
 
@@ -321,7 +343,10 @@ export type PublicListingResponse = FoodListingResponse & {
     city: string;
     province: string;
     // postalCode: string;
+    latitude: string | null; //for the map feature
+    longitude: string | null;
   } | null;
+  distanceKm?: number | null; //for the map feature
 };
 
 export const reservationStatusQuerySchema = z.object({

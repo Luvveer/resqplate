@@ -118,6 +118,15 @@ export function MyReservationsPage() {
                 )}
 
                 <dl className="seeker-meta">
+                  {/* Snapshotted onto the listing when the business created
+                      it, so it's the address as it stood at reservation time
+                      even if the restaurant later moves or edits its profile. */}
+                  {reservation.listing?.addressSnapShot && (
+                    <div>
+                      <dt>Pickup address</dt>
+                      <dd>{reservation.listing.addressSnapShot}</dd>
+                    </div>
+                  )}
                   {/* The slot the seeker committed to. NOT NULL in the DB, so
                       no null guard needed — it's always present. */}
                   <div>

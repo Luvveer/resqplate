@@ -218,3 +218,123 @@
   object-fit: cover;
   background: #edf1ed;
 }
+
+/* This is the map css */
+
+.seeker-map-wrap {
+  position: relative;
+  width: 100%;
+  height: 460px;
+  border: 1px solid #dfe7dc;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #edf1ed;
+}
+
+/* Fullscreen: pin to the viewport above everything. inset:0 defines the box,
+   so height reverts to auto; the border/radius are dropped at full bleed. */
+.seeker-map-wrap--full {
+  position: fixed;
+  inset: 0;
+  height: auto;
+  z-index: 1000;
+  border: none;
+  border-radius: 0;
+}
+
+/* Leaflet's root element must fill the wrapper. */
+.seeker-map-wrap .leaflet-container {
+  height: 100%;
+  width: 100%;
+}
+
+/* Floating toggle. */
+.seeker-map-toggle {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 1001;
+  border: 1px solid #cfd8cf;
+  border-radius: 8px;
+  padding: 8px 12px;
+  background: white;
+  color: #315c45;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+/* Centered so it clears Leaflet's top-left zoom control. */
+.seeker-map-empty {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1001;
+  margin: 0;
+  background: white;
+  color: #667085;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #dfe7dc;
+  font-size: 13px;
+}
+
+/* ---- Map popups ---- */
+
+.leaflet-popup-content .seeker-map-popup-address {
+  color: #667085;
+  font-size: 12px;
+}
+
+.leaflet-popup-content .seeker-map-popup-list {
+  margin: 8px 0;
+  padding-left: 18px;
+  font-size: 13px;
+  /* A busy restaurant could list a dozen items; scroll rather than run the
+     popup off the top of the map. */
+  max-height: 140px;
+  overflow-y: auto;
+}
+
+.leaflet-popup-content .seeker-map-popup-list li {
+  margin-bottom: 2px;
+}
+
+/* Matches the primary seeker button, scaled down for the popup. */
+.leaflet-popup-content .seeker-map-popup-button {
+  width: 100%;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  background: #315c45;
+  color: white;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.leaflet-popup-content .seeker-map-popup-button:hover {
+  background: #264737;
+}
+
+/* ---- Focused-restaurant banner ---- */
+
+.seeker-focus-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  padding: 10px 14px;
+  border: 1px solid #dfe7dc;
+  border-left: 4px solid #315c45;
+  border-radius: 10px;
+  background: #f4f7f4;
+}
+
+/* The banner sets its own spacing; kill the paragraph's default margin. */
+.seeker-focus-banner p {
+  margin: 0;
+}
