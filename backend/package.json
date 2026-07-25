@@ -12,11 +12,12 @@
     "db:migrate": "drizzle-kit migrate",
     "db:generate": "drizzle-kit generate",
     "db:studio": "drizzle-kit studio",
-    "test": "vitest run",
+    "test": "node --import tsx --experimental-test-module-mocks --test --test-concurrency=1 \"src/**/*.test.ts\"",
     "db:seed": "tsx src/db/seed.ts",
     "db:seed:production": "node dist/db/seed.js",
     "search:configure": "tsx src/scripts/config-algolia.ts",
-    "search:reindex": "tsx src/scripts/reindex-algolia.ts"
+    "search:reindex": "tsx src/scripts/reindex-algolia.ts",
+    "test:coverage": "node --import tsx --experimental-test-module-mocks --test --experimental-test-coverage --test-concurrency=1 \"src/**/*.test.ts\""
   },
   "type": "module",
   "dependencies": {
@@ -42,6 +43,9 @@
     "@types/multer": "^2.2.0",
     "@types/node": "^24.13.2",
     "@types/pg": "^8.20.0",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
+    "c8": "^12.0.0",
     "drizzle-kit": "^0.31.10",
     "eslint": "^10.5.0",
     "globals": "^17.6.0",
