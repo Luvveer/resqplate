@@ -8,6 +8,7 @@ import "./Seeker.css";
 import { generatePickupSlots } from "@resqplate/shared";
 import { getAssetUrl } from "../../api/assets";
 import { SeekerMap } from "./SeekerMap";
+import { searchListingIds } from "../../external-services/algolia/algolia.search";
 
 // Here is the seeker's origin point
 type Origin = { lat: number; lng: number };
@@ -44,6 +45,10 @@ export function BrowseListingsPage() {
   const [city, setCity] = useState("");
   const [category, setCategory] = useState("");
   const [search, setSearch] = useState("");
+  const [matchingListingIds, setMatchingListingIds] = useState<string[] | null>(
+    null,
+  );
+  const [isSearching, setIsSearching] = useState(false);
 
   // per-listing reserve state
   const [reservingId, setReservingId] = useState<string | null>(null);
@@ -61,7 +66,6 @@ export function BrowseListingsPage() {
         // only send the non-empty filters to the API
         ...(city.trim() ? { city: city.trim() } : {}),
         ...(category.trim() ? { category: category.trim() } : {}),
-        ...(search.trim() ? { search: search.trim() } : {}),
         //For the map
         ...(nextOrigin
           ? {
@@ -123,16 +127,32 @@ export function BrowseListingsPage() {
     loadListings(null); // not to reply on the state that we just set incase
   }
 
+  const searchedListings =
+    matchingListingIds === null
+      ? listings
+      : (() => {
+          const listingsById = new Map(
+            listings.map((listing) => [listing.id, listing]),
+          );
+          return matchingListingIds
+            .map((listingId) => listingsById.get(listingId))
+            .filter(
+              (listing): listing is PublicListingResponse =>
+                listing !== undefined,
+            );
+        })();
+
   // Recalculated after everypopup
   const visibleListings = focusedRestaurantId
-    ? listings.filter(
+    ? searchedListings.filter(
         (listing) => listing.restaurant?.id === focusedRestaurantId,
       )
-    : listings;
+    : searchedListings;
 
   const focusedRestaurantName =
-    listings.find((listing) => listing.restaurant?.id === focusedRestaurantId)
-      ?.restaurant?.businessName ?? "this restaurant";
+    searchedListings.find(
+      (listing) => listing.restaurant?.id === focusedRestaurantId,
+    )?.restaurant?.businessName ?? "this restaurant";
 
   // ask to only see one restaurant food, so make the list view
   function handleSelectRestaurant(restaurantId: string) {
@@ -202,6 +222,34 @@ export function BrowseListingsPage() {
     }
   }
 
+  async function handleAlgoliaSearch(): Promise<void> {
+    const normalizedsearch = search.trim();
+
+    setFocusedRestaurantId(null);
+    setError(null);
+
+    if (!normalizedsearch) {
+      setMatchingListingIds(null);
+      return;
+    }
+
+    setIsSearching(true);
+
+    try {
+      const listingIds = await searchListingIds(normalizedsearch);
+      setMatchingListingIds(listingIds);
+      setViewMode("list");
+    } catch (error) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Failed to search food listings",
+      );
+    } finally {
+      setIsSearching(false);
+    }
+  }
+
   return (
     <div className="seeker-page">
       <header className="seeker-topbar">
@@ -209,6 +257,42 @@ export function BrowseListingsPage() {
           <h1>Available Food</h1>
           <p>Browse and reserve surplus food near you.</p>
         </div>
+        <form
+          className="seeker-header-search"
+          role="search"
+          onSubmit={(event) => {
+            event.preventDefault();
+            void handleAlgoliaSearch();
+          }}
+        >
+          <label className="sr-only" htmlFor="listing-search">
+            Search food listings
+          </label>
+          <input
+            id="listing-search"
+            className="seeker-input seeker-search-input"
+            type="search"
+            placeholder="Search food or restaurants"
+            value={search}
+            onChange={(event) => {
+              const nextSearch = event.target.value;
+
+              setSearch(nextSearch);
+
+              if (!nextSearch.trim()) {
+                setMatchingListingIds(null);
+                setFocusedRestaurantId(null);
+              }
+            }}
+          />
+          <button
+            className="seeker-button"
+            type="submit"
+            disabled={isSearching}
+          >
+            {isSearching ? "Searching.." : "Search"}
+          </button>
+        </form>
         <div className="seeker-actions">
           <button
             className="seeker-link-button secondary"
@@ -244,12 +328,6 @@ export function BrowseListingsPage() {
             placeholder="Category"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-          />
-          <input
-            className="seeker-input"
-            placeholder="Search title"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
           />
 
           {/* Radius is meaningless without an origin, so it stays disabled
@@ -309,7 +387,7 @@ export function BrowseListingsPage() {
 
         {isLoading ? (
           <p className="seeker-message">Loading listings...</p>
-        ) : listings.length === 0 ? (
+        ) : searchedListings.length === 0 ? (
           <section className="seeker-card">
             <h2>No listings found</h2>
             <p className="seeker-muted">
@@ -320,7 +398,7 @@ export function BrowseListingsPage() {
           // The map always receives the full feed, never the focused subset,
           // otherwise focusing one restaurant would erase the other markers.
           <SeekerMap
-            listings={listings}
+            listings={searchedListings}
             onSelectRestaurant={handleSelectRestaurant}
           />
         ) : (
