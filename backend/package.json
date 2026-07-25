@@ -14,10 +14,13 @@
     "db:studio": "drizzle-kit studio",
     "test": "vitest run",
     "db:seed": "tsx src/db/seed.ts",
-    "db:seed:production": "node dist/db/seed.js"
+    "db:seed:production": "node dist/db/seed.js",
+    "search:configure": "tsx src/scripts/config-algolia.ts",
+    "search:reindex": "tsx src/scripts/reindex-algolia.ts"
   },
   "type": "module",
   "dependencies": {
+    "algoliasearch": "^5.56.0",
     "better-auth": "^1.6.20",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
