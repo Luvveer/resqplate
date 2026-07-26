@@ -41,15 +41,15 @@ export type ProfileResponse = {
 //Seeker's profile edit schema and response type
 export const updateSeekerProfileSchema = z
   .object({
-    name: z.string().trim().min(1).max(225).optional(),
-    dietaryRestrictions: z
+    name: z.string().trim().min(1).max(255).optional(),
+    dietaryPreferences: z
       .array(z.string().trim().min(1).max(60))
       .max(30)
       .optional(),
   })
   //reject if empty object
   .refine(
-    (body) => body.name !== undefined || body.dietaryRestrictions !== undefined,
+    (body) => body.name !== undefined || body.dietaryPreferences !== undefined,
     {
       message: "Sorry !! At least one field must be provided",
     },

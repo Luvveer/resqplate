@@ -20,3 +20,9 @@ export type NewProfile = {
   status?: profileStatus;
   dietaryPreferences?: unknown;
 };
+
+//allow partial updates to the seeker profile as well
+export type UpdateSeekerProfile = {
+  name?: string;
+  dietaryPreferences?: string[];
+};
