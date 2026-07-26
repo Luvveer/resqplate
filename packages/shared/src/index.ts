@@ -34,6 +34,7 @@ export type ProfileResponse = {
   name: string;
   role: UserRole;
   status: profileStatus;
+  dietaryPreferences?: string[];
   createdAt: Date;
   updatedAt: Date;
 };
