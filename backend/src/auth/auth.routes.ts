@@ -4,9 +4,11 @@ import {
   loginHandler,
   logoutHandler,
   profileHandler,
+  updateProfileHandler,
   passwordResetHandler,
   passwordResetConfirmHandler,
 } from "./auth.handler.js";
+import { getSession, isFoodSeeker } from "../middleware/auth.middleware.js";
 
 const AuthRouter = Router();
 
@@ -21,5 +23,8 @@ AuthRouter.post("/password-reset/request", passwordResetHandler);
 AuthRouter.post("/password-reset/confirm", passwordResetConfirmHandler);
 AuthRouter.get("/profile/me", profileHandler);
 // app.get("/me");
+
+//seeker updates their own profile
+AuthRouter.patch("/profile/me", getSession, isFoodSeeker, updateProfileHandler);
 
 export default AuthRouter;
