@@ -38,6 +38,26 @@ export type ProfileResponse = {
   updatedAt: Date;
 };
 
+//Seeker's profile edit schema and response type
+export const updateSeekerProfileSchema = z
+  .object({
+    name: z.string().trim().min(1).max(225).optional(),
+    dietaryRestrictions: z
+      .array(z.string().trim().min(1).max(60))
+      .max(30)
+      .optional(),
+  })
+  //reject if empty object
+  .refine(
+    (body) => body.name !== undefined || body.dietaryRestrictions !== undefined,
+    {
+      message: "Sorry !! At least one field must be provided",
+    },
+  );
+export type UpdateSeekerProfileInput = z.infer<
+  typeof updateSeekerProfileSchema
+>;
+
 export type RestaurantProfileResponse = {
   id: string;
   profileId: string;
