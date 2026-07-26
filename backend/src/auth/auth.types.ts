@@ -23,6 +23,6 @@ export type NewProfile = {
 
 //allow partial updates to the seeker profile as well
 export type UpdateSeekerProfile = {
-  name?: string;
-  dietaryPreferences?: string[];
+  name?: string | undefined;
+  dietaryPreferences?: string[] | undefined;
 };
