@@ -308,6 +308,9 @@ export function BrowseListingsPage() {
           >
             My Reservations
           </Link>
+          <Link className="seeker-link-button secondary" to="/seeker/profile">
+            My Profile
+          </Link>
           <button className="seeker-button" onClick={() => logout()}>
             Logout
           </button>
