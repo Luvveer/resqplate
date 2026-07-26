@@ -364,3 +364,65 @@
   white-space: nowrap;
   border: 0;
 }
+
+/* Seeker profile page */
+.seeker-profile-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 560px;
+}
+
+.seeker-chip-input {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+  margin-top: 6px;
+}
+
+.seeker-chip-input .seeker-input {
+  flex: 1;
+}
+
+.seeker-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.seeker-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px 4px 12px;
+  border: 1px solid #cfe0d4;
+  border-radius: 999px;
+  background: #eef4ef;
+  color: #315c45;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.seeker-chip-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border: none;
+  border-radius: 50%;
+  background: #cfe0d4;
+  color: #315c45;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+}
+
+.seeker-chip-remove:hover {
+  background: #315c45;
+  color: white;
+}
