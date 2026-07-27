@@ -22,6 +22,27 @@ function formatSlot(slot: PickupSlot): string {
   return `${slot.start.toLocaleTimeString([], options)} - ${slot.end.toLocaleTimeString([], options)}`;
 }
 
+// Format for the time remaining until the restaurant closes
+function formatCloses(pickupEnd: Date | string): string | null {
+  const end = new Date(pickupEnd).getTime();
+  const diff = end - Date.now();
+  if (Number.isNaN(end) || diff <= 0) return null;
+  const mins = Math.round(diff / 60000);
+  if (mins < 60) return `closes in ${mins}m`;
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
+  return m === 0 ? `Sorry !! Closes in ${h}h` : `closes in ${h}h ${m}m`;
+}
+
+//Ui element for the urgency tier drivers the corner pill + the accent
+function urgency(pickupEnd: Date | string): "fresh" | "soon" | "last" {
+  const diff = new Date(pickupEnd).getTime() - Date.now();
+  const mins = diff / 60000;
+  if (mins <= 30) return "last";
+  if (mins <= 90) return "soon";
+  return "fresh";
+}
+
 export function BrowseListingsPage() {
   const { logout } = useAuth();
   const [listings, setListings] = useState<PublicListingResponse[]>([]);
@@ -251,14 +272,18 @@ export function BrowseListingsPage() {
   }
 
   return (
-    <div className="seeker-page">
-      <header className="seeker-topbar">
-        <div className="seeker-brand">
-          <h1>Available Food</h1>
-          <p>Browse and reserve surplus food near you.</p>
+    <div className="sk-page">
+      <header className="sk-topbar">
+        <div className="sk-brand">
+          <span className="sk-brand-mark" aria-hidden="true" />
+          <span className="sk-brand-text">
+            <b>ResQPlate</b>
+            <span>Expo Line</span>
+          </span>
         </div>
+
         <form
-          className="seeker-header-search"
+          className="sk-topsearch"
           role="search"
           onSubmit={(event) => {
             event.preventDefault();
@@ -268,17 +293,18 @@ export function BrowseListingsPage() {
           <label className="sr-only" htmlFor="listing-search">
             Search food listings
           </label>
+          <span className="sk-topsearch-icon" aria-hidden="true">
+            ⌕
+          </span>
           <input
             id="listing-search"
-            className="seeker-input seeker-search-input"
+            className="sk-topsearch-input"
             type="search"
-            placeholder="Search food or restaurants"
+            placeholder="Search food or restaurants…"
             value={search}
             onChange={(event) => {
               const nextSearch = event.target.value;
-
               setSearch(nextSearch);
-
               if (!nextSearch.trim()) {
                 setMatchingListingIds(null);
                 setFocusedRestaurantId(null);
@@ -286,120 +312,144 @@ export function BrowseListingsPage() {
             }}
           />
           <button
-            className="seeker-button"
+            className="sk-topsearch-btn"
             type="submit"
             disabled={isSearching}
           >
-            {isSearching ? "Searching.." : "Search"}
+            {isSearching ? "…" : "Search"}
           </button>
         </form>
-        <div className="seeker-actions">
-          <button
-            className="seeker-link-button secondary"
-            onClick={() =>
-              setViewMode((mode) => (mode === "list" ? "map" : "list"))
-            }
-          >
-            {viewMode === "list" ? "Map view" : "List view"}
-          </button>
-          <Link
-            className="seeker-link-button secondary"
-            to="/seeker/reservations"
-          >
-            My Reservations
+
+        <nav className="sk-nav">
+          <Link className="sk-nav-link is-active" to="/seeker">
+            Browse
           </Link>
-          <Link className="seeker-link-button secondary" to="/seeker/profile">
-            My Profile
+          <Link className="sk-nav-link" to="/seeker/reservations">
+            My tickets
           </Link>
-          <button className="seeker-button" onClick={() => logout()}>
+          <Link className="sk-nav-link" to="/seeker/profile">
+            Profile
+          </Link>
+          <button className="sk-nav-logout" onClick={() => logout()}>
             Logout
           </button>
-        </div>
+        </nav>
       </header>
 
-      <main className="seeker-main">
-        {/* Filters */}
-        <section className="seeker-filters">
-          <input
-            className="seeker-input"
-            placeholder="City"
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-          />
-          <input
-            className="seeker-input"
-            placeholder="Category"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-          />
+      <main className="sk-main">
+        <div className="sk-head">
+          <div>
+            <h1 className="rq-display sk-title">Tonight's rescues</h1>
+            <p className="sk-sub">
+              Surplus food from kitchens near you. Reserve a ticket, pay what
+              you can, pick it up before the window closes.
+            </p>
+          </div>
+          {origin && (
+            <span className="rq-loc">📍 near you · sorted by distance</span>
+          )}
+        </div>
 
-          {/* Radius is meaningless without an origin, so it stays disabled
-              until the seeker shares a location. */}
-          <select
-            className="seeker-input"
-            value={radiusKm}
-            onChange={(e) => setRadiusKm(e.target.value)}
-            disabled={!origin}
-          >
-            <option value="">Any distance</option>
-            <option value="2">Within 2 km</option>
-            <option value="5">Within 5 km</option>
-            <option value="10">Within 10 km</option>
-            <option value="25">Within 25 km</option>
-          </select>
+        <section className="sk-toolbar">
+          <div className="rq-field">
+            <label htmlFor="f-city">City</label>
+            <input
+              id="f-city"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              placeholder="Any"
+            />
+          </div>
+
+          <div className="rq-field">
+            <label htmlFor="f-cat">Category</label>
+            <input
+              id="f-cat"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              placeholder="Any"
+            />
+          </div>
+
+          <div className="rq-field">
+            <label htmlFor="f-within">Within</label>
+            <select
+              id="f-within"
+              value={radiusKm}
+              onChange={(e) => setRadiusKm(e.target.value)}
+              disabled={!origin}
+            >
+              <option value="">Any distance</option>
+              <option value="2">2 km</option>
+              <option value="5">5 km</option>
+              <option value="10">10 km</option>
+              <option value="25">25 km</option>
+            </select>
+          </div>
 
           <button
-            className="seeker-button"
+            className="rq-btn rq-btn-ghost"
             onClick={() => handleUseMyLocation()}
             disabled={isLocating}
           >
-            {isLocating ? "Locating..." : "Near me"}
+            {isLocating ? "Locating…" : "Near me"}
           </button>
 
           {origin && (
             <button
-              className="seeker-link-button secondary"
+              className="rq-btn rq-btn-ghost"
               onClick={() => handleClearLocation()}
             >
-              Clear location
+              Clear
             </button>
           )}
 
           <button
-            className="seeker-button"
+            className="rq-btn rq-btn-primary"
             onClick={() => {
               setFocusedRestaurantId(null);
               loadListings();
             }}
           >
-            Apply Filters
+            Apply
           </button>
+
+          <div className="sk-seg-wrap">
+            <div className="rq-seg">
+              <button
+                className={viewMode === "list" ? "on" : ""}
+                onClick={() => setViewMode("list")}
+              >
+                List
+              </button>
+              <button
+                className={viewMode === "map" ? "on" : ""}
+                onClick={() => setViewMode("map")}
+              >
+                Map
+              </button>
+            </div>
+          </div>
         </section>
 
-        <p className="seeker-muted">
-          Allergen information is provided by restaurant. Cross-contamination
-          may be possible
+        <p className="sk-allergen-note">
+          ⚠ Allergen info is provided by each kitchen — cross-contamination is
+          possible.
         </p>
 
-        {origin && (
-          <p className="seeker-muted">Sorted by distance from your location.</p>
-        )}
-
-        {notice && <p className="seeker-notice">{notice}</p>}
-        {error && <p className="seeker-error">{error}</p>}
+        {notice && <p className="rq-notice">{notice}</p>}
+        {error && <p className="rq-error">{error}</p>}
 
         {isLoading ? (
-          <p className="seeker-message">Loading listings...</p>
+          <p className="sk-message">Loading listings…</p>
         ) : searchedListings.length === 0 ? (
-          <section className="seeker-card">
-            <h2>No listings found</h2>
-            <p className="seeker-muted">
+          <section className="rq-card sk-empty">
+            <h2 className="rq-display">No listings found</h2>
+            <p className="rq-muted">
               Try clearing your filters or check back later.
             </p>
           </section>
         ) : viewMode === "map" ? (
-          // The map always receives the full feed, never the focused subset,
-          // otherwise focusing one restaurant would erase the other markers.
           <SeekerMap
             listings={searchedListings}
             onSelectRestaurant={handleSelectRestaurant}
@@ -407,12 +457,12 @@ export function BrowseListingsPage() {
         ) : (
           <>
             {focusedRestaurantId && (
-              <div className="seeker-focus-banner">
-                <p className="seeker-muted">
-                  Showing listings from {focusedRestaurantName}.
+              <div className="sk-focus">
+                <p className="rq-muted">
+                  Showing listings from <b>{focusedRestaurantName}</b>.
                 </p>
                 <button
-                  className="seeker-link-button secondary"
+                  className="rq-btn rq-btn-ghost"
                   onClick={() => setFocusedRestaurantId(null)}
                 >
                   Show all restaurants
@@ -420,123 +470,155 @@ export function BrowseListingsPage() {
               </div>
             )}
 
-            {/* The outer guard only knows the feed is non-empty. Focusing a
-                restaurant can still narrow it to nothing — e.g. its last item
-                was reserved by someone else between load and click. */}
             {visibleListings.length === 0 ? (
-              <section className="seeker-card">
-                <h2>No listings from this restaurant</h2>
-                <p className="seeker-muted">
+              <section className="rq-card sk-empty">
+                <h2 className="rq-display">No listings from this restaurant</h2>
+                <p className="rq-muted">
                   They may have just been reserved. Try showing all restaurants.
                 </p>
               </section>
             ) : (
-              <div className="seeker-grid">
+              <div className="sk-grid">
                 {visibleListings.map((listing) => {
-                  // Same shared function the backend validates against, so the
-                  // dropdown can never offer a slot the server would reject.
                   const slots = generatePickupSlots(
                     listing.pickupStart,
                     listing.pickupEnd,
                   );
+                  const tier = urgency(listing.pickupEnd);
+                  const closes = formatCloses(listing.pickupEnd);
+                  const allergens = listing.allergens ?? [];
 
                   return (
-                    <article key={listing.id} className="seeker-card">
-                      {listing.imagePath && (
-                        <img
-                          className="seeker-listing-image"
-                          src={getAssetUrl(listing.imagePath) ?? undefined}
-                          alt={listing.title}
-                        />
-                      )}
-                      <h2>{listing.title}</h2>
-                      <p className="seeker-muted">
-                        {listing.restaurant?.businessName ?? "Unknown"} ·{" "}
-                        {listing.restaurant?.city ?? ""}
-                      </p>
+                    <article key={listing.id} className="sk-card">
+                      {/* Media band: image if present, warm gradient fallback
+                          otherwise. Urgency pill top-left, distance chip
+                          bottom-right — both derived, no server change. */}
+                      <div className={`sk-card-media sk-tier-${tier}`}>
+                        {listing.imagePath && (
+                          <img
+                            className="sk-card-img"
+                            src={getAssetUrl(listing.imagePath) ?? undefined}
+                            alt={listing.title}
+                          />
+                        )}
+                        <span
+                          className={`rq-pill sk-tierpill sk-tierpill-${tier}`}
+                        >
+                          ●{" "}
+                          {tier === "last"
+                            ? "Last call"
+                            : tier === "soon"
+                              ? "Going fast"
+                              : "Fresh"}
+                        </span>
+                        {listing.distanceKm != null && (
+                          <span className="sk-dist">
+                            {listing.distanceKm} km
+                          </span>
+                        )}
+                      </div>
 
-                      {/* distanceKm is number | null | undefined, so `!= null`
-                          rules out both null and undefined in one check. */}
-                      {listing.distanceKm != null && (
-                        <p className="seeker-muted">
-                          {listing.distanceKm} km away
+                      <div className="sk-card-body">
+                        <h2 className="sk-card-title">{listing.title}</h2>
+                        <p className="sk-card-kitchen">
+                          <b>{listing.restaurant?.businessName ?? "Unknown"}</b>
+                          {listing.restaurant?.city
+                            ? ` · ${listing.restaurant.city}`
+                            : ""}
                         </p>
-                      )}
 
-                      <p>{listing.description || "No description"}</p>
-
-                      <dl className="seeker-meta">
-                        <div>
-                          <dt>Category</dt>
-                          <dd>{listing.category || "Uncategorized"}</dd>
-                        </div>
-                        <div>
-                          <dt>Available</dt>
-                          <dd>{listing.quantityAvailable}</dd>
-                        </div>
-                        <div>
-                          <dt>Pickup window</dt>
-                          <dd>
-                            {new Date(listing.pickupStart).toLocaleString()} –{" "}
-                            {new Date(listing.pickupEnd).toLocaleString()}
-                          </dd>
-                        </div>
-                      </dl>
-
-                      <p className="seeker-allergens">
-                        {listing.allergens && listing.allergens.length > 0
-                          ? `Contains: ${listing.allergens
-                              .map((a) => a.name)
-                              .join(", ")}`
-                          : "No allergen"}
-                      </p>
-
-                      {/* Slot picker. If every slot has already passed there's
-                          nothing to reserve, so show a message instead. */}
-                      {slots.length === 0 ? (
-                        <p className="seeker-muted">
-                          No pickup times remaining for this listing.
-                        </p>
-                      ) : (
-                        <>
-                          <label className="seeker-slot-label">
-                            Choose a pickup time
-                            <select
-                              className="seeker-input"
-                              value={selectedSlots[listing.id] ?? ""}
-                              onChange={(e) =>
-                                setSelectedSlots((prev) => ({
-                                  ...prev,
-                                  [listing.id]: e.target.value,
-                                }))
-                              }
+                        <div className="sk-card-window">
+                          <span className="rq-mono sk-window-time">
+                            {new Date(listing.pickupStart).toLocaleTimeString(
+                              [],
+                              { hour: "numeric", minute: "2-digit" },
+                            )}
+                            –
+                            {new Date(listing.pickupEnd).toLocaleTimeString(
+                              [],
+                              {
+                                hour: "numeric",
+                                minute: "2-digit",
+                              },
+                            )}
+                          </span>
+                          {closes && (
+                            <span
+                              className={`sk-window-closes sk-closes-${tier}`}
                             >
-                              <option value="">Select a time...</option>
-                              {slots.map((slot) => (
-                                <option
-                                  key={slot.start.toISOString()}
-                                  value={slot.start.toISOString()}
-                                >
-                                  {formatSlot(slot)}
-                                </option>
-                              ))}
-                            </select>
-                          </label>
+                              {closes}
+                            </span>
+                          )}
+                        </div>
 
-                          <button
-                            className="seeker-button"
-                            onClick={() => handleReserve(listing.id)}
-                            disabled={
-                              reservingId === listing.id ||
-                              !selectedSlots[listing.id]
-                            }
-                          >
-                            {reservingId === listing.id
-                              ? "Reserving..."
-                              : "Reserve"}
-                          </button>
-                        </>
-                      )}
+                        <p className="sk-card-qty">
+                          ×{listing.quantityAvailable} left
+                        </p>
+
+                        {allergens.length > 0 ? (
+                          <div className="sk-card-tags">
+                            {allergens.map((a) => (
+                              <span key={a.id} className="rq-tag">
+                                {a.name}
+                              </span>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="sk-card-tags">
+                            <span className="rq-tag">no listed allergens</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Pickup "board": the dark reserve strip from the
+                          mockup. Same slot logic and reserve handler. */}
+                      <div className="sk-board">
+                        {slots.length === 0 ? (
+                          <p className="sk-board-none rq-mono">
+                            No pickup times remaining
+                          </p>
+                        ) : (
+                          <>
+                            <span className="sk-board-label rq-mono">
+                              Pickup time
+                            </span>
+                            <div className="sk-board-row">
+                              <select
+                                className="sk-board-select"
+                                value={selectedSlots[listing.id] ?? ""}
+                                onChange={(e) =>
+                                  setSelectedSlots((prev) => ({
+                                    ...prev,
+                                    [listing.id]: e.target.value,
+                                  }))
+                                }
+                              >
+                                <option value="">Select a time…</option>
+                                {slots.map((slot) => (
+                                  <option
+                                    key={slot.start.toISOString()}
+                                    value={slot.start.toISOString()}
+                                  >
+                                    {formatSlot(slot)}
+                                  </option>
+                                ))}
+                              </select>
+                              <button
+                                className="sk-board-btn"
+                                onClick={() => handleReserve(listing.id)}
+                                disabled={
+                                  reservingId === listing.id ||
+                                  !selectedSlots[listing.id]
+                                }
+                              >
+                                {reservingId === listing.id
+                                  ? "Claiming…"
+                                  : "Claim"}
+                              </button>
+                            </div>
+                          </>
+                        )}
+                      </div>
                     </article>
                   );
                 })}
