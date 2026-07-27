@@ -1037,3 +1037,106 @@
 .sk-profile-save {
   align-self: flex-start;
 }
+
+/* the new seeker map (Leaflet) */
+.sk-mapwrap {
+  position: relative;
+  width: 100%;
+  height: 560px;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  overflow: hidden;
+  background: #e6e0d1;
+}
+.sk-mapwrap-full {
+  position: fixed;
+  inset: 0;
+  height: auto;
+  z-index: 1000;
+  border: none;
+  border-radius: 0;
+}
+.sk-mapwrap .leaflet-container {
+  height: 100%;
+  width: 100%;
+  background: #e6e0d1;
+}
+
+.sk-map-toggle {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 1001;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  padding: 8px 13px;
+  background: var(--card);
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 13px;
+  box-shadow: 0 2px 8px rgba(33, 30, 24, 0.2);
+}
+.sk-map-empty {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1001;
+  margin: 0;
+  background: var(--ink);
+  color: #f4efe3;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 12.5px;
+}
+
+.sk-pin {
+  background: transparent;
+  border: none;
+}
+.sk-pin svg {
+  display: block;
+  filter: drop-shadow(0 3px 3px rgba(33, 30, 24, 0.35));
+}
+
+.leaflet-popup-content .sk-pop-name {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--ink);
+  display: block;
+}
+.leaflet-popup-content .sk-pop-addr {
+  display: block;
+  color: var(--stone);
+  font-size: 12px;
+  margin-top: 2px;
+}
+.leaflet-popup-content .sk-pop-list {
+  margin: 8px 0;
+  padding-left: 16px;
+  font-size: 13px;
+  color: var(--ink);
+  max-height: 140px;
+  overflow-y: auto;
+}
+.leaflet-popup-content .sk-pop-list li {
+  margin-bottom: 2px;
+}
+.leaflet-popup-content .sk-pop-btn {
+  width: 100%;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  background: var(--herb);
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+}
+.leaflet-popup-content .sk-pop-btn:hover {
+  background: var(--herb-deep);
+}
+.leaflet-popup-content-wrapper {
+  border-radius: 12px;
+}
