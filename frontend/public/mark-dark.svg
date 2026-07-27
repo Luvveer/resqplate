@@ -1,0 +1,14 @@
+<svg width="120" height="128" viewBox="0 0 120 128" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ResQPlate">
+  <!-- steam: three rising strokes, quiet -->
+  <g stroke="#E39A16" stroke-width="3.4" stroke-linecap="round" opacity="0.55" fill="none">
+    <path d="M44 26 C40 20 48 16 44 10"/>
+    <path d="M60 22 C56 15 64 11 60 4"/>
+    <path d="M76 26 C72 20 80 16 76 10"/>
+  </g>
+  <!-- plate-as-Q -->
+  <g fill="none" stroke-linecap="round">
+    <circle cx="60" cy="72" r="32" stroke="#F2AE2B" stroke-width="9"/>
+    <circle cx="60" cy="72" r="17.5" stroke="#ECE5D6" stroke-width="4.5"/>
+    <path d="M77 89 L95 107" stroke="#F2AE2B" stroke-width="9"/>
+  </g>
+</svg>

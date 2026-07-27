@@ -22,6 +22,9 @@
 /*Left: dark brand panel */
 .auth-info {
   background: var(--ink);
+  background-image: url("/login-bg.svg");
+  background-size: cover;
+  background-position: center;
   color: #f4efe3;
   padding: 36px 34px;
   display: flex;
@@ -36,30 +39,10 @@
   gap: 10px;
 }
 .auth-brand-mark {
-  width: 34px;
-  height: 34px;
-  border-radius: 9px;
+  width: 40px;
+  height: 40px;
   flex: none;
-  position: relative;
-  background: linear-gradient(150deg, var(--amber), #c9820c);
-}
-.auth-brand-mark::before {
-  content: "";
-  position: absolute;
-  inset: 8px;
-  border: 2.5px solid var(--ink);
-  border-radius: 50%;
-}
-.auth-brand-mark::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: 6px;
-  width: 2.5px;
-  height: 9px;
-  background: var(--ink);
-  transform: translateX(-50%);
-  border-radius: 2px;
+  background: url("/mark-tile.svg") center / contain no-repeat;
 }
 .auth-brand-text b {
   font-family: var(--display);
