@@ -14,8 +14,8 @@ body,
   align-items: center;
   justify-content: center;
   padding: 24px 16px;
-  background: #f4f7f2;
-  color: #213446;
+  background: #f5f2ec;
+  color: #1f2933;
   overflow: hidden;
 }
 
@@ -25,15 +25,15 @@ body,
   display: grid;
   grid-template-columns: 1fr 420px;
   background: white;
-  border: 1px solid #dfe7dc;
+  border: 1px solid #e5ddd0;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 16px 40px rgba(31, 41, 51, 0.12);
+  box-shadow: 0 16px 40px rgba(28, 20, 16, 0.14);
 }
 
 .auth-info {
   padding: 48px;
-  background: #315c45;
+  background: #1c1410;
   color: white;
 }
 
@@ -41,6 +41,7 @@ body,
   font-size: 28px;
   font-weight: 800;
   margin-bottom: 64px;
+  color: #d9631f;
 }
 
 .auth-info h1 {
@@ -53,7 +54,7 @@ body,
   margin: 0;
   max-width: 420px;
   line-height: 1.6;
-  color: #e8f2eb;
+  color: #a89b8f;
 }
 
 .auth-panel {
@@ -100,8 +101,8 @@ body,
 
 .auth-field input:focus,
 .auth-field select:focus {
-  outline: 2px solid #88b99a;
-  border-color: #315c45;
+  outline: 2px solid #e8a87c;
+  border-color: #d9631f;
 }
 
 .auth-role-options {
@@ -121,8 +122,8 @@ body,
 }
 
 .auth-role-button.active {
-  background: #315c45;
-  border-color: #315c45;
+  background: #1c1410;
+  border-color: #1c1410;
   color: white;
 }
 
@@ -139,7 +140,7 @@ body,
   border: none;
   border-radius: 8px;
   padding: 13px 16px;
-  background: #315c45;
+  background: #d9631f;
   color: white;
   font-weight: 700;
   font-size: 15px;
@@ -158,7 +159,7 @@ body,
 }
 
 .auth-switch a {
-  color: #315c45;
+  color: #d9631f;
   font-weight: 700;
   text-decoration: none;
 }
