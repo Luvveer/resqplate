@@ -56,58 +56,60 @@ export function RestaurantInfoPage() {
           </div>
 
           {error && <p className="business-error">{error}</p>}
-
-          <form className="business-form" onSubmit={handleSubmit}>
-            <div className="business-field">
-              <label htmlFor="businessName">Business name</label>
-              <input
-                id="businessName"
-                value={businessName}
-                onChange={(e) => setBusinessName(e.target.value)}
-                required
-              />
-            </div>
-
-            <div className="business-form-grid">
+          <div className="business-form-body">
+            <form className="business-form" onSubmit={handleSubmit}>
               <div className="business-field">
-                <AddressAutocomplete
-                  sessionToken={sessionToken}
-                  selectedPlaceId={placeId}
-                  onSelect={(newPlaceId) => {
-                    setPlaceId(newPlaceId);
-                  }}
-                />
-              </div>
-
-              <div className="business-field">
-                <label htmlFor="phone">Phone No.</label>
+                <label htmlFor="businessName">Business name</label>
                 <input
-                  id="phone"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  id="businessName"
+                  value={businessName}
+                  onChange={(e) => setBusinessName(e.target.value)}
                   required
                 />
               </div>
-            </div>
 
-            <div className="business-field">
-              <label htmlFor="description">Description</label>
-              <textarea
-                id="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                required
-              />
-            </div>
+              <div className="business-form-grid">
+                <div className="business-field">
+                  <AddressAutocomplete
+                    sessionToken={sessionToken}
+                    selectedPlaceId={placeId}
+                    onSelect={(newPlaceId) => {
+                      setPlaceId(newPlaceId);
+                    }}
+                  />
+                </div>
 
-            <button
-              className="business-button"
-              type="submit"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Saving..." : "Save"}
-            </button>
-          </form>
+                <div className="business-field">
+                  <label htmlFor="phone">Phone No.</label>
+                  <input
+                    id="phone"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="business-field">
+                <label htmlFor="description">Description</label>
+                <textarea
+                  id="description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="business-form-footer">
+                <button
+                  className="business-button primary-dark"
+                  type="submit"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Saving..." : "Save"}
+                </button>
+              </div>
+            </form>
+          </div>
         </section>
       </div>
     </div>
