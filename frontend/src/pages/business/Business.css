@@ -1,6 +1,6 @@
 .business-page {
   min-height: 100vh;
-  background: #f5f7f4;
+  background: #f5f2ec;
   color: #1f2933;
 }
 
@@ -9,21 +9,30 @@
   justify-content: space-between;
   align-items: center;
   padding: 18px 32px;
-  background: white;
-  border-bottom: 1px solid #dfe7dc;
+  background: #1c1410;
+  border-bottom: none;
 }
 
 .business-brand h1 {
   margin: 0;
-  color: #315c45;
+  color: #ffffff;
   font-size: 22px;
 }
 
 .business-brand p {
-  margin: 4px 0 0;
-  color: #667085;
+  margin: 2px 0 0;
+  color: #a89b8f;
+  font-size: 11px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
 }
-
+.business-brand span {
+  padding-right: 10px;
+  color: #a89b8f;
+  font-size: 15px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
 .business-user {
   display: flex;
   align-items: center;
@@ -38,7 +47,7 @@
 
 .business-card {
   background: white;
-  border: 1px solid #dfe7dc;
+  border: 1px solid #e5ddd0;
   border-radius: 10px;
   padding: 22px;
 }
@@ -71,8 +80,8 @@
 .business-link-button {
   border: none;
   border-radius: 8px;
-  padding: 10px 14px;
-  background: #315c45;
+  padding: 10px 16px;
+  background: #d9631f;
   color: white;
   font-weight: 700;
   text-decoration: none;
@@ -82,8 +91,8 @@
 .business-button.secondary,
 .business-link-button.secondary {
   background: white;
-  color: #315c45;
-  border: 1px solid #cfd8cf;
+  color: #1c1410;
+  border: 1px solid #d9d2c8;
 }
 
 .business-button.danger {
@@ -100,8 +109,8 @@
 .business-status {
   display: inline-block;
   border-radius: 999px;
-  padding: 6px 10px;
-  font-size: 12px;
+  padding: 6px 14px;
+  font-size: 11px;
   font-weight: 800;
 }
 
@@ -117,8 +126,11 @@
 }
 
 .business-status.reserved {
-  background: #eef4ff;
-  color: #2854a3;
+  background: #f5e6c8;
+  color: #7a5a1e;
+  border-radius: 999px;
+  font-family: monospace;
+  font-weight: 700;
 }
 
 .business-status.expired,
@@ -127,7 +139,15 @@
   background: #fff1f1;
   color: #b42318;
 }
+.business-status.picked_up {
+  background: #e7f6ec;
+  color: #237a3b;
+}
 
+.business-status.no_show {
+  background: #fff1f1;
+  color: #b42318;
+}
 .business-message {
   background: #eef4ee;
   color: #315c45;
@@ -145,7 +165,7 @@
 .business-table-wrap {
   overflow-x: auto;
   background: white;
-  border: 1px solid #dfe7dc;
+  border: 1px solid #e5ddd0;
   border-radius: 10px;
 }
 
@@ -163,9 +183,18 @@
 }
 
 .business-table th {
-  background: #fafcf9;
-  color: #667085;
-  font-size: 13px;
+  background: #faf8f4;
+  color: #8a7f72;
+  font-size: 12px;
+  letter-spacing: 0.03em;
+}
+
+.business-table td {
+  padding: 18px 16px;
+}
+
+.business-table tbody tr:hover {
+  background: #faf8f4;
 }
 
 .business-title {
@@ -180,8 +209,12 @@
 
 .business-form-page {
   min-height: 100vh;
-  background: #f5f7f4;
+  background: #f5f2ec;
   color: #1f2933;
+}
+
+.business-form-body {
+  padding: 26px 28px;
 }
 
 .business-form-shell {
@@ -192,9 +225,10 @@
 
 .business-form-card {
   background: white;
-  border: 1px solid #dfe7dc;
-  border-radius: 10px;
-  padding: 24px;
+  border: 1px solid #e5ddd0;
+  border-radius: 12px;
+  padding: 0;
+  overflow: hidden;
 }
 
 .business-form-header {
@@ -202,17 +236,20 @@
   justify-content: space-between;
   align-items: flex-start;
   gap: 16px;
-  margin-bottom: 24px;
+  margin-bottom: 0;
+  padding: 24px 28px;
+  background: #1c1410;
 }
 
 .business-form-header h1 {
   margin: 0 0 6px;
   font-size: 28px;
+  color: #ffffff;
 }
 
 .business-form-header p {
   margin: 0;
-  color: #667085;
+  color: #a89b8f;
 }
 
 .business-form {
@@ -224,6 +261,26 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 18px;
+}
+
+.business-form-grid-image {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 18px;
+  align-items: start;
+}
+
+.business-form-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 18px;
+}
+
+.business-upload-box {
+  border: 1px dashed #d9d2c8;
+  border-radius: 10px;
+  padding: 16px;
+  background: #faf8f4;
 }
 
 .business-field {
@@ -255,8 +312,8 @@
 
 .business-field input:focus,
 .business-field textarea:focus {
-  outline: 2px solid #88b99a;
-  border-color: #315c45;
+  outline: 2px solid #e8a87c;
+  border-color: #d9631f;
 }
 
 .business-field-full {
@@ -306,6 +363,19 @@
 .business-allergen-option input {
   width: auto;
   margin: 0;
+}
+.business-allergen-panel {
+  border: 1px solid #e5ddd0;
+  border-radius: 10px;
+  padding: 16px 18px;
+  background: #faf8f4;
+  margin: 0;
+}
+
+.business-allergen-panel legend {
+  font-weight: 700;
+  font-size: 14px;
+  padding: 0 6px;
 }
 
 .business-field-help {
@@ -398,4 +468,89 @@
 .address-suggestions button:focus {
   background: #f5f7f4;
   outline: none;
+}
+.business-form-footer {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.business-button.primary-dark {
+  flex: 1;
+  background: #1c3a24;
+  justify-content: center;
+  text-align: center;
+}
+
+.business-search-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.business-search-input {
+  flex: 1;
+  max-width: 320px;
+  border: 1px solid #d9d2c8;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font: inherit;
+}
+
+.business-search-input:focus {
+  outline: 2px solid #d9631f;
+  border-color: #d9631f;
+}
+
+.business-actions {
+  display: flex;
+  gap: 10px;
+}
+.business-nav-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-top: 6px;
+}
+
+.business-nav-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 22px;
+  background: white;
+  border: 1px solid #e5ddd0;
+  border-radius: 12px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.business-nav-icon {
+  font-size: 22px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: #faf0e6;
+  margin-bottom: 4px;
+}
+
+.business-nav-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: #1c1410;
+}
+
+.business-nav-desc {
+  color: #667085;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.business-nav-link {
+  color: #237a3b;
+  font-weight: 700;
+  font-size: 14px;
 }

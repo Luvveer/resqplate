@@ -113,7 +113,7 @@ export function BusinessDashboard() {
           <p>Restaurant dashboard</p>
         </div>
 
-        <div className="business-user">
+        <div className="business-brand">
           <span> Welcome, {profile?.name}</span>
           <button
             className="business-button secondary"
@@ -135,12 +135,21 @@ export function BusinessDashboard() {
             <span className="business-status approved">Approved</span>
           </div>
 
-          <div className="business-actions">
-            <Link className="business-link-button" to="/business/listings">
-              Manage Listings
+          <div className="business-nav-grid">
+            <Link className="business-nav-card" to="/business/listings">
+              <span className="business-nav-icon">📋</span>
+              <span className="business-nav-title">Manage Listings →</span>
+              <span className="business-nav-desc">
+                Create, edit, and expire your surplus food listings.
+              </span>
             </Link>
-            <Link className="business-link-button" to="/business/pickups">
-              Manage Reservations
+
+            <Link className="business-nav-card" to="/business/pickups">
+              <span className="business-nav-icon">🍱</span>
+              <span className="business-nav-title">Manage Reservations →</span>
+              <span className="business-nav-desc">
+                Confirm pickups and track no-shows.
+              </span>
             </Link>
           </div>
         </section>

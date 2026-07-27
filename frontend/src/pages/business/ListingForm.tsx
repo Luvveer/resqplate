@@ -168,6 +168,7 @@ export function ListingForm({
         <label htmlFor="listing-title">Title</label>
         <input
           id="listing-title"
+          placeholder="e.g. Assorted Bread Loaves"
           value={values.title}
           onChange={(event) => updateField("title", event.target.value)}
           required
@@ -178,26 +179,31 @@ export function ListingForm({
         <label htmlFor="listing-description">Description</label>
         <textarea
           id="listing-description"
+          placeholder="Briefly describe the food and its condition."
           value={values.description}
           onChange={(event) => updateField("description", event.target.value)}
         />
       </div>
-      <div className="business-field">
-        <label htmlFor="listing-image">Food Image</label>
-        <input
-          id="listing-image"
-          type="file"
-          accept="image/jpeg,image/png,image/webp"
-          onChange={(event) => {
-            setImageFile(event.target.files?.[0] ?? null);
-          }}
-        />
-        <p className="business-field-help">
-          Optional, JPEG, PNG or Webp and Maximum 5 MB.
-        </p>
-      </div>
 
-      <div className="business-form-grid">
+      <div className="business-form-grid-image">
+        <div className="business-field">
+          <label htmlFor="listing-image">Food Image</label>
+          <div className="business-upload-box">
+            <input
+              id="listing-image"
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              onChange={(event) => {
+                setImageFile(event.target.files?.[0] ?? null);
+              }}
+            />
+
+            <p className="business-field-help">
+              Optional, JPEG, PNG or Webp and Maximum 5 MB.
+            </p>
+          </div>
+        </div>
+
         <div className="business-field">
           <label htmlFor="listing-category">Category</label>
           <input
@@ -206,35 +212,36 @@ export function ListingForm({
             onChange={(event) => updateField("category", event.target.value)}
           />
         </div>
+      </div>
 
-        <fieldset className="business-field business-field-full">
-          <legend>Contains allergen</legend>
+      <fieldset className="business-allergen-panel">
+        <legend>Contains allergen</legend>
 
-          <p className="business-field-help">
-            Select allergen contained in this food
-          </p>
-          {areAllergenLoading && (
-            <p className="business-message">Loading allergen...</p>
-          )}
+        <p className="business-field-help">
+          Select allergen contained in this food
+        </p>
+        {areAllergenLoading && (
+          <p className="business-message">Loading allergen...</p>
+        )}
 
-          {allergenError && <p className="business-error">{allergenError}</p>}
+        {allergenError && <p className="business-error">{allergenError}</p>}
 
-          {!areAllergenLoading && !allergenError && (
-            <div className="business-allergen-options">
-              {allergenOptions.map((allergen) => (
-                <label key={allergen.id} className="business-allergen-option">
-                  <input
-                    type="checkbox"
-                    checked={values.allergenIds.includes(allergen.id)}
-                    onChange={() => AllergenToogle(allergen.id)}
-                  />
-                  <span>{allergen.name}</span>
-                </label>
-              ))}
-            </div>
-          )}
-        </fieldset>
-
+        {!areAllergenLoading && !allergenError && (
+          <div className="business-allergen-options">
+            {allergenOptions.map((allergen) => (
+              <label key={allergen.id} className="business-allergen-option">
+                <input
+                  type="checkbox"
+                  checked={values.allergenIds.includes(allergen.id)}
+                  onChange={() => AllergenToogle(allergen.id)}
+                />
+                <span>{allergen.name}</span>
+              </label>
+            ))}
+          </div>
+        )}
+      </fieldset>
+      <div className="business-form-grid-3">
         <div className="business-field">
           <label htmlFor="listing-quantity">Quantity</label>
           <input
@@ -272,20 +279,27 @@ export function ListingForm({
             required
           />
         </div>
-
-        <div className="business-field business-field-full">
-          <label htmlFor="listing-storage-note">Storage notes</label>
-          <input
-            id="listing-storage-note"
-            value={values.storageNote}
-            onChange={(event) => updateField("storageNote", event.target.value)}
-          />
-        </div>
       </div>
 
-      <button className="business-button" type="submit" disabled={isSubmitting}>
-        {isSubmitting ? "Saving..." : submitLabel}
-      </button>
+      <div className="business-field business-field-full">
+        <label htmlFor="listing-storage-note">Storage notes</label>
+        <input
+          id="listing-storage-note"
+          value={values.storageNote}
+          placeholder="e.g. Keep refrigerated until pickup"
+          onChange={(event) => updateField("storageNote", event.target.value)}
+        />
+      </div>
+
+      <div className="business-form-footer">
+        <button
+          className="business-button primary-dark"
+          type="submit"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Saving..." : submitLabel}
+        </button>
+      </div>
     </form>
   );
 }

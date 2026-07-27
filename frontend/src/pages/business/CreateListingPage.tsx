@@ -54,12 +54,13 @@ export function CreateListingPage() {
           </div>
 
           {error && <p className="business-error">{error}</p>}
-
-          <ListingForm
-            submitLabel="Create Listing"
-            isSubmitting={isSubmitting}
-            onSubmit={handleSubmit}
-          />
+          <div className="business-form-body">
+            <ListingForm
+              submitLabel="Create Listing"
+              isSubmitting={isSubmitting}
+              onSubmit={handleSubmit}
+            />
+          </div>
         </section>
       </div>
     </div>

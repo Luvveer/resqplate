@@ -95,7 +95,7 @@ export function EditListingPage() {
           {error && <p className="business-error">{error}</p>}
 
           {listing && (
-            <>
+            <div className="business-form-body">
               {listing.imagePath && (
                 <img
                   className="business-listing-preview"
@@ -120,7 +120,7 @@ export function EditListingPage() {
                 isSubmitting={isSubmitting}
                 onSubmit={handleSubmit}
               />
-            </>
+            </div>
           )}
         </section>
       </div>

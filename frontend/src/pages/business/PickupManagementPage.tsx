@@ -158,24 +158,27 @@ export function PickupManagementPage() {
       </header>
       <main className="business-main">
         {error && <p className="business-error">{error}</p>}
-        <input
-          type="text"
-          className="business-link-button secondary"
-          placeholder="Search by email"
-          value={searchEmail}
-          onChange={(e) => setSearchEmail(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              handleSearch();
-            }
-          }}
-        />
-        <button onClick={handleSearch} className="business-link-button">
-          Search
-        </button>
-        <button onClick={viewAll} className="business-link-button secondary">
-          View All
-        </button>
+        <div className="business-search-bar">
+          <input
+            type="text"
+            className="business-search-input"
+            placeholder="Search by email"
+            value={searchEmail}
+            onChange={(e) => setSearchEmail(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleSearch();
+              }
+            }}
+          />
+          <button onClick={handleSearch} className="business-button">
+            Search
+          </button>
+          <button onClick={viewAll} className="business-button secondary">
+            View All
+          </button>
+        </div>
+
         {isLoading ? (
           <p className="business-message"> Loading reservations</p>
         ) : (
@@ -193,7 +196,13 @@ export function PickupManagementPage() {
               {sortedReservations.map((reservation) => (
                 <tr key={reservation.id}>
                   <td>{getListingTitle(reservation.listingId)}</td>
-                  <td>{reservation.status}</td>
+                  <td>
+                    <span
+                      className={`business-status ${reservation.status.toLowerCase()}`}
+                    >
+                      {reservation.status}
+                    </span>
+                  </td>
                   <td>{getEmail(reservation.id)}</td>
                   <td>
                     {new Date(reservation.pickupSlotStart).toLocaleTimeString(
@@ -206,7 +215,7 @@ export function PickupManagementPage() {
                       { hour: "2-digit", minute: "2-digit" },
                     )}
                   </td>
-                  <td>
+                  <td className="business-actions">
                     {reservation.status === "RESERVED" && (
                       <>
                         {confirmId === reservation.id ? (
