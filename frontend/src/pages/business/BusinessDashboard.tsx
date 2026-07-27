@@ -36,7 +36,7 @@ export function BusinessDashboard() {
             <p>Restaurant Dashboard</p>
           </div>
 
-          <div className="business-user">
+          <div className="business-brand">
             <span>Welcome, {profile?.name}</span>
             <button
               className="business-button secondary"
