@@ -4,6 +4,7 @@ import type {
   LoginInput,
   UserRole,
   ProfileResponse,
+  UpdateSeekerProfileInput,
 } from "@resqplate/shared";
 
 class AuthAPI {
@@ -46,6 +47,14 @@ class AuthAPI {
     return await apiClient.request<{ profile: ProfileResponse }>(
       "GET",
       "/auth/profile/me",
+    );
+  }
+
+  async updateProfile(input: UpdateSeekerProfileInput) {
+    return await apiClient.request<{ profile: ProfileResponse }>(
+      "PATCH",
+      "/auth/profile/me",
+      input,
     );
   }
 

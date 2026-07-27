@@ -4,6 +4,7 @@ import {
   loginSchema,
   requestPasswordResetSchema,
   confirmPasswordResetSchema,
+  updateSeekerProfileSchema,
 } from "@resqplate/shared";
 import { APIError } from "better-auth";
 import {
@@ -12,6 +13,7 @@ import {
   logout,
   requestPasswordReset,
   confirmPasswordReset,
+  updateSeekerProfile,
 } from "./auth.service.js";
 import { toHeaders } from "../middleware/auth.middleware.js";
 import auth from "./better-auth/auth.js";
@@ -81,6 +83,29 @@ export async function profileHandler(req: Request, res: Response) {
     return res.status(500).json({
       error: "Failed to get current user",
     });
+  }
+}
+
+export async function updateProfileHandler(req: Request, res: Response) {
+  // If the request is from a seeker
+  if (!req.profile) {
+    return res
+      .status(401)
+      .json({ error: "Sorry!! you are not authorized to update this profile" });
+  }
+  const body = updateSeekerProfileSchema.parse(req.body);
+  try {
+    // Making sure that the seeker can only edi their own profile
+    const profile = await updateSeekerProfile(req.profile.id, body);
+    return res.status(200).json({ profile });
+  } catch (error) {
+    if (
+      error instanceof Error &&
+      error.message === "Sorry !! There was no profile  found"
+    ) {
+      return res.status(404).json({ error: error.message });
+    }
+    return res.status(500).json({ error: "Sorry!! Failed to update profile" });
   }
 }
 

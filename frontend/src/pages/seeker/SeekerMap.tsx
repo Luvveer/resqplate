@@ -4,20 +4,21 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import type { LatLngBoundsExpression, LatLngTuple } from "leaflet";
 import type { PublicListingResponse } from "@resqplate/shared";
-import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
-import markerIcon from "leaflet/dist/images/marker-icon.png";
-import markerShadow from "leaflet/dist/images/marker-shadow.png";
+// import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
+// import markerIcon from "leaflet/dist/images/marker-icon.png";
+// import markerShadow from "leaflet/dist/images/marker-shadow.png";
 
-//Match the default icon of leaflet with the marker icon in the vite, the bundle shoudl not overwirt e the path
-const markerIconInstance = L.icon({
-  iconRetinaUrl: markerIcon2x,
-  iconUrl: markerIcon,
-  shadowUrl: markerShadow,
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41],
-  tooltipAnchor: [16, -28],
+//Match the new amber teardrop pin as an inline-SVG divIcon
+const markerIconInstance = L.divIcon({
+  className: "sk-pin",
+  html: `<svg width="30" height="38" viewBox="0 0 30 38" xmlns="http://www.w3.org/2000/svg">
+    <path d="M15 37C15 37 28 22.5 28 14A13 13 0 1 0 2 14C2 22.5 15 37 15 37Z"
+      fill="#e39a16" stroke="#211e18" stroke-width="2.5" stroke-linejoin="round"/>
+    <circle cx="15" cy="14" r="4.5" fill="#211e18"/>
+  </svg>`,
+  iconSize: [30, 38],
+  iconAnchor: [15, 37],
+  popupAnchor: [0, -32],
 });
 
 // For a main address use Burnaby, BC
@@ -135,19 +136,17 @@ export function SeekerMap({
   const center = points[0] ?? DEFAULT_CENTER;
 
   return (
-    <div
-      className={`seeker-map-wrap${isFullscreen ? " seeker-map-wrap--full" : ""}`}
-    >
+    <div className={`sk-mapwrap${isFullscreen ? " sk-mapwrap-full" : ""}`}>
       <button
         type="button"
-        className="seeker-map-toggle"
+        className="sk-map-toggle"
         onClick={() => setIsFullscreen((prev) => !prev)}
       >
         {isFullscreen ? "Exit full screen" : "Full screen"}
       </button>
 
       {markers.length === 0 && (
-        <p className="seeker-map-empty">No listings have a location yet.</p>
+        <p className="sk-map-empty rq-mono">No listings have a location yet.</p>
       )}
 
       <MapContainer center={center} zoom={13} scrollWheelZoom>
@@ -165,13 +164,12 @@ export function SeekerMap({
             icon={markerIconInstance}
           >
             <Popup>
-              <strong>{marker.businessName}</strong>
-              <br />
-              <span className="seeker-map-popup-address">
+              <strong className="sk-pop-name">{marker.businessName}</strong>
+              <span className="sk-pop-addr">
                 {marker.address}, {marker.city}
               </span>
 
-              <ul className="seeker-map-popup-list">
+              <ul className="sk-pop-list">
                 {marker.listings.map((listing) => (
                   <li key={listing.id}>
                     {listing.title} — {listing.quantityAvailable} left
@@ -184,7 +182,7 @@ export function SeekerMap({
               {onSelectRestaurant && (
                 <button
                   type="button"
-                  className="seeker-map-popup-button"
+                  className="sk-pop-btn"
                   onClick={() => onSelectRestaurant(marker.restaurantId)}
                 >
                   {marker.listings.length === 1

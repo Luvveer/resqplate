@@ -1,6 +1,10 @@
 import { auth } from "./better-auth/auth.js";
-import { createProfile, findProfileByAuthId } from "./auth.repository.js";
-import type { Profile } from "./auth.types.js";
+import {
+  createProfile,
+  findProfileByAuthId,
+  updateProfileById,
+} from "./auth.repository.js";
+import type { Profile, UpdateSeekerProfile } from "./auth.types.js";
 import type {
   SignupInput,
   LoginInput,
@@ -60,4 +64,16 @@ export async function confirmPasswordReset(input: confirmPasswordResetInput) {
   await auth.api.resetPassword({
     body: { newPassword: input.newPassword, token: input.token },
   });
+}
+
+export async function updateSeekerProfile(
+  profileId: string,
+  input: UpdateSeekerProfile,
+): Promise<Profile> {
+  const profile = await updateProfileById(profileId, input);
+  // Make sure that the seeker is authiticated and the profile exists before updating it
+  if (!profile) {
+    throw new Error("Sorry !! There was no profile  found");
+  }
+  return profile;
 }

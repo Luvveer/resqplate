@@ -27,31 +27,51 @@ export function LoginPage() {
   return (
     <main className="auth-page">
       <section className="auth-shell">
-        <div className="auth-info">
-          <div className="auth-logo">ResQPlate</div>
-          <h1>Welcome back</h1>
-          <p>Sign in to mange listing or browse available listings.</p>
-        </div>
+        {/* Left: brand story panel */}
+        <aside className="auth-info">
+          <div className="auth-brand">
+            <span className="auth-brand-mark" aria-hidden="true" />
+            <span className="auth-brand-text">
+              <b>ResQPlate</b>
+              <span>Expo Line</span>
+            </span>
+          </div>
+
+          <div className="auth-info-body">
+            <h1 className="rq-display">Rescue tonight's surplus food.</h1>
+            <p>
+              Reserve a ticket from kitchens near you, pay what you can, and
+              pick it up before the window closes. Good food, saved from waste.
+            </p>
+          </div>
+
+          <p className="auth-info-foot rq-mono">
+            Surplus food · fair prices · zero waste
+          </p>
+        </aside>
 
         <div className="auth-panel">
-          <h2>Login</h2>
-          <p className="auth-subtitle">Enter your account details to login.</p>
+          <h2 className="rq-display">Welcome back</h2>
+          <p className="auth-subtitle">Sign in to your account to continue.</p>
 
           <form className="auth-form" onSubmit={handleSubmit}>
             <div className="auth-field">
-              <label htmlFor="login-email">Email</label>
+              <label htmlFor="login-email">Email address</label>
               <input
                 id="login-email"
+                className="rq-input"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </div>
+
             <div className="auth-field">
               <label htmlFor="login-password">Password</label>
               <input
                 id="login-password"
+                className="rq-input"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -59,18 +79,19 @@ export function LoginPage() {
               />
             </div>
 
-            {error && <p className="auth-error">{error}</p>}
+            {error && <p className="rq-error">{error}</p>}
 
             <button
-              className="auth-submit"
+              className="rq-btn rq-btn-primary auth-submit"
               type="submit"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "logging in..." : "login"}
+              {isSubmitting ? "Signing in..." : "Sign in"}
             </button>
           </form>
+
           <p className="auth-switch">
-            <Link to="/forgot-password">Forgot password</Link>
+            <Link to="/forgot-password">Forgot password?</Link>
           </p>
           <p className="auth-switch">
             Don't have an account? <Link to="/signup">Sign up</Link>

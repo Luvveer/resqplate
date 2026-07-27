@@ -16,8 +16,25 @@ function formatSlotRange(start: Date | string, end: Date | string): string {
     month: "short",
     day: "numeric",
   });
-  return `${dateLabel}, ${startDate.toLocaleTimeString([], timeOptions)} - ${endDate.toLocaleTimeString([], timeOptions)}`;
+  return `${dateLabel}, ${startDate.toLocaleTimeString([], timeOptions)} – ${endDate.toLocaleTimeString([], timeOptions)}`;
 }
+
+// UI Mapping the reservations status to their status-pill variant
+function statusPill(status: string): string {
+  switch (status) {
+    case "RESERVED":
+      return "rq-pill-herb";
+    case "PICKED_UP":
+      return "rq-pill-stone";
+    case "CANCELLED":
+    case "EXPIRED":
+    case "NO_SHOW":
+      return "rq-pill-ember";
+    default:
+      return "rq-pill-stone";
+  }
+}
+
 export function MyReservationsPage() {
   const [reservations, setReservations] = useState<
     ReservationWithListingResponse[]
@@ -69,95 +86,117 @@ export function MyReservationsPage() {
   }
 
   return (
-    <div className="seeker-page">
-      <header className="seeker-topbar">
-        <div className="seeker-brand">
-          <h1>My Reservations</h1>
-          <p>Your pickup codes and reservation status.</p>
+    <div className="sk-page">
+      <header className="sk-topbar">
+        <div className="sk-brand">
+          <span className="sk-brand-mark" aria-hidden="true" />
+          <span className="sk-brand-text">
+            <b>ResQPlate</b>
+            <span>Expo Line</span>
+          </span>
         </div>
-        <div className="seeker-actions">
-          <Link className="seeker-link-button secondary" to="/seeker">
-            Browse Food
+        <div className="sk-topbar-spacer" />
+        <nav className="sk-nav">
+          <Link className="sk-nav-link" to="/seeker">
+            Browse
           </Link>
-        </div>
+          <Link className="sk-nav-link is-active" to="/seeker/reservations">
+            My tickets
+          </Link>
+          <Link className="sk-nav-link" to="/seeker/profile">
+            Profile
+          </Link>
+        </nav>
       </header>
 
-      <main className="seeker-main">
-        {error && <p className="seeker-error">{error}</p>}
+      <main className="sk-main">
+        <div className="sk-head">
+          <div>
+            <h1 className="rq-display sk-title">My tickets</h1>
+            <p className="sk-sub">
+              Your claimed rescues. Show the pickup code at the counter.
+            </p>
+          </div>
+        </div>
+
+        {error && <p className="rq-error">{error}</p>}
 
         {isLoading ? (
-          <p className="seeker-message">Loading reservations...</p>
+          <p className="sk-message">Loading reservations…</p>
         ) : reservations.length === 0 ? (
-          <section className="seeker-card">
-            <h2>No reservations yet</h2>
-            <p className="seeker-muted">
+          <section className="rq-card sk-empty">
+            <h2 className="rq-display">No tickets yet</h2>
+            <p className="rq-muted">
               Reserve a listing from the browse page to see it here.
             </p>
-            <Link className="seeker-link-button" to="/seeker">
-              Browse Food
+            <Link className="rq-btn rq-btn-primary" to="/seeker">
+              Browse food
             </Link>
           </section>
         ) : (
-          <div className="seeker-grid">
-            {reservations.map((reservation) => (
-              <article key={reservation.id} className="seeker-card">
-                <h2>{reservation.listing?.title ?? "Listing unavailable"}</h2>
-
-                <span
-                  className={`seeker-status ${reservation.status.toLowerCase()}`}
-                >
-                  {reservation.status}
-                </span>
-
-                {/* Pickup code only matters while the reservation is live. */}
-                {reservation.status === "RESERVED" && (
-                  <p className="seeker-code">
-                    Pickup code:{" "}
-                    <strong>{reservation.pickupCodeDisplay ?? "N/A"}</strong>
-                  </p>
-                )}
-
-                <dl className="seeker-meta">
-                  {/* Snapshotted onto the listing when the business created
-                      it, so it's the address as it stood at reservation time
-                      even if the restaurant later moves or edits its profile. */}
-                  {reservation.listing?.addressSnapShot && (
+          <div className="sk-ticket-grid">
+            {reservations.map((reservation) => {
+              const isReserved = reservation.status === "RESERVED";
+              return (
+                <article key={reservation.id} className="sk-ticket">
+                  <div className="sk-ticket-head">
                     <div>
-                      <dt>Pickup address</dt>
-                      <dd>{reservation.listing.addressSnapShot}</dd>
+                      <h2 className="sk-ticket-title">
+                        {reservation.listing?.title ?? "Listing unavailable"}
+                      </h2>
+                    </div>
+                    <span
+                      className={`rq-pill ${statusPill(reservation.status)}`}
+                    >
+                      {reservation.status.replace("_", " ")}
+                    </span>
+                  </div>
+
+                  <dl className="sk-ticket-meta">
+                    {reservation.listing?.addressSnapShot && (
+                      <div>
+                        <dt>Pickup address</dt>
+                        <dd>{reservation.listing.addressSnapShot}</dd>
+                      </div>
+                    )}
+                    <div>
+                      <dt>Pickup slot</dt>
+                      <dd>
+                        {formatSlotRange(
+                          reservation.pickupSlotStart,
+                          reservation.pickupSlotEnd,
+                        )}
+                      </dd>
+                    </div>
+                  </dl>
+                  {isReserved && (
+                    <div className="sk-stub">
+                      <span className="sk-stub-label rq-mono">
+                        ✓ Present at counter
+                      </span>
+                      <div className="sk-stub-code rq-mono">
+                        {reservation.pickupCodeDisplay ?? "N/A"}
+                      </div>
+                      <span className="sk-stub-foot">
+                        Show this code at the counter
+                      </span>
                     </div>
                   )}
-                  {/* The slot the seeker committed to. NOT NULL in the DB, so
-                      no null guard needed — it's always present. */}
-                  <div>
-                    <dt>Pickup slot</dt>
-                    <dd>
-                      {formatSlotRange(
-                        reservation.pickupSlotStart,
-                        reservation.pickupSlotEnd,
-                      )}
-                    </dd>
-                  </div>
-                  <div>
-                    <dt>Reserved</dt>
-                    <dd>{new Date(reservation.reservedAt).toLocaleString()}</dd>
-                  </div>
-                </dl>
 
-                {/* Only a RESERVED reservation can be cancelled. */}
-                {reservation.status === "RESERVED" && (
-                  <button
-                    className="seeker-button danger"
-                    onClick={() => handleCancel(reservation.id)}
-                    disabled={cancellingId === reservation.id}
-                  >
-                    {cancellingId === reservation.id
-                      ? "Cancelling..."
-                      : "Cancel"}
-                  </button>
-                )}
-              </article>
-            ))}
+                  {isReserved && (
+                    <button
+                      className="sk-ticket-cancel"
+                      onClick={() => handleCancel(reservation.id)}
+                      disabled={cancellingId === reservation.id}
+                    >
+                      {cancellingId === reservation.id
+                        ? "Cancelling…"
+                        : "Cancel reservation"}
+                    </button>
+                  )}
+                </article>
+              );
+            })}
           </div>
         )}
       </main>

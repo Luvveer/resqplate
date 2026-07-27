@@ -39,17 +39,30 @@ export function ResetPasswordPage() {
   return (
     <main className="auth-page">
       <section className="auth-shell">
-        <div className="auth-info">
-          <div className="auth-logo">ResQplate</div>
-          <h1>Set a new password</h1>
-          <p>Choose a new password for your account.</p>
-        </div>
+        <aside className="auth-info">
+          <div className="auth-brand">
+            <span className="auth-brand-mark" aria-hidden="true" />
+            <span className="auth-brand-text">
+              <b>ResQPlate</b>
+              <span>Expo Line</span>
+            </span>
+          </div>
+
+          <div className="auth-info-body">
+            <h1 className="rq-display">Set a new password.</h1>
+            <p>Choose a new password for your account.</p>
+          </div>
+
+          <p className="auth-info-foot rq-mono">
+            Surplus food · fair prices · zero waste
+          </p>
+        </aside>
 
         <div className="auth-panel">
-          <h2>Reset Password</h2>
+          <h2 className="rq-display">Reset password</h2>
 
           {!token ? (
-            <p>
+            <p className="rq-error">
               This reset link is invalid or has expired.{" "}
               <Link to="/forgot-password">Request a new one</Link>
             </p>
@@ -58,19 +71,22 @@ export function ResetPasswordPage() {
               <div className="auth-field">
                 <label htmlFor="reset-new-password">New password</label>
                 <input
-                  type="password"
                   id="reset-new-password"
+                  className="rq-input"
+                  type="password"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   required
                   minLength={8}
                 />
               </div>
+
               <div className="auth-field">
                 <label htmlFor="reset-confirm-password">Confirm password</label>
                 <input
-                  type="password"
                   id="reset-confirm-password"
+                  className="rq-input"
+                  type="password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
@@ -78,10 +94,10 @@ export function ResetPasswordPage() {
                 />
               </div>
 
-              {error && <p className="auth-error">{error}</p>}
+              {error && <p className="rq-error">{error}</p>}
 
               <button
-                className="auth-form"
+                className="rq-btn rq-btn-primary auth-submit"
                 type="submit"
                 disabled={isSubmitting}
               >
@@ -89,6 +105,10 @@ export function ResetPasswordPage() {
               </button>
             </form>
           )}
+
+          <p className="auth-switch">
+            Remembered your password? <Link to="/login">Log in</Link>
+          </p>
         </div>
       </section>
     </main>
