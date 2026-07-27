@@ -78,6 +78,7 @@ export async function findAvailableListings(
     eq(foodListingsTable.status, "AVAILABLE"),
     gt(foodListingsTable.quantityAvailable, 0),
     gt(foodListingsTable.pickupEnd, now),
+    eq(restaurantProfilesTable.verificationStatus, "APPROVED"),
   ];
 
   if (query.city) {

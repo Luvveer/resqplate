@@ -1,6 +1,8 @@
-import { describe, it, expect } from "vitest";
+import { describe, it } from "node:test";
+import assert from "node:assert/strict";
+
 describe("auth service", () => {
   it("testing", () => {
-    expect(1 + 1).toBe(2);
+    assert.equal(1 + 1, 2);
   });
 });
