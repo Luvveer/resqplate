@@ -1,6 +1,6 @@
 /* Seeker pages — mirrors Business.css palette and components for consistency. */
 
-.seeker-page {
+/* .seeker-page {
   min-height: 100vh;
   background: #f5f7f4;
   color: #1f2933;
@@ -39,7 +39,7 @@
 }
 
 /* Buttons — same variants as business (primary / secondary / danger). */
-.seeker-button,
+/* .seeker-button,
 .seeker-link-button {
   border: none;
   border-radius: 8px;
@@ -67,10 +67,10 @@
 .seeker-button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
-}
+} */
 
 /* Filter bar. */
-.seeker-filters {
+/* .seeker-filters {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
@@ -91,10 +91,10 @@
 .seeker-input:focus {
   outline: 2px solid #88b99a;
   border-color: #315c45;
-}
+} */
 
 /* Card grid — the seeker pages use cards instead of the business table. */
-.seeker-grid {
+/* .seeker-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 18px;
@@ -118,10 +118,10 @@
 .seeker-muted {
   color: #667085;
   font-size: 14px;
-}
+} */
 
 /* Definition-list metadata rows inside a card. */
-.seeker-meta {
+/* .seeker-meta {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
@@ -151,10 +151,10 @@
 .seeker-code {
   font-size: 15px;
   margin: 0;
-}
+} */
 
 /* Status pills — identical colors to business statuses. */
-.seeker-status {
+/* .seeker-status {
   display: inline-block;
   align-self: flex-start;
   border-radius: 999px;
@@ -178,10 +178,10 @@
 .seeker-status.no_show {
   background: #fff1f1;
   color: #b42318;
-}
+} */
 
 /* Banners. */
-.seeker-notice {
+/* .seeker-notice {
   background: #e7f6ec;
   color: #237a3b;
   padding: 12px 14px;
@@ -217,11 +217,11 @@
   border-radius: 9px;
   object-fit: cover;
   background: #edf1ed;
-}
+} */
 
 /* This is the map css */
 
-.seeker-map-wrap {
+/* .seeker-map-wrap {
   position: relative;
   width: 100%;
   height: 460px;
@@ -229,11 +229,11 @@
   border-radius: 10px;
   overflow: hidden;
   background: #edf1ed;
-}
+} */
 
 /* Fullscreen: pin to the viewport above everything. inset:0 defines the box,
    so height reverts to auto; the border/radius are dropped at full bleed. */
-.seeker-map-wrap--full {
+/* .seeker-map-wrap--full {
   position: fixed;
   inset: 0;
   height: auto;
@@ -243,13 +243,13 @@
 }
 
 /* Leaflet's root element must fill the wrapper. */
-.seeker-map-wrap .leaflet-container {
+/* .seeker-map-wrap .leaflet-container {
   height: 100%;
   width: 100%;
-}
+} */
 
 /* Floating toggle. */
-.seeker-map-toggle {
+/* .seeker-map-toggle {
   position: absolute;
   top: 12px;
   right: 12px;
@@ -265,7 +265,7 @@
 }
 
 /* Centered so it clears Leaflet's top-left zoom control. */
-.seeker-map-empty {
+/* .seeker-map-empty {
   position: absolute;
   top: 12px;
   left: 50%;
@@ -278,10 +278,10 @@
   border-radius: 8px;
   border: 1px solid #dfe7dc;
   font-size: 13px;
-}
+}  */
 
 /* ---- Map popups ---- */
-
+/* 
 .leaflet-popup-content .seeker-map-popup-address {
   color: #667085;
   font-size: 12px;
@@ -293,16 +293,16 @@
   font-size: 13px;
   /* A busy restaurant could list a dozen items; scroll rather than run the
      popup off the top of the map. */
-  max-height: 140px;
+/* max-height: 140px;
   overflow-y: auto;
 }
 
 .leaflet-popup-content .seeker-map-popup-list li {
   margin-bottom: 2px;
-}
+}  */
 
 /* Matches the primary seeker button, scaled down for the popup. */
-.leaflet-popup-content .seeker-map-popup-button {
+/* .leaflet-popup-content .seeker-map-popup-button {
   width: 100%;
   border: none;
   border-radius: 8px;
@@ -316,11 +316,11 @@
 
 .leaflet-popup-content .seeker-map-popup-button:hover {
   background: #264737;
-}
+} */
 
 /* ---- Focused-restaurant banner ---- */
 
-.seeker-focus-banner {
+/* .seeker-focus-banner {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -332,10 +332,10 @@
   border-left: 4px solid #315c45;
   border-radius: 10px;
   background: #f4f7f4;
-}
+} */
 
 /* The banner sets its own spacing; kill the paragraph's default margin. */
-.seeker-focus-banner p {
+/* .seeker-focus-banner p {
   margin: 0;
 }
 
@@ -366,7 +366,7 @@
 }
 
 /* Seeker profile page */
-.seeker-profile-card {
+/* .seeker-profile-card {
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -425,7 +425,7 @@
 .seeker-chip-remove:hover {
   background: #315c45;
   color: white;
-}
+}  */
 
 /* Redone Css*/
 
