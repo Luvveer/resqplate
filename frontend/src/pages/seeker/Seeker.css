@@ -966,3 +966,74 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* The seeker profile  */
+.sk-profile {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  box-shadow: var(--shadow);
+  padding: 24px;
+  max-width: 560px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.sk-profile-signed {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--stone-2);
+  letter-spacing: 0.04em;
+}
+.sk-profile-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.sk-profile-field > label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.sk-chip-input {
+  display: flex;
+  gap: 8px;
+}
+.sk-chip-input .rq-input {
+  flex: 1;
+}
+.sk-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+}
+.sk-chip {
+  padding-right: 8px;
+}
+.sk-chip-x {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
+  font-size: 14px;
+  line-height: 1;
+  padding: 0;
+}
+.sk-chip-x:hover {
+  background: rgba(255, 255, 255, 0.45);
+}
+.sk-chip-empty {
+  margin: 4px 0 0;
+  font-size: 13.5px;
+}
+.sk-profile-save {
+  align-self: flex-start;
+}

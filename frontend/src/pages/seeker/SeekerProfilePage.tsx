@@ -96,10 +96,12 @@ export function SeekerProfilePage() {
           ? updated.dietaryPreferences
           : [],
       );
-      setNotice("Profile updated.");
+      setNotice("Yes !! The Profile is correctly updated.");
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Failed to update your profile.",
+        err instanceof Error
+          ? err.message
+          : "Sorry !! Failed to update your profile.",
       );
     } finally {
       setIsSaving(false);
@@ -107,50 +109,70 @@ export function SeekerProfilePage() {
   }
 
   return (
-    <div className="seeker-page">
-      <header className="seeker-topbar">
-        <div className="seeker-brand">
-          <h1>My Profile</h1>
-          <p>Update your name and dietary preferences.</p>
+    <div className="sk-page">
+      <header className="sk-topbar">
+        <div className="sk-brand">
+          <span className="sk-brand-mark" aria-hidden="true" />
+          <span className="sk-brand-text">
+            <b>ResQPlate</b>
+            <span>Expo Line</span>
+          </span>
         </div>
-        <div className="seeker-actions">
-          <Link className="seeker-link-button secondary" to="/seeker">
-            Back to listings
+        <div className="sk-topbar-spacer" />
+        <nav className="sk-nav">
+          <Link className="sk-nav-link" to="/seeker">
+            Browse
           </Link>
-        </div>
+          <Link className="sk-nav-link" to="/seeker/reservations">
+            My tickets
+          </Link>
+          <Link className="sk-nav-link is-active" to="/seeker/profile">
+            Profile
+          </Link>
+        </nav>
       </header>
 
-      <main className="seeker-main">
-        {notice && <p className="seeker-notice">{notice}</p>}
-        {error && <p className="seeker-error">{error}</p>}
+      <main className="sk-main">
+        <div className="sk-head">
+          <div>
+            <h1 className="rq-display sk-title">My profile</h1>
+            <p className="sk-sub">Update your name and dietary preferences.</p>
+          </div>
+        </div>
+
+        {notice && <p className="rq-notice">{notice}</p>}
+        {error && <p className="rq-error">{error}</p>}
 
         {isLoading ? (
-          <p className="seeker-message">Loading your profile...</p>
+          <p className="sk-message">Loading your profile…</p>
         ) : !profile ? (
-          <section className="seeker-card">
-            <h2>Could not load profile</h2>
-            <p className="seeker-muted">Please try again later.</p>
+          <section className="rq-card sk-empty">
+            <h2 className="rq-display">Could not load profile</h2>
+            <p className="rq-muted">Please try again later.</p>
           </section>
         ) : (
-          <section className="seeker-card seeker-profile-card">
-            {/* Email is identity, not editable here. */}
-            <p className="seeker-muted">Signed in as {profile.email}</p>
+          <section className="sk-profile">
+            <p className="sk-profile-signed rq-mono">
+              Signed in as {profile.email}
+            </p>
 
-            <label className="seeker-slot-label">
-              Name
+            <div className="sk-profile-field">
+              <label htmlFor="pf-name">Name</label>
               <input
-                className="seeker-input"
+                id="pf-name"
+                className="rq-input"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 maxLength={255}
               />
-            </label>
+            </div>
 
-            <label className="seeker-slot-label">
-              Dietary preferences
-              <div className="seeker-chip-input">
+            <div className="sk-profile-field">
+              <label htmlFor="pf-diet">Dietary preferences</label>
+              <div className="sk-chip-input">
                 <input
-                  className="seeker-input"
+                  id="pf-diet"
+                  className="rq-input"
                   placeholder="e.g. vegan, halal, no nuts"
                   value={draftTag}
                   onChange={(e) => setDraftTag(e.target.value)}
@@ -159,40 +181,42 @@ export function SeekerProfilePage() {
                 />
                 <button
                   type="button"
-                  className="seeker-button"
+                  className="rq-btn rq-btn-ghost"
                   onClick={() => addTag()}
                 >
                   Add
                 </button>
               </div>
-            </label>
 
-            {preferences.length > 0 ? (
-              <ul className="seeker-chip-list">
-                {preferences.map((tag) => (
-                  <li key={tag} className="seeker-chip">
-                    {tag}
-                    <button
-                      type="button"
-                      className="seeker-chip-remove"
-                      aria-label={`Remove ${tag}`}
-                      onClick={() => removeTag(tag)}
-                    >
-                      ×
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="seeker-muted">No dietary preferences added yet.</p>
-            )}
+              {preferences.length > 0 ? (
+                <ul className="sk-chip-list">
+                  {preferences.map((tag) => (
+                    <li key={tag} className="rq-chip on sk-chip">
+                      {tag}
+                      <button
+                        type="button"
+                        className="sk-chip-x"
+                        aria-label={`Remove ${tag}`}
+                        onClick={() => removeTag(tag)}
+                      >
+                        ×
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="rq-muted sk-chip-empty">
+                  No dietary preferences added yet.
+                </p>
+              )}
+            </div>
 
             <button
-              className="seeker-button"
+              className="rq-btn rq-btn-primary sk-profile-save"
               onClick={() => handleSave()}
               disabled={isSaving}
             >
-              {isSaving ? "Saving..." : "Save changes"}
+              {isSaving ? "Saving…" : "Save changes"}
             </button>
           </section>
         )}
