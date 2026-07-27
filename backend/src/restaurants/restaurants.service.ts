@@ -27,6 +27,10 @@ import {
   resolveAddress,
 } from "../external-services/places/places.service.js";
 import { expireReservationForFoodListing } from "../reservations/reservations.repository.js";
+import {
+  safeRemoveListingFromAlgolia,
+  safeSyncingToAlgolia,
+} from "../external-services/algolia/algolia.service.js";
 
 export async function getMyRestaurant(
   profileId: string,
@@ -185,6 +189,8 @@ export async function createMyListing(
     await replaceListingAllergens(listing.id, allergenIds);
   }
 
+  await safeSyncingToAlgolia(listing.id);
+
   return attachAllergens(listing);
 }
 
@@ -225,6 +231,8 @@ export async function updateMyListing(
   if (allergenIds !== undefined) {
     await replaceListingAllergens(updatedlisting.id, allergenIds);
   }
+
+  await safeSyncingToAlgolia(updatedlisting.id);
 
   return attachAllergens(updatedlisting);
 }
@@ -297,6 +305,8 @@ export async function expireMyListing(
   }
 
   await expireReservationForFoodListing(listingId);
+
+  await safeRemoveListingFromAlgolia(updatedlisting.id);
 
   return attachAllergens(updatedlisting);
 }

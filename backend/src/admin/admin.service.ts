@@ -8,6 +8,7 @@ import type {
   VerificationStatus,
 } from "./admin.types.js";
 import type { AdminVerificationActionInput } from "@resqplate/shared";
+import { safeSyncRestaurantListingsToAlgolia } from "../external-services/algolia/algolia.service.js";
 
 export async function getRestaurantProfiles(
   status?: VerificationStatus,
@@ -41,6 +42,8 @@ async function updateRestaurantStatus(
   if (!restaurant) {
     throw new Error("Failed to update restaurant verification status");
   }
+
+  await safeSyncRestaurantListingsToAlgolia(restaurant.id);
 
   return restaurant;
 }

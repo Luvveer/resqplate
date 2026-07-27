@@ -13,6 +13,7 @@ import type {
 } from "./reservations.types.js";
 import { findMatchingPickupSlot } from "@resqplate/shared";
 import type { CreateReservationInput } from "@resqplate/shared";
+import { safeSyncingToAlgolia } from "../external-services/algolia/algolia.service.js";
 
 // Constraint for the pickup code to be a 6 6 chars from a 31-char alphabet
 const PICKUP_CODE_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
@@ -72,13 +73,16 @@ export async function createReservation(
   const pickupCodeDisplay = generatePickupCode();
 
   // Reserve the listing atomically
-  const { reservation } = await reserveListingAtomically({
-    profileId,
-    listingId: input.listingId,
-    pickupCodeDisplay,
-    pickupSlotStart: slot.start,
-    pickupSlotEnd: slot.end,
-  });
+  const { reservation, listing: updatedListing } =
+    await reserveListingAtomically({
+      profileId,
+      listingId: input.listingId,
+      pickupCodeDisplay,
+      pickupSlotStart: slot.start,
+      pickupSlotEnd: slot.end,
+    });
+
+  await safeSyncingToAlgolia(updatedListing.id);
 
   return reservation;
 }
@@ -113,5 +117,12 @@ export async function cancelReservation(
     );
   }
 
-  return cancelReservationAtomically(reservation.id, reservation.listingId);
+  const cancelledReservation = await cancelReservationAtomically(
+    reservation.id,
+    reservation.listingId,
+  );
+
+  await safeSyncingToAlgolia(reservation.listingId);
+
+  return cancelledReservation;
 }

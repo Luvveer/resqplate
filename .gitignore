@@ -7,3 +7,5 @@ dist/
 build/
 ./husky/_/
 uploads/
+/backend/src/db/algolia-test-seed.ts
+coverage/
