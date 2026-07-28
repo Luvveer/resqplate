@@ -1,7 +1,7 @@
 .admin-page {
   min-height: 100vh;
-  background: #f5f7f4;
-  color: #1f2933;
+  background: var(--paper);
+  color: var(--ink);
   overflow-y: auto;
 }
 
@@ -11,8 +11,8 @@
   justify-content: space-between;
   gap: 16px;
   padding: 18px 32px;
-  background: #ffffff;
-  border-bottom: 1px solid #dfe7dc;
+  background: var(--ink);
+  border-bottom: none;
 }
 
 .admin-brand {
@@ -24,12 +24,12 @@
   margin: 0;
   font-size: 22px;
   font-weight: 800;
-  color: #315c45;
+  color: #ffffff;
 }
 
 .admin-brand-subtitle {
   margin: 0;
-  color: #667085;
+  color: var(--stone-2);
   font-size: 14px;
 }
 
@@ -44,9 +44,9 @@
 }
 
 .admin-logout {
-  border: 1px solid #cfd8cf;
-  background: white;
-  color: #315c45;
+  border: 1px solid var(--ink-line);
+  background: var(--ink-2);
+  color: #f4efe3;
   border-radius: 8px;
   padding: 9px 14px;
   font-weight: 700;
@@ -79,12 +79,16 @@
 
 .admin-refresh {
   border: none;
-  background: #315c45;
+  background: var(--herb);
   color: white;
   border-radius: 8px;
   padding: 11px 16px;
   font-weight: 700;
   cursor: pointer;
+}
+
+.admin-referesh:hover:not(:disabled) {
+  background: var(--herb-deep);
 }
 
 .admin-refresh:disabled {
@@ -100,8 +104,8 @@
 }
 
 .admin-stat-card {
-  background: white;
-  border: 1px solid #dfe7dc;
+  background: var(--card);
+  border: 1px solid var(--line);
   border-radius: 10px;
   padding: 18px;
 }
@@ -116,12 +120,12 @@
   margin: 0;
   font-size: 28px;
   font-weight: 800;
-  color: #315c45;
+  color: var(--ink);
 }
 
 .admin-panel {
-  background: white;
-  border: 1px solid #dfe7dc;
+  background: var(--card);
+  border: 1px solid var(--line);
   border-radius: 10px;
   overflow: hidden;
 }
@@ -132,7 +136,7 @@
   align-items: center;
   gap: 14px;
   padding: 18px;
-  border-bottom: 1px solid #e7ede5;
+  border-bottom: 1px solid var(--line);
 }
 
 .admin-panel-header h3 {
@@ -158,8 +162,8 @@
 }
 
 .admin-filter-button.active {
-  background: #315c45;
-  border-color: #315c45;
+  background: var(--herb);
+  border-color: var(--herb);
   color: white;
 }
 
@@ -167,8 +171,8 @@
   margin: 18px;
   padding: 12px 14px;
   border-radius: 8px;
-  background: #eef4ee;
-  color: #315c45;
+  background: #efe7d6;
+  color: var(--herb-deep);
 }
 
 .admin-error {
@@ -229,8 +233,8 @@
 }
 
 .admin-status.pending {
-  background: #fff7df;
-  color: #936300;
+  background: #efe7d6;
+  color: var(--herb);
 }
 
 .admin-status.approved {
@@ -281,8 +285,8 @@
 }
 
 .admin-action.approve {
-  background: #315c45;
-  border-color: #315c45;
+  background: var(--herb);
+  border-color: var(--herb);
   color: white;
 }
 
