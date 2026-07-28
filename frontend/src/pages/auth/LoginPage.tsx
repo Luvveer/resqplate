@@ -33,20 +33,19 @@ export function LoginPage() {
             <span className="auth-brand-mark" aria-hidden="true" />
             <span className="auth-brand-text">
               <b>ResQPlate</b>
-              <span>Expo Line</span>
             </span>
           </div>
 
           <div className="auth-info-body">
             <h1 className="rq-display">Rescue tonight's surplus food.</h1>
             <p>
-              Reserve a ticket from kitchens near you, pay what you can, and
-              pick it up before the window closes. Good food, saved from waste.
+              Reserve a food item from kitchens near you, pick it up before the
+              window closes. Good food, saved from waste.
             </p>
           </div>
 
           <p className="auth-info-foot rq-mono">
-            Surplus food · fair prices · zero waste
+            Surplus food | fair prices | zero waste
           </p>
         </aside>
 

@@ -278,7 +278,6 @@ export function BrowseListingsPage() {
           <span className="sk-brand-mark" aria-hidden="true" />
           <span className="sk-brand-text">
             <b>ResQPlate</b>
-            <span>Expo Line</span>
           </span>
         </div>
 
@@ -325,7 +324,7 @@ export function BrowseListingsPage() {
             Browse
           </Link>
           <Link className="sk-nav-link" to="/seeker/reservations">
-            My tickets
+            My Reservations
           </Link>
           <Link className="sk-nav-link" to="/seeker/profile">
             Profile
@@ -341,12 +340,12 @@ export function BrowseListingsPage() {
           <div>
             <h1 className="rq-display sk-title">Tonight's rescues</h1>
             <p className="sk-sub">
-              Surplus food from kitchens near you. Reserve a ticket, pay what
+              Surplus food from kitchens near you. Reserve an item, and pay what
               you can, pick it up before the window closes.
             </p>
           </div>
           {origin && (
-            <span className="rq-loc">📍 near you · sorted by distance</span>
+            <span className="rq-loc">📍 near you | sorted by distance</span>
           )}
         </div>
 
@@ -433,8 +432,8 @@ export function BrowseListingsPage() {
         </section>
 
         <p className="sk-allergen-note">
-          ⚠ Allergen info is provided by each kitchen — cross-contamination is
-          possible.
+          ⚠ Allergen info is provided by each kitchen, and remember that
+          cross-contamination is possible.
         </p>
 
         {notice && <p className="rq-notice">{notice}</p>}

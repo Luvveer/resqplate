@@ -44,7 +44,6 @@ export function ResetPasswordPage() {
             <span className="auth-brand-mark" aria-hidden="true" />
             <span className="auth-brand-text">
               <b>ResQPlate</b>
-              <span>Expo Line</span>
             </span>
           </div>
 

@@ -31,7 +31,6 @@ export function ForgotPasswordPage() {
             <span className="auth-brand-mark" aria-hidden="true" />
             <span className="auth-brand-text">
               <b>ResQPlate</b>
-              <span>Expo Line</span>
             </span>
           </div>
 
@@ -41,7 +40,7 @@ export function ForgotPasswordPage() {
           </div>
 
           <p className="auth-info-foot rq-mono">
-            Surplus food · fair prices · zero waste
+            Surplus food | fair prices | zero waste
           </p>
         </aside>
 
