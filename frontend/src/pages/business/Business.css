@@ -88,9 +88,20 @@
   cursor: pointer;
 }
 
-.business-button:hover:not(:disabled),
-.business-link-button:hover:not(:disabled) {
+.business-button:not(.secondary):not(.danger):hover:not(:disabled),
+.business-link-button:not(.secondary):hover:not(:disabled) {
   background: var(--herb-deep);
+}
+
+.business-button.secondary:hover:not(:disabled),
+.business-link-button.secondary:hover:not(:disabled) {
+  background: #efeae0;
+  border-color: var(--stone-2);
+}
+
+.business-button.danger:hover:not(:disabled) {
+  background: #f7ddd2;
+  border-color: var(--ember);
 }
 
 .business-button.secondary,
