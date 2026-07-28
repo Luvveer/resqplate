@@ -340,8 +340,8 @@ export function BrowseListingsPage() {
           <div>
             <h1 className="rq-display sk-title">Tonight's rescues</h1>
             <p className="sk-sub">
-              Surplus food from kitchens near you. Reserve an item, and pay what
-              you can, pick it up before the window closes.
+              Surplus food from kitchens near you. Reserve an item, pick it up
+              before the window closes.
             </p>
           </div>
           {origin && (

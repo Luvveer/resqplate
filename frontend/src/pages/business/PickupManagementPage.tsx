@@ -147,8 +147,11 @@ export function PickupManagementPage() {
     <div className="business-page">
       <header className="business-topbar">
         <div className="business-brand">
-          <h1>Reservations</h1>
-          <p>Confirm pickups and manage no-shows.</p>
+          <span className="business-brand-mark" aria-hidden="true" />
+          <div className="business-brand-text">
+            <h1>Reservations</h1>
+            <p>Confirm pickups and manage no-shows.</p>
+          </div>
         </div>
         <div className="business-actions">
           <Link className="business-link-button secondary" to="/business">

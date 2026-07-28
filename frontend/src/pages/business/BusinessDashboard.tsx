@@ -109,8 +109,11 @@ export function BusinessDashboard() {
     <div className="business-page">
       <header className="business-topbar">
         <div className="business-brand">
-          <h1>ResQPlate Business</h1>
-          <p>Restaurant dashboard</p>
+          <span className="business-brand-mark" aria-hidden="true" />
+          <div className="business-brand-text">
+            <h1>ResQPlate Business</h1>
+            <p>Restaurant dashboard</p>
+          </div>
         </div>
 
         <div className="business-brand">

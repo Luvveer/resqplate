@@ -59,8 +59,11 @@ export function BusinessListingsPage() {
     <div className="business-page">
       <header className="business-topbar">
         <div className="business-brand">
-          <h1>Food Listings</h1>
-          <p>Create and manage available pickup listings.</p>
+          <span className="business-brand-mark" aria-hidden="true" />
+          <div className="business-brand-text">
+            <h1>Food Listings</h1>
+            <p>Create and manage available pickup listings.</p>
+          </div>
         </div>
 
         <div className="business-actions">
