@@ -1,7 +1,7 @@
 .business-page {
   min-height: 100vh;
-  background: #f5f2ec;
-  color: #1f2933;
+  background: var(--paper);
+  color: var(--ink);
 }
 
 .business-topbar {
@@ -9,7 +9,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 18px 32px;
-  background: #1c1410;
+  background: var(--ink);
   border-bottom: none;
 }
 
@@ -46,8 +46,8 @@
 }
 
 .business-card {
-  background: white;
-  border: 1px solid #e5ddd0;
+  background: var(--card);
+  border: 1px solid var(--line);
   border-radius: 10px;
   padding: 22px;
 }
@@ -81,22 +81,27 @@
   border: none;
   border-radius: 8px;
   padding: 10px 16px;
-  background: #d9631f;
+  background: var(--herb);
   color: white;
   font-weight: 700;
   text-decoration: none;
   cursor: pointer;
 }
 
+.business-button:hover:not(:disabled),
+.business-link-button:hover:not(:disabled) {
+  background: var(--herb-deep);
+}
+
 .business-button.secondary,
 .business-link-button.secondary {
-  background: white;
+  background: var(--card);
   color: #1c1410;
   border: 1px solid #d9d2c8;
 }
 
 .business-button.danger {
-  background: white;
+  background: var(--card);
   color: #b42318;
   border: 1px solid #f0b8b8;
 }
@@ -116,8 +121,8 @@
 
 .business-status.available,
 .business-status.approved {
-  background: #e7f6ec;
-  color: #237a3b;
+  background: #efe7d6;
+  color: var(--herb);
 }
 
 .business-status.pending {
@@ -140,8 +145,8 @@
   color: #b42318;
 }
 .business-status.picked_up {
-  background: #e7f6ec;
-  color: #237a3b;
+  background: #efe7d6;
+  color: var(--herb);
 }
 
 .business-status.no_show {
@@ -149,8 +154,8 @@
   color: #b42318;
 }
 .business-message {
-  background: #eef4ee;
-  color: #315c45;
+  background: #efe7d6;
+  color: var(--herb-deep);
   padding: 12px 14px;
   border-radius: 8px;
 }
@@ -164,8 +169,8 @@
 
 .business-table-wrap {
   overflow-x: auto;
-  background: white;
-  border: 1px solid #e5ddd0;
+  background: var(--card);
+  border: 1px solid var(--line);
   border-radius: 10px;
 }
 
@@ -224,8 +229,8 @@
 }
 
 .business-form-card {
-  background: white;
-  border: 1px solid #e5ddd0;
+  background: var(--card);
+  border: 1px solid var(--line);
   border-radius: 12px;
   padding: 0;
   overflow: hidden;
@@ -302,7 +307,7 @@
   padding: 11px 12px;
   font: inherit;
   color: #1f2933;
-  background: white;
+  background: var(--card);
 }
 
 .business-field textarea {
@@ -313,7 +318,7 @@
 .business-field input:focus,
 .business-field textarea:focus {
   outline: 2px solid #e8a87c;
-  border-color: #d9631f;
+  border-color: var(--herb);
 }
 
 .business-field-full {
@@ -352,11 +357,11 @@
   border: 1px solid #d1d5db;
   border-radius: 0.4rem;
   cursor: pointer;
-  background: white;
+  background: var(--card);
 }
 
 .business-allergen-option:hover {
-  border-color: #315c45;
+  border-color: var(--herb);
   background: #f5f7f4;
 }
 
@@ -365,10 +370,10 @@
   margin: 0;
 }
 .business-allergen-panel {
-  border: 1px solid #e5ddd0;
+  border: 1px solid var(--line);
   border-radius: 10px;
   padding: 16px 18px;
-  background: #faf8f4;
+  background: var(--card);
   margin: 0;
 }
 
@@ -429,7 +434,7 @@
   padding: 10px 12px;
   font: inherit;
   color: #1f2933;
-  background: white;
+  background: var(--card);
 }
 
 .address-suggestions {
@@ -443,7 +448,7 @@
   padding: 0;
   overflow-y: auto;
   list-style: none;
-  background: white;
+  background: var(--card);
   border: 1px solid #cfd8cf;
   border-radius: 7px;
   box-shadow: 0 12px 25px rgb(0 0 0 / 10%);
@@ -457,7 +462,7 @@
   width: 100%;
   padding: 15px;
   border: 0;
-  background: white;
+  background: var(--card);
   color: #1f2933;
   font: inherit;
   text-align: left;
@@ -477,7 +482,7 @@
 
 .business-button.primary-dark {
   flex: 1;
-  background: #d9631f;
+  background: var(--herb);
   justify-content: center;
   text-align: center;
 }
@@ -498,8 +503,8 @@
 }
 
 .business-search-input:focus {
-  outline: 2px solid #d9631f;
-  border-color: #d9631f;
+  outline: 2px solid var(--herb);
+  border-color: var(--herb);
 }
 
 .business-actions {
@@ -518,8 +523,8 @@
   flex-direction: column;
   gap: 6px;
   padding: 22px;
-  background: white;
-  border: 1px solid #e5ddd0;
+  background: var(--card);
+  border: 1px solid var(--line);
   border-radius: 12px;
   text-decoration: none;
   color: inherit;
@@ -550,7 +555,7 @@
 }
 
 .business-nav-link {
-  color: #237a3b;
+  color: var(--herb);
   font-weight: 700;
   font-size: 14px;
 }
