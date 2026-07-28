@@ -218,65 +218,38 @@ export function PickupManagementPage() {
                       { hour: "2-digit", minute: "2-digit" },
                     )}
                   </td>
-                  <td className="business-actions">
-                    {reservation.status === "RESERVED" && (
-                      <>
-                        {confirmId === reservation.id ? (
-                          <>
-                            <input
-                              type="text"
-                              className="business-link-button secondary"
-                              placeholder="Enter code"
-                              value={pickupCodeInput}
-                              onChange={(e) =>
-                                setpickupCodeInput(e.target.value)
-                              }
-                              onKeyDown={(e) => {
-                                if (e.key === "Enter") {
-                                  handleConfirm(reservation.id);
-                                }
-                              }}
-                            />
-                            <button
-                              className="business-button"
-                              disabled={updatingId === reservation.id}
-                              onClick={() => handleConfirm(reservation.id)}
-                            >
-                              {updatingId === reservation.id
-                                ? "Updating..."
-                                : "Confirm"}
-                            </button>
-                            <button
-                              className="business-link-button secondary"
-                              onClick={() => setconfirmId(null)}
-                            >
-                              Cancel
-                            </button>
-                          </>
-                        ) : (
-                          <button
-                            className="business-button"
-                            onClick={() => setconfirmId(reservation.id)}
-                          >
-                            Pick up
-                          </button>
-                        )}
-
-                        {confirmId !== reservation.id &&
-                          (confirmNoShow === reservation.id ? (
+                  <td>
+                    <div className="business-row-actions">
+                      {reservation.status === "RESERVED" && (
+                        <>
+                          {confirmId === reservation.id ? (
                             <>
-                              <button
+                              <input
+                                type="text"
                                 className="business-link-button secondary"
+                                placeholder="Enter code"
+                                value={pickupCodeInput}
+                                onChange={(e) =>
+                                  setpickupCodeInput(e.target.value)
+                                }
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter") {
+                                    handleConfirm(reservation.id);
+                                  }
+                                }}
+                              />
+                              <button
+                                className="business-button"
                                 disabled={updatingId === reservation.id}
-                                onClick={() => handleNoShow(reservation.id)}
+                                onClick={() => handleConfirm(reservation.id)}
                               >
                                 {updatingId === reservation.id
                                   ? "Updating..."
-                                  : "Confirm No-show"}
+                                  : "Confirm"}
                               </button>
                               <button
-                                className="business-button"
-                                onClick={() => setconfirmNoShow(null)}
+                                className="business-link-button secondary"
+                                onClick={() => setconfirmId(null)}
                               >
                                 Cancel
                               </button>
@@ -284,13 +257,42 @@ export function PickupManagementPage() {
                           ) : (
                             <button
                               className="business-button"
-                              onClick={() => setconfirmNoShow(reservation.id)}
+                              onClick={() => setconfirmId(reservation.id)}
                             >
-                              No-Show
+                              Pick up
                             </button>
-                          ))}
-                      </>
-                    )}
+                          )}
+
+                          {confirmId !== reservation.id &&
+                            (confirmNoShow === reservation.id ? (
+                              <>
+                                <button
+                                  className="business-link-button secondary"
+                                  disabled={updatingId === reservation.id}
+                                  onClick={() => handleNoShow(reservation.id)}
+                                >
+                                  {updatingId === reservation.id
+                                    ? "Updating..."
+                                    : "Confirm No-show"}
+                                </button>
+                                <button
+                                  className="business-button"
+                                  onClick={() => setconfirmNoShow(null)}
+                                >
+                                  Cancel
+                                </button>
+                              </>
+                            ) : (
+                              <button
+                                className="business-button"
+                                onClick={() => setconfirmNoShow(reservation.id)}
+                              >
+                                No-Show
+                              </button>
+                            ))}
+                        </>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
