@@ -92,7 +92,6 @@ export function MyReservationsPage() {
           <span className="sk-brand-mark" aria-hidden="true" />
           <span className="sk-brand-text">
             <b>ResQPlate</b>
-            <span>Expo Line</span>
           </span>
         </div>
         <div className="sk-topbar-spacer" />
@@ -101,7 +100,7 @@ export function MyReservationsPage() {
             Browse
           </Link>
           <Link className="sk-nav-link is-active" to="/seeker/reservations">
-            My tickets
+            My reservations
           </Link>
           <Link className="sk-nav-link" to="/seeker/profile">
             Profile
@@ -112,7 +111,7 @@ export function MyReservationsPage() {
       <main className="sk-main">
         <div className="sk-head">
           <div>
-            <h1 className="rq-display sk-title">My tickets</h1>
+            <h1 className="rq-display sk-title">My reservations</h1>
             <p className="sk-sub">
               Your claimed rescues. Show the pickup code at the counter.
             </p>
@@ -125,7 +124,7 @@ export function MyReservationsPage() {
           <p className="sk-message">Loading reservations…</p>
         ) : reservations.length === 0 ? (
           <section className="rq-card sk-empty">
-            <h2 className="rq-display">No tickets yet</h2>
+            <h2 className="rq-display">No reservations yet</h2>
             <p className="rq-muted">
               Reserve a listing from the browse page to see it here.
             </p>
@@ -172,7 +171,7 @@ export function MyReservationsPage() {
                   {isReserved && (
                     <div className="sk-stub">
                       <span className="sk-stub-label rq-mono">
-                        ✓ Present at counter
+                        Present at counter
                       </span>
                       <div className="sk-stub-code rq-mono">
                         {reservation.pickupCodeDisplay ?? "N/A"}

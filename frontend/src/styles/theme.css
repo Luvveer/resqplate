@@ -11,8 +11,8 @@
   --card: #fbf8f1;
 
   /* Brand + signals */
-  --herb: #2f6b4f;
-  --herb-deep: #234f3b;
+  --herb: #453524;
+  --herb-deep: #2b2016;
   --amber: #e39a16;
   --ember: #c24a22;
 
@@ -220,9 +220,9 @@ a {
   border-radius: 999px;
 }
 .rq-pill-herb {
-  background: #e4ede6;
+  background: #efe7d6;
   color: var(--herb);
-  border: 1px solid #cfe0d5;
+  border: 1px solid #e0d4bd;
 }
 .rq-pill-amber {
   background: #fbeecb;
@@ -241,8 +241,8 @@ a {
 }
 
 .rq-notice {
-  background: #e4ede6;
-  border: 1px solid #cfe0d5;
+  background: #efe7d6;
+  border: 1px solid #e0d4bd;
   color: var(--herb-deep);
   border-radius: 11px;
   padding: 10px 14px;
