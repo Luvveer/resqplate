@@ -45,7 +45,6 @@ app.get("/api/health", (req, res) => {
   res.json({ status: "ok" });
 });
 
-// Call routes in the respective modules
 app.use("/api/auth", AuthRouter);
 app.use("/api/restaurants", RestaurantRouter);
 app.use("/api/admin", AdminRouter);
@@ -56,6 +55,7 @@ app.use("/api/pickups", PickupRouter);
 const port = process.env.PORT ?? 3000;
 
 app.listen(port, () => {
-  console.log(`API listening on http://localhost:${port}`);
-  console.log(`Server health is in http://localhost:${port}/api/health`);
+  console.log(`API is listening on http://localhost:${port}`);
+  console.log(`Server health is live in http://localhost:${port}/api/health`);
+  console.log(`Project Docs is live in http://localhost:${port}/api-docs`);
 });

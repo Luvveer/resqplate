@@ -138,6 +138,104 @@ export const openApiDocument = swaggerJsdoc({
             },
           },
         },
+        Profile: {
+          type: "object",
+          required: [
+            "id",
+            "authId",
+            "name",
+            "role",
+            "status",
+            "createdAt",
+            "updatedAt",
+          ],
+          properties: {
+            id: { type: "string", format: "uuid" },
+            authId: { type: "string" },
+            email: {
+              type: "string",
+              format: "email",
+              example: "seeker@example.com",
+            },
+            name: { type: "string", example: "Luvveer Singh Lamba" },
+            role: {
+              type: "string",
+              enum: ["FOOD_SEEKER", "BUSINESS", "ADMIN"],
+            },
+            status: {
+              type: "string",
+              enum: ["ACTIVE", "SUSPENDED", "DELETED"],
+            },
+            dietaryPreferences: {
+              type: "array",
+              items: { type: "string" },
+              nullable: true,
+            },
+            createdAt: { type: "string", format: "date-time" },
+            updatedAt: { type: "string", format: "date-time" },
+          },
+        },
+
+        SignupRequest: {
+          type: "object",
+          required: ["email", "password", "name", "role"],
+          properties: {
+            email: { type: "string", format: "email" },
+            password: { type: "string", minLength: 8 },
+            name: { type: "string" },
+            role: {
+              type: "string",
+              enum: ["FOOD_SEEKER", "BUSINESS", "ADMIN"],
+            },
+          },
+        },
+
+        LoginRequest: {
+          type: "object",
+          required: ["email", "password"],
+          properties: {
+            email: { type: "string", format: "email" },
+            password: { type: "string", minLength: 8 },
+          },
+        },
+
+        PasswordResetRequest: {
+          type: "object",
+          required: ["email", "redirectTo"],
+          properties: {
+            email: { type: "string", format: "email" },
+            redirectTo: {
+              type: "string",
+              description:
+                "The link where the user should be taken to reset password",
+            },
+          },
+        },
+
+        PasswordResetConfirmRequest: {
+          type: "object",
+          required: ["newPassword", "token"],
+          properties: {
+            newPassword: { type: "string", minLength: 8 },
+            token: {
+              type: "string",
+              description:
+                "Token required to verify the user trying to reset password",
+            },
+          },
+        },
+
+        UpdateProfileRequest: {
+          type: "object",
+          properties: {
+            name: { type: "string", minLength: 1, maxLength: 255 },
+            dietaryPreferences: {
+              type: "array",
+              items: { type: "string", maxLength: 60 },
+              maxItems: 30,
+            },
+          },
+        },
       },
     },
   },
