@@ -14,6 +14,7 @@ import {
   requestPasswordReset,
   confirmPasswordReset,
   updateSeekerProfile,
+  deleteAccount,
 } from "./auth.service.js";
 import { toHeaders } from "../middleware/auth.middleware.js";
 import auth from "./better-auth/auth.js";
@@ -138,4 +139,17 @@ export async function passwordResetConfirmHandler(req: Request, res: Response) {
     }
     throw error;
   }
+}
+
+export async function deleteAccountHandler(req: Request, res: Response) {
+  if (!req.profile) {
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+
+  const headers = await deleteAccount(
+    req.profile.authId,
+    toHeaders(req.headers),
+  );
+  forwardCookies(res, headers);
+  return res.status(200).json({ message: "Account deleted " });
 }

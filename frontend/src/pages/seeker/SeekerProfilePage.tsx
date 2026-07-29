@@ -72,6 +72,22 @@ export function SeekerProfilePage() {
     }
   }
 
+  async function handleDeleteAccount() {
+    const confirmed = window.confirm(
+      "Are you sure you want too delete your account? All your data would be permanently removed.",
+    );
+    if (!confirmed) return;
+
+    setError(null);
+    try {
+      await authApi.deleteAccount();
+      window.location.href = "/login";
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Failed to delete your account.",
+      );
+    }
+  }
   async function handleSave() {
     setError(null);
     setNotice(null);
@@ -217,6 +233,13 @@ export function SeekerProfilePage() {
               disabled={isSaving}
             >
               {isSaving ? "Saving…" : "Save changes"}
+            </button>
+            <button
+              type="button"
+              className="rq-btn rq-btn-danger sk-profile-delete"
+              onClick={() => handleDeleteAccount()}
+            >
+              Delete Account
             </button>
           </section>
         )}

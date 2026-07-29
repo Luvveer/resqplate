@@ -79,6 +79,13 @@ class AuthAPI {
       },
     );
   }
+
+  async deleteAccount() {
+    return await apiClient.request<{ message: string }>(
+      "DELETE",
+      "/auth/profile/me",
+    );
+  }
 }
 
 export const authApi = new AuthAPI();

@@ -7,6 +7,7 @@ import {
   updateProfileHandler,
   passwordResetHandler,
   passwordResetConfirmHandler,
+  deleteAccountHandler,
 } from "./auth.handler.js";
 import { getSession, isFoodSeeker } from "../middleware/auth.middleware.js";
 
@@ -231,5 +232,7 @@ AuthRouter.post("/password-reset/confirm", passwordResetConfirmHandler);
  */
 AuthRouter.get("/profile/me", profileHandler);
 AuthRouter.patch("/profile/me", getSession, isFoodSeeker, updateProfileHandler);
+
+AuthRouter.delete("/profile/me", getSession, deleteAccountHandler);
 
 export default AuthRouter;
