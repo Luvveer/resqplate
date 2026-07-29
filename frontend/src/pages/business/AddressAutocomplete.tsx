@@ -76,7 +76,6 @@ export function AddressAutocomplete({
             onSelect("", "");
           }
         }}
-        required
       />
       {isLoading && (
         <p className="business-field-help">Searching address....</p>

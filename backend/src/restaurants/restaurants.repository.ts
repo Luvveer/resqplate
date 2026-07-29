@@ -186,3 +186,15 @@ export async function replaceListingAllergens(
       .where(eq(listingAllergensTable.listingId, listingId));
   });
 }
+
+export async function updateRestaurant(
+  restaurantId: string,
+  input: Partial<NewRestaurantProfile>,
+): Promise<RestaurantProfile | undefined> {
+  const [restaurant] = await db
+    .update(restaurantProfilesTable)
+    .set({ ...input, updatedAt: new Date() })
+    .where(eq(restaurantProfilesTable.id, restaurantId))
+    .returning();
+  return restaurant;
+}

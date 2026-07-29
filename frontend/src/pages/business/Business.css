@@ -554,3 +554,13 @@
   font-weight: 700;
   font-size: 14px;
 }
+
+.business-profile-grid {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.business-profile-grid .business-card {
+  flex: 1;
+}

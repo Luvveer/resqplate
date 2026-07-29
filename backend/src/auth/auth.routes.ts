@@ -9,7 +9,7 @@ import {
   passwordResetConfirmHandler,
   deleteAccountHandler,
 } from "./auth.handler.js";
-import { getSession, isFoodSeeker } from "../middleware/auth.middleware.js";
+import { getSession } from "../middleware/auth.middleware.js";
 
 const AuthRouter = Router();
 
@@ -231,7 +231,7 @@ AuthRouter.post("/password-reset/confirm", passwordResetConfirmHandler);
  *               $ref: '#/components/schemas/ErrorResponse'
  */
 AuthRouter.get("/profile/me", profileHandler);
-AuthRouter.patch("/profile/me", getSession, isFoodSeeker, updateProfileHandler);
+AuthRouter.patch("/profile/me", getSession, updateProfileHandler);
 
 AuthRouter.delete("/profile/me", getSession, deleteAccountHandler);
 

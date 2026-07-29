@@ -151,6 +151,10 @@ export function BusinessDashboard() {
                 Confirm pickups and track no-shows.
               </span>
             </Link>
+
+            <Link className="business-link-button" to="/business/profile">
+              Account
+            </Link>
           </div>
         </section>
       </main>
