@@ -73,6 +73,7 @@ export function RestaurantInfoPage() {
                   <AddressAutocomplete
                     sessionToken={sessionToken}
                     selectedPlaceId={placeId}
+                    required
                     onSelect={(newPlaceId) => {
                       setPlaceId(newPlaceId);
                     }}

@@ -16,7 +16,7 @@ function formatSlotRange(start: Date | string, end: Date | string): string {
     month: "short",
     day: "numeric",
   });
-  return `${dateLabel}, ${startDate.toLocaleTimeString([], timeOptions)} – ${endDate.toLocaleTimeString([], timeOptions)}`;
+  return `${dateLabel}, ${startDate.toLocaleTimeString([], timeOptions)} - ${endDate.toLocaleTimeString([], timeOptions)}`;
 }
 
 // UI Mapping the reservations status to their status-pill variant
@@ -121,7 +121,7 @@ export function MyReservationsPage() {
         {error && <p className="rq-error">{error}</p>}
 
         {isLoading ? (
-          <p className="sk-message">Loading reservations…</p>
+          <p className="sk-message">Loading reservations...</p>
         ) : reservations.length === 0 ? (
           <section className="rq-card sk-empty">
             <h2 className="rq-display">No reservations yet</h2>
@@ -189,7 +189,7 @@ export function MyReservationsPage() {
                       disabled={cancellingId === reservation.id}
                     >
                       {cancellingId === reservation.id
-                        ? "Cancelling…"
+                        ? "Cancelling..."
                         : "Cancel reservation"}
                     </button>
                   )}

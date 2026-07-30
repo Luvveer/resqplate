@@ -5,12 +5,14 @@ import { companyApi } from "../../api/restaurant";
 type AddressAutocompleteProps = {
   sessionToken: string;
   selectedPlaceId: string;
+  required?: boolean;
   onSelect: (placeId: string, description: string) => void;
 };
 
 export function AddressAutocomplete({
   sessionToken,
   selectedPlaceId,
+  required = false,
   onSelect,
 }: AddressAutocompleteProps) {
   const [input, setInput] = useState("");
@@ -64,6 +66,7 @@ export function AddressAutocomplete({
         value={input}
         autoComplete="off"
         placeholder="Start typing your address"
+        required={required}
         onChange={(event) => {
           const newValue = event.target.value;
 
