@@ -151,6 +151,10 @@ const getMyRestaurantMock = mock.fn(
   },
 );
 
+const updateMyRestrauntMock = mock.fn(
+  async (_profileId: string, _input: unknown) => restaurantResult,
+);
+
 const getAddressSuggestionsMock = mock.fn(
   async (_input: string, _sessionToken: string) => {
     throwServiceErrorIfPresent();
@@ -246,6 +250,7 @@ const expireMyListingMock = mock.fn(
 mock.module("../restaurants.service.js", {
   namedExports: {
     getMyRestaurant: getMyRestaurantMock,
+    updateMyRestaurant: updateMyRestrauntMock,
     getAddressSuggestions: getAddressSuggestionsMock,
     createMyRestaurant: createMyRestaurantMock,
     getMyListings: getMyListingsMock,

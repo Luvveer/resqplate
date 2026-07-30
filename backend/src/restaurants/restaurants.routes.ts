@@ -10,6 +10,7 @@ import {
   expireListingHandler,
   updateListingImageHandler,
   addressSuggestionsHandler,
+  updateRestaurantHandler,
 } from "./restaurants.handler.js";
 import { uploadSingleImage } from "../middleware/upload.middleware.js";
 
@@ -71,6 +72,13 @@ RestaurantRouter.patch(
   getSession,
   isBusiness,
   expireListingHandler,
+);
+
+RestaurantRouter.patch(
+  "/profileres",
+  getSession,
+  isBusiness,
+  updateRestaurantHandler,
 );
 
 export default RestaurantRouter;

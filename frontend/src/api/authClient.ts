@@ -5,6 +5,8 @@ import type {
   UserRole,
   ProfileResponse,
   UpdateSeekerProfileInput,
+  UpdateRestrauntInput,
+  RestaurantProfileResponse,
 } from "@resqplate/shared";
 
 class AuthAPI {
@@ -77,6 +79,21 @@ class AuthAPI {
         newPassword,
         token,
       },
+    );
+  }
+
+  async deleteAccount() {
+    return await apiClient.request<{ message: string }>(
+      "DELETE",
+      "/auth/profile/me",
+    );
+  }
+
+  async updateRestaurant(input: UpdateRestrauntInput) {
+    return await apiClient.request<{ restaurant: RestaurantProfileResponse }>(
+      "PATCH",
+      "/restaurants/profileres",
+      input,
     );
   }
 }
