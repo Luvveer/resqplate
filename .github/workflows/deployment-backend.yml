@@ -106,20 +106,34 @@ jobs:
 
             pm2 save
 
-            echo "Checking backend health..."
+            echo "Checking backend health"
+            healthy=false
             for attempt in $(seq 1 12); do
               if curl --fail --silent \
                 http://127.0.0.1:3000/api/health \
                 >/dev/null; then
                 echo "Backend deployment succeded."
-                exit 0
+                healthy=true
+                break
               fi
-
-            echo "Health check attempt $attempt failed."
-            sleep 5
-
+              echo "Health check attempt $attempt failed."
+              sleep 5
             done
 
-            echo "Backend failed health check..."
-            pm2 logs "$PM2_NAME" --lines 50 --nostream || true
-            exit 1
+            if [ "$healthy" != true ]; then
+              echo "Backend failed health check"
+              pm2 logs "$PM2_NAME" --lines 50 --nostream || true
+              exit 1
+            fi
+
+            echo "Configuring Algolia index"
+            node dist/scripts/config-algolia.js
+
+            echo "Reindexing Algolia"
+            node dist/scripts/reindex-algolia.js
+
+            echo "Restarting backend after Algolia setup"
+            pm2 restart "PM2_NAME" --update-env
+            pm2 save
+
+            echo "Backend deployment and search indexing completed."
