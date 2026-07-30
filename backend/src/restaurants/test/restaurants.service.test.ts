@@ -109,6 +109,10 @@ const createListingMock = mock.fn(
   async (_input: NewFoodListing): Promise<FoodListing> => createdListingResult,
 );
 
+const updateRestaurantMock = mock.fn(
+  async (_restaurantId: string, _input: unknown) => restaurantResult,
+);
+
 const updateListingMock = mock.fn(
   async (
     _listingId: string,
@@ -197,6 +201,7 @@ mock.module("../restaurants.repository.js", {
   namedExports: {
     findRestaurantByProfileId: findRestaurantByProfileIdMock,
     createRestaurant: createRestaurantMock,
+    updateRestaurant: updateRestaurantMock,
     findListingsByRestaurantId: findListingsByRestaurantIdMock,
     findListingByRestaurantId: findListingByRestaurantIdMock,
     createListing: createListingMock,

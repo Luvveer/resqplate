@@ -1,6 +1,7 @@
 import { auth } from "./better-auth/auth.js";
 import {
   createProfile,
+  deleteUserAccount,
   findProfileByAuthId,
   updateProfileById,
 } from "./auth.repository.js";
@@ -64,6 +65,18 @@ export async function confirmPasswordReset(input: confirmPasswordResetInput) {
   await auth.api.resetPassword({
     body: { newPassword: input.newPassword, token: input.token },
   });
+}
+
+export async function deleteAccount(
+  authId: string,
+  headers: Headers,
+): Promise<Headers> {
+  const { headers: responseHeaders } = await auth.api.signOut({
+    headers,
+    returnHeaders: true,
+  });
+  await deleteUserAccount(authId);
+  return responseHeaders;
 }
 
 export async function updateSeekerProfile(

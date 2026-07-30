@@ -9,17 +9,20 @@ import {
   findAllergensByIds,
   findListingAllergens,
   replaceListingAllergens,
+  updateRestaurant,
 } from "./restaurants.repository.js";
 import type {
   RestaurantProfile,
   FoodListing,
   ListingWithAllergens,
   UpdateFoodListing,
+  NewRestaurantProfile,
 } from "./restaurants.types.js";
 import type {
   CreateRestaurantInput,
   CreateListingInput,
   UpdateListingInput,
+  UpdateRestrauntInput,
 } from "@resqplate/shared";
 import { deleteFile, saveImage } from "../filesystem/filesystem.js";
 import {
@@ -309,4 +312,23 @@ export async function expireMyListing(
   await safeRemoveListingFromAlgolia(updatedlisting.id);
 
   return attachAllergens(updatedlisting);
+}
+
+export async function updateMyRestaurant(
+  profileId: string,
+  input: UpdateRestrauntInput,
+): Promise<RestaurantProfile | undefined> {
+  const restaurant = await findRestaurantByProfileId(profileId);
+  if (!restaurant) {
+    return undefined;
+  }
+
+  const { placeId, sessionToken, ...restaurantInput } = input;
+  const resolvedAddress =
+    placeId && sessionToken ? await resolveAddress(placeId, sessionToken) : {};
+
+  return updateRestaurant(restaurant.id, {
+    ...restaurantInput,
+    ...resolvedAddress,
+  } as Partial<NewRestaurantProfile>);
 }

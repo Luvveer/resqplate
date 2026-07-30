@@ -85,6 +85,21 @@ export const createRestaurantSchema = z.object({
   description: z.string().optional(),
 });
 
+export const updateRestaurantSchema = z
+  .object({
+    businessName: z.string().min(1).optional(),
+    placeId: z.string().trim().min(1).optional(),
+    sessionToken: z.string().trim().min(1).max(36).optional(),
+    phone: z.string().optional(),
+    description: z.string().optional(),
+  })
+  .refine(
+    (data) => (data.placeId == undefined) === (data.sessionToken === undefined),
+    { message: "placeId and sessionToken must be provided together" },
+  );
+
+export type UpdateRestrauntInput = z.infer<typeof updateRestaurantSchema>;
+
 export const addressAutocompleteSchema = z.object({
   input: z.string().trim().min(3).max(200),
   sessionToken: z.string().trim().min(1).max(36),
