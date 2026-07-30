@@ -186,6 +186,10 @@ export const openApiDocument = swaggerJsdoc({
             pickupCode: {
               type: "string",
               example: "X7MQR2",
+            },
+          },
+        },
+
         Profile: {
           type: "object",
           required: [
