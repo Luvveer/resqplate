@@ -288,6 +288,135 @@ export const openApiDocument = swaggerJsdoc({
             },
           },
         },
+
+        Allergen: {
+          type: "object",
+          required: ["id", "name"],
+          properties: {
+            id: { type: "string", format: "uuid" },
+            name: { type: "string", example: "Peanut" },
+          },
+        },
+
+        ListingStatus: {
+          type: "string",
+          enum: ["AVAILABLE", "RESERVED", "EXPIRED"],
+        },
+
+        RestaurantSummary: {
+          type: "object",
+          required: ["id", "businessName", "address", "city", "province"],
+          properties: {
+            id: { type: "string", format: "uuid" },
+            businessName: { type: "string", example: "Tiffin Wala" },
+            address: { type: "string", example: "2086 Meadowood Park" },
+            city: { type: "string", example: "Burnaby" },
+            province: { type: "string", example: "British Columbia" },
+            latitude: { type: "string", nullable: true, example: "49.282700" },
+            longitude: {
+              type: "string",
+              nullable: true,
+              example: "-123.940000",
+            },
+          },
+        },
+
+        FoodListing: {
+          type: "object",
+          required: [
+            "id",
+            "restaurantId",
+            "title",
+            "quantityAvailable",
+            "pickupStart",
+            "pickupEnd",
+            "status",
+            "createdAt",
+            "updatedAt",
+          ],
+          properties: {
+            id: { type: "string", format: "uuid" },
+            restaurantId: { type: "string", format: "uuid" },
+            title: { type: "string", example: "Assorted bagels" },
+            description: { type: "string", nullable: true },
+            imagePath: { type: "string", nullable: true },
+            category: { type: "string", nullable: true, example: "Bakery" },
+            quantityAvailable: { type: "integer", example: 3 },
+            pickupStart: { type: "string", format: "date-time" },
+            pickupEnd: { type: "string", format: "date-time" },
+            status: { $ref: "#/components/schemas/ListingStatus" },
+            addressSnapShot: {
+              type: "string",
+              nullable: true,
+              example: "2086 Meadowood Park, Burnaby, British Columbia",
+            },
+            latitude: { type: "string", nullable: true, example: "49.282700" },
+            longitude: {
+              type: "string",
+              nullable: true,
+              example: "-122.940000",
+            },
+            storageNote: { type: "string", nullable: true },
+            createdAt: { type: "string", format: "date-time" },
+            updatedAt: { type: "string", format: "date-time" },
+            allergens: {
+              type: "array",
+              items: { $ref: "#/components/schemas/Allergen" },
+            },
+          },
+        },
+
+        PublicListing: {
+          allOf: [
+            { $ref: "#/components/schemas/FoodListing" },
+            {
+              type: "object",
+              properties: {
+                restaurant: {
+                  nullable: true,
+                  allOf: [{ $ref: "#/components/schemas/RestaurantSummary" }],
+                },
+                distanceKm: {
+                  type: "number",
+                  nullable: true,
+                  description:
+                    "Distance in km from the seeker's origin. Present only when lat/lng are supplied.",
+                  example: 2.4,
+                },
+              },
+            },
+          ],
+        },
+
+        CreateReservationInput: {
+          type: "object",
+          required: ["listingId", "pickupSlotStart"],
+          properties: {
+            listingId: { type: "string", format: "uuid" },
+            pickupSlotStart: {
+              type: "string",
+              format: "date-time",
+              description:
+                "Start of the chosen one-hour pickup slot. Must align to a generated slot boundary.",
+            },
+          },
+        },
+
+        ReservationWithListing: {
+          allOf: [
+            { $ref: "#/components/schemas/Reservation" },
+            {
+              type: "object",
+              required: ["listing"],
+              properties: {
+                listing: {
+                  nullable: true,
+                  allOf: [{ $ref: "#/components/schemas/FoodListing" }],
+                },
+              },
+            },
+          ],
+        },
       },
     },
   },
