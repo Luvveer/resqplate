@@ -133,7 +133,7 @@ jobs:
             node dist/scripts/reindex-algolia.js
 
             echo "Restarting backend after Algolia setup"
-            pm2 restart "PM2_NAME" --update-env
+            pm2 restart "$PM2_NAME" --update-env
             pm2 save
 
             echo "Backend deployment and search indexing completed."
