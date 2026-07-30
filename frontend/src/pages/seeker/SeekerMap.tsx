@@ -172,7 +172,7 @@ export function SeekerMap({
               <ul className="sk-pop-list">
                 {marker.listings.map((listing) => (
                   <li key={listing.id}>
-                    {listing.title} — {listing.quantityAvailable} left
+                    {listing.title} - {listing.quantityAvailable} left
                     {listing.distanceKm != null &&
                       ` · ${listing.distanceKm} km`}
                   </li>

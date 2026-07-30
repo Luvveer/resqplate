@@ -154,7 +154,7 @@ export function BusinessProfilePage() {
         {error && <p className="business-error">{error}</p>}
 
         {isLoading ? (
-          <p className="business-message">Loading your profile…</p>
+          <p className="business-message">Loading your profile...</p>
         ) : !profile ? (
           <section className="business-card sk-empty">
             <h2 className="business-display">Could not load profile</h2>

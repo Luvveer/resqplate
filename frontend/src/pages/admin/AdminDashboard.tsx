@@ -146,7 +146,7 @@ export function AdminDashboard() {
             onClick={() => loadRestaurants()}
             disabled={isLoading}
           >
-            {isLoading ? "Refreshing…" : "Refresh"}
+            {isLoading ? "Refreshing..." : "Refresh"}
           </button>
         </section>
 
@@ -187,7 +187,7 @@ export function AdminDashboard() {
           {error && <p className="rq-error admin-inset">{error}</p>}
 
           {isLoading ? (
-            <p className="admin-message">Loading restaurant profiles…</p>
+            <p className="admin-message">Loading restaurant profiles...</p>
           ) : restaurants.length === 0 ? (
             <p className="admin-message">No restaurant profiles found.</p>
           ) : (

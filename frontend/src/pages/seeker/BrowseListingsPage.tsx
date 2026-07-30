@@ -299,7 +299,7 @@ export function BrowseListingsPage() {
             id="listing-search"
             className="sk-topsearch-input"
             type="search"
-            placeholder="Search food or restaurants…"
+            placeholder="Search food or restaurants..."
             value={search}
             onChange={(event) => {
               const nextSearch = event.target.value;
@@ -315,7 +315,7 @@ export function BrowseListingsPage() {
             type="submit"
             disabled={isSearching}
           >
-            {isSearching ? "…" : "Search"}
+            {isSearching ? "..." : "Search"}
           </button>
         </form>
 
@@ -391,7 +391,7 @@ export function BrowseListingsPage() {
             onClick={() => handleUseMyLocation()}
             disabled={isLocating}
           >
-            {isLocating ? "Locating…" : "Near me"}
+            {isLocating ? "Locating..." : "Near me"}
           </button>
 
           {origin && (
@@ -440,7 +440,7 @@ export function BrowseListingsPage() {
         {error && <p className="rq-error">{error}</p>}
 
         {isLoading ? (
-          <p className="sk-message">Loading listings…</p>
+          <p className="sk-message">Loading listings...</p>
         ) : searchedListings.length === 0 ? (
           <section className="rq-card sk-empty">
             <h2 className="rq-display">No listings found</h2>
@@ -491,7 +491,7 @@ export function BrowseListingsPage() {
                     <article key={listing.id} className="sk-card">
                       {/* Media band: image if present, warm gradient fallback
                           otherwise. Urgency pill top-left, distance chip
-                          bottom-right — both derived, no server change. */}
+                          bottom-right - both derived, no server change. */}
                       <div className={`sk-card-media sk-tier-${tier}`}>
                         {listing.imagePath && (
                           <img
@@ -532,7 +532,7 @@ export function BrowseListingsPage() {
                               [],
                               { hour: "numeric", minute: "2-digit" },
                             )}
-                            –
+                            -
                             {new Date(listing.pickupEnd).toLocaleTimeString(
                               [],
                               {
@@ -551,7 +551,7 @@ export function BrowseListingsPage() {
                         </div>
 
                         <p className="sk-card-qty">
-                          ×{listing.quantityAvailable} left
+                          x{listing.quantityAvailable} left
                         </p>
 
                         {allergens.length > 0 ? (
@@ -592,7 +592,7 @@ export function BrowseListingsPage() {
                                   }))
                                 }
                               >
-                                <option value="">Select a time…</option>
+                                <option value="">Select a time...</option>
                                 {slots.map((slot) => (
                                   <option
                                     key={slot.start.toISOString()}
@@ -611,7 +611,7 @@ export function BrowseListingsPage() {
                                 }
                               >
                                 {reservingId === listing.id
-                                  ? "Claiming…"
+                                  ? "Claiming..."
                                   : "Claim"}
                               </button>
                             </div>

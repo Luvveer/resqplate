@@ -159,7 +159,7 @@ export function SeekerProfilePage() {
         {error && <p className="rq-error">{error}</p>}
 
         {isLoading ? (
-          <p className="sk-message">Loading your profile…</p>
+          <p className="sk-message">Loading your profile...</p>
         ) : !profile ? (
           <section className="rq-card sk-empty">
             <h2 className="rq-display">Could not load profile</h2>
