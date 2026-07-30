@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { generatePickupSlots } from "@resqplate/shared"; // add findMatchingPickupSlot
+import { findMatchingPickupSlot, generatePickupSlots } from "@resqplate/shared";
 
 // Make sure that the tests do not depend on the running pc's timezone.
 const at = (iso: string): Date => new Date(`2026-07-26T${iso}:00Z`);
@@ -88,5 +88,39 @@ describe("generatePickupSlots", () => {
       BEFORE_WINDOW,
     );
     assert.equal(slots.length, 3);
+  });
+});
+
+describe("findMatchingPickupSlot", () => {
+  it("returns the slots who have the same start time as the aligned boundry", () => {
+    const slot = findMatchingPickupSlot(
+      at("10:00"),
+      at("13:00"),
+      at("11:00"),
+      BEFORE_WINDOW,
+    );
+    assert.ok(slot);
+    assert.equal(iso(slot.start), "2026-07-26T11:00:00.000Z");
+    assert.equal(iso(slot.end), "2026-07-26T12:00:00.000Z");
+  });
+
+  it("returns a undefined error when the start boundry is not ther in the slot boundry", () => {
+    const slot = findMatchingPickupSlot(
+      at("10:00"),
+      at("13:00"),
+      at("10:30"),
+      BEFORE_WINDOW,
+    );
+    assert.equal(slot, undefined);
+  });
+
+  it("returns undefined when the slot has already passed", () => {
+    const slot = findMatchingPickupSlot(
+      at("10:00"),
+      at("13:00"),
+      at("10:00"),
+      at("11:30"),
+    );
+    assert.equal(slot, undefined);
   });
 });
