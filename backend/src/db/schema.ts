@@ -46,21 +46,6 @@ export const reservationStatusEnum = pgEnum("reservation_status", [
   "NO_SHOW",
 ]);
 
-export const reportReasonEnum = pgEnum("report_reason", [
-  "UNSAFE_FOOD",
-  "MISSING_ALLERGEN",
-  "WRONG_QUALITY",
-  "NOT_AVAILABLE",
-  "BAD_PICKUP_EXPERIENCE",
-  "OTHER",
-]);
-
-export const reportSeverityEnum = pgEnum("report_severity", [
-  "LOW",
-  "HIGH",
-  "CRITICAL",
-]);
-
 export const ProfileTable = pgTable("profile", {
   id: uuid("id").defaultRandom().primaryKey(),
   authId: text("auth_id")
@@ -138,28 +123,6 @@ export const reservationTable = pgTable("reservations", {
   pickedUpAt: timestamp("picked_up_at"),
   cancelledAt: timestamp("cancelled_at"),
   noShowAt: timestamp("no_show_at"),
-});
-
-export const reportsTable = pgTable("reports", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  reporterId: uuid("reporter_id")
-    .notNull()
-    .references(() => ProfileTable.id, { onDelete: "cascade" }),
-  listingId: uuid("listing_id")
-    .notNull()
-    .references(() => foodListingsTable.id, { onDelete: "cascade" }),
-  restaurantId: uuid("restaurant_id")
-    .notNull()
-    .references(() => restaurantProfilesTable.id, { onDelete: "cascade" }),
-  reason: reportReasonEnum("reason").notNull(),
-  description: text("description"),
-  severity: reportSeverityEnum("severity").default("LOW").notNull(),
-  status: varchar("status", { length: 100 }),
-  aiCategory: varchar("ai_category", { length: 255 }),
-  aiSuggestedAction: text("ai_suggested_action"),
-  adminNotes: text("admin_notes"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  resolvedAt: timestamp("resolved_at"),
 });
 
 export const allergensTable = pgTable("allergens", {
