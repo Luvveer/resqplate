@@ -118,6 +118,12 @@ export function BusinessDashboard() {
 
         <div className="business-brand">
           <span> Welcome, {profile?.name}</span>
+          <Link
+            className="business-link-button secondary"
+            to="/business/profile"
+          >
+            Account
+          </Link>
           <button
             className="business-button secondary"
             onClick={() => logout()}
@@ -153,10 +159,6 @@ export function BusinessDashboard() {
               <span className="business-nav-desc">
                 Confirm pickups and track no-shows.
               </span>
-            </Link>
-
-            <Link className="business-link-button" to="/business/profile">
-              Account
             </Link>
           </div>
         </section>

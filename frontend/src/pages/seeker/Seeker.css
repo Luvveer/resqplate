@@ -547,6 +547,25 @@
   font-weight: 700;
   color: var(--ink);
 }
+.sk-profile .sk-profile-delete {
+  background: transparent;
+  color: #b42318;
+  border: 1px solid #f0b8b8;
+  border-radius: 10px;
+  font-weight: 700;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease;
+}
+.sk-profile .sk-profile-delete:hover:not(:disabled) {
+  background: #f7ddd2;
+  color: #b42318;
+  border-color: #d9381c;
+}
+.sk-profile-delete:focus-visible {
+  outline: 3px solid rgb(217, 45, 33, 0.3);
+  outline-offset: 2px;
+}
 .sk-chip-input {
   display: flex;
   gap: 8px;
