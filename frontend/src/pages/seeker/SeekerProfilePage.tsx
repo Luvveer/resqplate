@@ -131,7 +131,6 @@ export function SeekerProfilePage() {
           <span className="sk-brand-mark" aria-hidden="true" />
           <span className="sk-brand-text">
             <b>ResQPlate</b>
-            <span>Expo Line</span>
           </span>
         </div>
         <div className="sk-topbar-spacer" />
@@ -140,7 +139,7 @@ export function SeekerProfilePage() {
             Browse
           </Link>
           <Link className="sk-nav-link" to="/seeker/reservations">
-            My tickets
+            My Reservations
           </Link>
           <Link className="sk-nav-link is-active" to="/seeker/profile">
             Profile
