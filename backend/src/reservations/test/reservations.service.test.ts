@@ -262,12 +262,12 @@ describe("reservations service", () => {
       reservationByIdResult = makeReservation({ status: "RESERVED" });
       const result = await cancelReservation(profileId, reservationId);
       assert.deepEqual(result, cancelResult);
-      assert.equal(cancelReservationAtomicallyMock.mock.calls[0]?.arguments, [
-        reservationId,
-        listingId,
-      ]);
+      assert.deepEqual(
+        cancelReservationAtomicallyMock.mock.calls[0]?.arguments,
+        [reservationId, listingId],
+      );
       assert.equal(
-        cancelReservationAtomicallyMock.mock.calls[0]?.arguments[0],
+        safeSyncingToAlgoliaMock.mock.calls[0]?.arguments[0],
         listingId,
       );
     });
