@@ -288,6 +288,136 @@ export const openApiDocument = swaggerJsdoc({
             },
           },
         },
+
+        Allergen: {
+          type: "object",
+          required: ["id", "name"],
+          properties: {
+            id: { type: "string", fornat: "uuid" },
+            name: { type: "string", example: "Peanuts" },
+          },
+        },
+
+        Listing: {
+          type: "object",
+          required: [
+            "id",
+            "restaurantId",
+            "title",
+            "quantityAvailable",
+            "pickupStart",
+            "pickupEnd",
+            "status",
+          ],
+          properties: {
+            id: { type: "string", fornat: "uuid" },
+            restaurantId: { type: "string", fornat: "uuid" },
+            title: { type: "string", example: "Assorted Timbits" },
+            description: { type: "string", nullable: true },
+            imagePath: { type: "string", nullable: true },
+            category: { type: "string", nullable: true, example: "Bakery" },
+            quantityAvailable: { type: "integer", example: 5 },
+            pickupStart: { type: "string", format: "date-time" },
+            pickupEnd: { type: "string", format: "date-time" },
+            status: {
+              type: "string",
+              enum: ["AVAILABLE", "RESERVED", "EXPIRED"],
+            },
+            addressSnapShot: { type: "string", nullable: true },
+            latitude: { type: "string", nullable: true },
+            longitude: { type: "string", nullable: true },
+            storageNote: { type: "string", nullable: true },
+            createdAt: { type: "string", format: "date-time" },
+            updatedAt: { type: "string", format: "date-time" },
+            allergens: {
+              type: "array",
+              items: { $ref: "#/components/schemas/Allergen" },
+            },
+          },
+        },
+
+        AddressSuggestion: {
+          type: "object",
+          required: ["placeId", "description"],
+          properties: {
+            placeId: { type: "string" },
+            description: {
+              type: "string",
+              example: "3357 Ganymede Dr, Burnaby, BC",
+            },
+          },
+        },
+
+        AddressAutocompleteRequest: {
+          type: "object",
+          required: ["input", "sessionToken"],
+          properties: {
+            input: {
+              type: "string",
+              minLength: 3,
+              example: "3357 Ganymede Dr",
+            },
+            sessionToken: { type: "string" },
+          },
+        },
+
+        createReservationRequest: {
+          type: "object",
+          required: ["businessName", "placeId", "sessionToken"],
+          properties: {
+            businessName: { type: "string" },
+            placeId: { type: "string" },
+            sessionToken: { type: "string" },
+            phone: { type: "string" },
+            description: { type: "string" },
+          },
+        },
+
+        UpdateReservationRequest: {
+          type: "object",
+          properties: {
+            businessName: { type: "string" },
+            placeId: { type: "string" },
+            sessionToken: { type: "string" },
+            phone: { type: "string" },
+            description: { type: "string" },
+          },
+        },
+
+        CreateListingRequest: {
+          type: "object",
+          required: ["title", "quantityAvailable", "pickupStart", "pickupEnd"],
+          properties: {
+            title: { type: "string" },
+            description: { type: "string" },
+            category: { type: "string" },
+            quantityAvailable: { type: "integer", minimum: 1 },
+            pickupStart: { type: "string", format: "date-time" },
+            pickupEnd: { type: "string", format: "date-time" },
+            StorageNote: { type: "string" },
+            allegensIds: {
+              type: "array",
+              items: { type: "string", format: "uuid" },
+            },
+          },
+        },
+
+        UpdateListingRequest: {
+          type: "object",
+          properties: {
+            title: { type: "string" },
+            description: { type: "string" },
+            category: { type: "string" },
+            quantityAvailable: { type: "integer", minimum: 1 },
+            pickupStart: { type: "string", format: "date-time" },
+            pickupEnd: { type: "string", format: "date-time" },
+            StorageNote: { type: "string" },
+            allegensIds: {
+              type: "array",
+              items: { type: "string", format: "uuid" },
+            },
+          },
+        },
       },
     },
   },
