@@ -10,6 +10,7 @@ import { SeekerRoutes } from "./pages/seeker/SeekerRouters";
 import { AdminRoutes } from "./pages/admin/AdminRouters";
 import { ForgotPasswordPage } from "./pages/auth/ForgotPasswordPage";
 import { ResetPasswordPage } from "./pages/auth/ResetPasswordPage";
+import { ApiDocsPage } from "./pages/docs/ApiDocspage";
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route path="/api-docs" element={<ApiDocsPage />} />
           <Route
             path="/business/*"
             element={

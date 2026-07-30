@@ -10,7 +10,6 @@ import ReservationRouter from "./reservations/reservations.routes.js";
 import ListingRouter from "./listings/listings.routes.js";
 import PickupRouter from "./pickups/pickups.routes.js";
 import path from "path";
-import swaggerUi from "swagger-ui-express";
 import { openApiDocument } from "./docs/swagger.js";
 
 const app = express();
@@ -27,17 +26,9 @@ app.use(
 );
 app.use(express.json());
 
-app.get("/api-docs.json", (_req, res) => {
+app.get("/api/openapi.json", (_req, res) => {
   return res.status(200).json(openApiDocument);
 });
-
-app.use(
-  "/api-docs",
-  swaggerUi.serve,
-  swaggerUi.setup(openApiDocument, {
-    customSiteTitle: "ResQPlate API Documentation",
-  }),
-);
 
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 

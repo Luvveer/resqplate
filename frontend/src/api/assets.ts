@@ -1,4 +1,4 @@
-import { API_URL } from "./apiClient";
+const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3000/api";
 
 const API_ORIGIN = new URL(API_URL, window.location.origin).origin;
 
