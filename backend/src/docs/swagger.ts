@@ -138,6 +138,57 @@ export const openApiDocument = swaggerJsdoc({
             },
           },
         },
+        Reservation: {
+          type: "object",
+          required: [
+            "id",
+            "profileId",
+            "listingId",
+            "status",
+            "reservedAt",
+            "pickupSlotStart",
+            "pickupSlotEnd",
+          ],
+          properties: {
+            id: { type: "string", format: "uuid" },
+            profileId: { type: "string", format: "uuid" },
+            listingId: { type: "string", format: "uuid" },
+            pickupCodeDisplay: {
+              type: "string",
+              nullable: true,
+              example: "X7MQR2",
+            },
+            status: {
+              $ref: "#/components/schemas/ReservationStatus",
+            },
+            reservedAt: { type: "string", format: "date-time" },
+            pickedUpAt: { type: "string", format: "date-time", nullable: true },
+            cancelledAt: {
+              type: "string",
+              format: "date-time",
+              nullable: true,
+            },
+            noShowAt: { type: "string", format: "date-time", nullable: true },
+            pickupSlotStart: { type: "string", format: "date-time" },
+            pickupSlotEnd: { type: "string", format: "date-time" },
+          },
+        },
+
+        ReservationStatus: {
+          type: "string",
+          enum: ["RESERVED", "PICKED_UP", "CANCELLED", "EXPIRED", "NO_SHOW"],
+        },
+
+        ConfirmPickupInput: {
+          type: "object",
+          required: ["pickupCode"],
+          properties: {
+            pickupCode: {
+              type: "string",
+              example: "X7MQR2",
+            },
+          },
+        },
       },
     },
   },
