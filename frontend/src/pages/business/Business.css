@@ -597,6 +597,8 @@
 
 .business-profile-grid .business-card {
   flex: 1;
+}
+
 .business-row-actions {
   display: flex;
   align-items: center;
