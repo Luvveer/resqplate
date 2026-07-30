@@ -294,7 +294,7 @@ export const openApiDocument = swaggerJsdoc({
           required: ["id", "name"],
           properties: {
             id: { type: "string", format: "uuid" },
-            name: { type: "string", example: "Peanut" },
+            name: { type: "string", example: "Peanuts" },
           },
         },
 
@@ -331,13 +331,11 @@ export const openApiDocument = swaggerJsdoc({
             "pickupStart",
             "pickupEnd",
             "status",
-            "createdAt",
-            "updatedAt",
           ],
           properties: {
-            id: { type: "string", format: "uuid" },
-            restaurantId: { type: "string", format: "uuid" },
-            title: { type: "string", example: "Assorted bagels" },
+            id: { type: "string", fornat: "uuid" },
+            restaurantId: { type: "string", fornat: "uuid" },
+            title: { type: "string", example: "Assorted Timbits" },
             description: { type: "string", nullable: true },
             imagePath: { type: "string", nullable: true },
             category: { type: "string", nullable: true, example: "Bakery" },
@@ -366,6 +364,88 @@ export const openApiDocument = swaggerJsdoc({
           },
         },
 
+        AddressSuggestion: {
+          type: "object",
+          required: ["placeId", "description"],
+          properties: {
+            placeId: { type: "string" },
+            description: {
+              type: "string",
+              example: "3357 Ganymede Dr, Burnaby, BC",
+            },
+          },
+        },
+
+        AddressAutocompleteRequest: {
+          type: "object",
+          required: ["input", "sessionToken"],
+          properties: {
+            input: {
+              type: "string",
+              minLength: 3,
+              example: "3357 Ganymede Dr",
+            },
+            sessionToken: { type: "string" },
+          },
+        },
+
+        CreateRestaurantRequest: {
+          type: "object",
+          required: ["businessName", "placeId", "sessionToken"],
+          properties: {
+            businessName: { type: "string" },
+            placeId: { type: "string" },
+            sessionToken: { type: "string" },
+            phone: { type: "string" },
+            description: { type: "string" },
+          },
+        },
+
+        UpdateRestaurantRequest: {
+          type: "object",
+          properties: {
+            businessName: { type: "string" },
+            placeId: { type: "string" },
+            sessionToken: { type: "string" },
+            phone: { type: "string" },
+            description: { type: "string" },
+          },
+        },
+
+        CreateListingRequest: {
+          type: "object",
+          required: ["title", "quantityAvailable", "pickupStart", "pickupEnd"],
+          properties: {
+            title: { type: "string" },
+            description: { type: "string" },
+            category: { type: "string" },
+            quantityAvailable: { type: "integer", minimum: 1 },
+            pickupStart: { type: "string", format: "date-time" },
+            pickupEnd: { type: "string", format: "date-time" },
+            StorageNote: { type: "string" },
+            allegensIds: {
+              type: "array",
+              items: { type: "string", format: "uuid" },
+            },
+          },
+        },
+
+        UpdateListingRequest: {
+          type: "object",
+          properties: {
+            title: { type: "string" },
+            description: { type: "string" },
+            category: { type: "string" },
+            quantityAvailable: { type: "integer", minimum: 1 },
+            pickupStart: { type: "string", format: "date-time" },
+            pickupEnd: { type: "string", format: "date-time" },
+            StorageNote: { type: "string" },
+            allegensIds: {
+              type: "array",
+              items: { type: "string", format: "uuid" },
+            },
+          },
+        },
         PublicListing: {
           allOf: [
             { $ref: "#/components/schemas/FoodListing" },

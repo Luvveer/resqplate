@@ -60,7 +60,7 @@ const ReservationRouter = Router();
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       409:
- *         description: Reservation could not be made: the listing is unavaliable or expired, the pickup slot is invalid, or the seeker already has a active reservation for this listing
+ *         description: Reservation could not be made (the listing is unavaliable or expired, the pickup slot is invalid, or the seeker already has a active reservation for this listing)
  *         content:
  *           application/json:
  *             schema:
@@ -158,7 +158,7 @@ ReservationRouter.get("/", getSession, isFoodSeeker, getMyReservationsHandler);
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  *       409:
- *         description: Reservation could not be cancelled: the reservation is already cancelled or the listing has expired or picked up
+ *         description: Reservation could not be cancelled (the reservation is already cancelled or the listing has expired or picked up)
  *         content:
  *           application/json:
  *             schema:
