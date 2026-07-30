@@ -39,7 +39,12 @@ export DATABASE_URL=$(gcloud secrets versions access latest --secret=DATABASE_UR
 export BETTER_AUTH_SECRET=$(gcloud secrets versions access latest --secret=BETTER_AUTH_SECRET)
 export BETTER_AUTH_URL=$(gcloud secrets versions access latest --secret=BETTER_AUTH_URL)
 export FRONTEND_URL=$(gcloud secrets versions access latest --secret=FRONTEND_URL)
-export DATABASE_URL=3000
+
+export RESEND_API_KEY=$(gcloud secrets versions access latest --secret=RESEND_API_KEY)
+export GOOGLE_PLACES_API_KEY=$(gcloud secrets versions access latest --secret=GOOGLE_PLACES_API_KEY)
+export ALGOLIA_APP_ID=$(gcloud secrets versions access latest --secret=ALGOLIA_APP_ID)
+export ALGOLIA_WRITE_API_KEY=$(gcloud secrets versions access latest --secret=ALGOLIA_WRITE_API_KEY)
+export ALGOLIA_LISTINGS_INDEX=$(gcloud secrets versions access latest --secret=ALGOLIA_LISTINGS_INDEX)
 echo "Loaded everything"
 
 echo "All done"

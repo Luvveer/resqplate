@@ -36,7 +36,7 @@ jobs:
       - run: npm run db:migrate -w backend
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/resqplate_test
-      - run: npm run test --workspaces --if-present
+      - run: npm run test:coverage -w backend
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/resqplate_test
       - run: npm audit --omit=dev --audit-level=high || echo "Error in running npm audit"
