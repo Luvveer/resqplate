@@ -207,7 +207,7 @@ RestaurantRouter.post(
  *                 listings:
  *                    type: array
  *                    items:
- *                      $ref: '#/components/schemas/Listing'
+ *                      $ref: '#/components/schemas/FoodListing'
  *       401:
  *         description: User is not authenticated
  *         content:
@@ -241,7 +241,7 @@ RestaurantRouter.post(
  *               type: object
  *               properties:
  *                 listing:
- *                    $ref: '#/components/schemas/Listing'
+ *                    $ref: '#/components/schemas/FoodListing'
  *       400:
  *         description: invalid pickup window or unknown allergen
  *         content:
@@ -288,7 +288,7 @@ RestaurantRouter.post(
  *               type: object
  *               properties:
  *                 listing:
- *                    $ref: '#/components/schemas/Listing'
+ *                    $ref: '#/components/schemas/FoodListing'
  *       401:
  *         description: User is not authenticated
  *         content:
@@ -329,7 +329,7 @@ RestaurantRouter.post(
  *               type: object
  *               properties:
  *                 listing:
- *                    $ref: '#/components/schemas/Listing'
+ *                    $ref: '#/components/schemas/FoodListing'
  *       400:
  *         description: Validation failed
  *         content:
@@ -393,7 +393,7 @@ RestaurantRouter.patch(
  *               type: object
  *               properties:
  *                  listing:
- *                      $ref: '#/components/schemas/Listing'
+ *                      $ref: '#/components/schemas/FoodListing'
  *       400:
  *         description: No image was provided
  *         content:
@@ -446,7 +446,7 @@ RestaurantRouter.put(
  *               type: object
  *               properties:
  *                  listing:
- *                      $ref: '#/components/schemas/Listing'
+ *                      $ref: '#/components/schemas/FoodListing'
  *       401:
  *         description: User is not authenticated
  *         content:

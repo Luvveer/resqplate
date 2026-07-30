@@ -293,14 +293,8 @@ export const openApiDocument = swaggerJsdoc({
           type: "object",
           required: ["id", "name"],
           properties: {
-            id: { type: "string", fornat: "uuid" },
-            name: { type: "string", example: "Peanuts" },
-          },
-        },
-
-        Listing: {
             id: { type: "string", format: "uuid" },
-            name: { type: "string", example: "Peanut" },
+            name: { type: "string", example: "Peanuts" },
           },
         },
 
@@ -342,26 +336,6 @@ export const openApiDocument = swaggerJsdoc({
             id: { type: "string", fornat: "uuid" },
             restaurantId: { type: "string", fornat: "uuid" },
             title: { type: "string", example: "Assorted Timbits" },
-            description: { type: "string", nullable: true },
-            imagePath: { type: "string", nullable: true },
-            category: { type: "string", nullable: true, example: "Bakery" },
-            quantityAvailable: { type: "integer", example: 5 },
-            pickupStart: { type: "string", format: "date-time" },
-            pickupEnd: { type: "string", format: "date-time" },
-            status: {
-              type: "string",
-              enum: ["AVAILABLE", "RESERVED", "EXPIRED"],
-            },
-            addressSnapShot: { type: "string", nullable: true },
-            latitude: { type: "string", nullable: true },
-            longitude: { type: "string", nullable: true },
-            "createdAt",
-            "updatedAt",
-          ],
-          properties: {
-            id: { type: "string", format: "uuid" },
-            restaurantId: { type: "string", format: "uuid" },
-            title: { type: "string", example: "Assorted bagels" },
             description: { type: "string", nullable: true },
             imagePath: { type: "string", nullable: true },
             category: { type: "string", nullable: true, example: "Bakery" },
@@ -415,7 +389,7 @@ export const openApiDocument = swaggerJsdoc({
           },
         },
 
-        createReservationRequest: {
+        CreateRestaurantRequest: {
           type: "object",
           required: ["businessName", "placeId", "sessionToken"],
           properties: {
@@ -427,7 +401,7 @@ export const openApiDocument = swaggerJsdoc({
           },
         },
 
-        UpdateReservationRequest: {
+        UpdateRestaurantRequest: {
           type: "object",
           properties: {
             businessName: { type: "string" },
@@ -471,6 +445,7 @@ export const openApiDocument = swaggerJsdoc({
               items: { type: "string", format: "uuid" },
             },
           },
+        },
         PublicListing: {
           allOf: [
             { $ref: "#/components/schemas/FoodListing" },
