@@ -1,14 +1,13 @@
 import { useState, type SubmitEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { companyApi } from "../../api/restaurant";
+import { AddressAutocomplete } from "./AddressAutocomplete";
 
 export function RestaurantInfoPage() {
   const navigate = useNavigate();
   const [businessName, setBusinessName] = useState("");
-  const [address, setAddress] = useState("");
-  const [city, setCity] = useState("");
-  const [province, setProvince] = useState("");
-  const [postalCode, setPostalCode] = useState("");
+  const [placeId, setPlaceId] = useState("");
+  const [sessionToken] = useState(() => crypto.randomUUID());
   const [phone, setPhone] = useState("");
   const [description, setDescription] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -16,15 +15,18 @@ export function RestaurantInfoPage() {
 
   async function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (!placeId) {
+      setError("Please select address from suggestions");
+      SetIsSubmitting(false);
+      return;
+    }
     setError(null);
     SetIsSubmitting(true);
     try {
       await companyApi.createRestaurant({
         businessName,
-        address,
-        city,
-        province,
-        postalCode,
+        placeId,
+        sessionToken,
         phone: phone || undefined,
         description: description || undefined,
       });
@@ -54,88 +56,61 @@ export function RestaurantInfoPage() {
           </div>
 
           {error && <p className="business-error">{error}</p>}
-
-          <form className="business-form" onSubmit={handleSubmit}>
-            <div className="business-field">
-              <label htmlFor="businessName">Business name</label>
-              <input
-                id="businessName"
-                value={businessName}
-                onChange={(e) => setBusinessName(e.target.value)}
-                required
-              />
-            </div>
-
-            <div className="business-field">
-              <label htmlFor="address">Address</label>
-              <input
-                id="address"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                required
-              />
-            </div>
-
-            <div className="business-form-grid">
+          <div className="business-form-body">
+            <form className="business-form" onSubmit={handleSubmit}>
               <div className="business-field">
-                <label htmlFor="city">City</label>
+                <label htmlFor="businessName">Business name</label>
                 <input
-                  id="city"
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
+                  id="businessName"
+                  value={businessName}
+                  onChange={(e) => setBusinessName(e.target.value)}
                   required
                 />
               </div>
 
-              <div className="business-field">
-                <label htmlFor="province">Province</label>
-                <input
-                  id="province"
-                  value={province}
-                  onChange={(e) => setProvince(e.target.value)}
-                  required
-                />
+              <div className="business-form-grid">
+                <div className="business-field">
+                  <AddressAutocomplete
+                    sessionToken={sessionToken}
+                    selectedPlaceId={placeId}
+                    required
+                    onSelect={(newPlaceId) => {
+                      setPlaceId(newPlaceId);
+                    }}
+                  />
+                </div>
+
+                <div className="business-field">
+                  <label htmlFor="phone">Phone No.</label>
+                  <input
+                    id="phone"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    required
+                  />
+                </div>
               </div>
 
               <div className="business-field">
-                <label htmlFor="postalCode">Postal Code</label>
-                <input
-                  id="postalCode"
-                  value={postalCode}
-                  onChange={(e) => setPostalCode(e.target.value)}
+                <label htmlFor="description">Description</label>
+                <textarea
+                  id="description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
                   required
                 />
               </div>
-
-              <div className="business-field">
-                <label htmlFor="phone">Phone No.</label>
-                <input
-                  id="phone"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  required
-                />
+              <div className="business-form-footer">
+                <button
+                  className="business-button primary-dark"
+                  type="submit"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Saving..." : "Save"}
+                </button>
               </div>
-            </div>
-
-            <div className="business-field">
-              <label htmlFor="description">Description</label>
-              <textarea
-                id="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                required
-              />
-            </div>
-
-            <button
-              className="business-button"
-              type="submit"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? "Saving..." : "Save"}
-            </button>
-          </form>
+            </form>
+          </div>
         </section>
       </div>
     </div>

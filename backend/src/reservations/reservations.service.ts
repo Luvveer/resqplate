@@ -11,7 +11,9 @@ import type {
   Reservation,
   ReservationWithListing,
 } from "./reservations.types.js";
+import { findMatchingPickupSlot } from "@resqplate/shared";
 import type { CreateReservationInput } from "@resqplate/shared";
+import { safeSyncingToAlgolia } from "../external-services/algolia/algolia.service.js";
 
 // Constraint for the pickup code to be a 6 6 chars from a 31-char alphabet
 const PICKUP_CODE_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
@@ -57,15 +59,30 @@ export async function createReservation(
       "You have already reserved this listing currently. Please pick it up or cancel the reservation before making a new one.",
     );
   }
+  const slot = findMatchingPickupSlot(
+    listing.pickupStart,
+    listing.pickupEnd,
+    input.pickupSlotStart,
+  );
+  if (!slot) {
+    throw new Error(
+      "Sorry !! The selected pickup slot is not valid. Please select a valid pickup slot.",
+    );
+  }
 
   const pickupCodeDisplay = generatePickupCode();
 
   // Reserve the listing atomically
-  const { reservation } = await reserveListingAtomically({
-    profileId,
-    listingId: input.listingId,
-    pickupCodeDisplay,
-  });
+  const { reservation, listing: updatedListing } =
+    await reserveListingAtomically({
+      profileId,
+      listingId: input.listingId,
+      pickupCodeDisplay,
+      pickupSlotStart: slot.start,
+      pickupSlotEnd: slot.end,
+    });
+
+  await safeSyncingToAlgolia(updatedListing.id);
 
   return reservation;
 }
@@ -100,5 +117,12 @@ export async function cancelReservation(
     );
   }
 
-  return cancelReservationAtomically(reservation.id, reservation.listingId);
+  const cancelledReservation = await cancelReservationAtomically(
+    reservation.id,
+    reservation.listingId,
+  );
+
+  await safeSyncingToAlgolia(reservation.listingId);
+
+  return cancelledReservation;
 }

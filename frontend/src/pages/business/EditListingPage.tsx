@@ -7,6 +7,7 @@ import type {
 } from "@resqplate/shared";
 import { restaurantListingApi } from "../../api/restaurantListing";
 import { ListingForm } from "./ListingForm";
+import { getAssetUrl } from "../../api/assets";
 
 export function EditListingPage() {
   const { listingId } = useParams();
@@ -37,7 +38,10 @@ export function EditListingPage() {
     loadListing();
   }, [listingId]);
 
-  async function handleSubmit(input: CreateListingInput | UpdateListingInput) {
+  async function handleSubmit(
+    input: CreateListingInput | UpdateListingInput,
+    imageFile: File | null,
+  ) {
     if (!listingId) return;
 
     setError(null);
@@ -48,6 +52,10 @@ export function EditListingPage() {
         listingId,
         input as UpdateListingInput,
       );
+
+      if (imageFile) {
+        await restaurantListingApi.uploadListingImage(listingId, imageFile);
+      }
       navigate("/business/listings");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to update listing");
@@ -87,24 +95,32 @@ export function EditListingPage() {
           {error && <p className="business-error">{error}</p>}
 
           {listing && (
-            <ListingForm
-              initialValues={{
-                title: listing.title,
-                description: listing.description ?? "",
-                category: listing.category ?? "",
-                quantityAvailable: String(listing.quantityAvailable),
-                pickupStart: listing.pickupStart,
-                pickupEnd: listing.pickupEnd,
-                pickupCode: listing.pickupCode ?? "",
-                addressSnapShot: listing.addressSnapShot ?? "",
-                latitude: listing.latitude ?? "",
-                longitude: listing.longitude ?? "",
-                storageNote: listing.storageNote ?? "",
-              }}
-              submitLabel="Update Listing"
-              isSubmitting={isSubmitting}
-              onSubmit={handleSubmit}
-            />
+            <div className="business-form-body">
+              {listing.imagePath && (
+                <img
+                  className="business-listing-preview"
+                  src={getAssetUrl(listing.imagePath) ?? undefined}
+                  alt={listing.title}
+                />
+              )}
+
+              <ListingForm
+                initialValues={{
+                  title: listing.title,
+                  description: listing.description ?? "",
+                  category: listing.category ?? "",
+                  quantityAvailable: String(listing.quantityAvailable),
+                  pickupStart: listing.pickupStart,
+                  pickupEnd: listing.pickupEnd,
+                  storageNote: listing.storageNote ?? "",
+                  allergenIds:
+                    listing.allergens?.map((allergen) => allergen.id) ?? [],
+                }}
+                submitLabel="Update Listing"
+                isSubmitting={isSubmitting}
+                onSubmit={handleSubmit}
+              />
+            </div>
           )}
         </section>
       </div>

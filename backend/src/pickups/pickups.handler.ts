@@ -3,11 +3,13 @@ import {
   confirmPickup,
   getMyReservations,
   markNoShow,
+  searchReservationbyEmail,
 } from "./pickups.service.js";
 import {
   confirmPickupSchema,
   reservationParamsSchema,
   reservationStatusQuerySchema,
+  searchReservationEmailSchema,
 } from "@resqplate/shared";
 
 export async function getReservationHandler(req: Request, res: Response) {
@@ -63,4 +65,14 @@ export async function markNoShowHandler(req: Request, res: Response) {
     }
     throw error;
   }
+}
+
+export async function searchReservationHandler(req: Request, res: Response) {
+  if (!req.profile) {
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+  const { email } = searchReservationEmailSchema.parse(req.query);
+
+  const reservations = await searchReservationbyEmail(req.profile.id, email);
+  return res.status(200).json({ reservations });
 }

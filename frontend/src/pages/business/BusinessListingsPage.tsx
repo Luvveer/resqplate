@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import type { FoodListingResponse } from "@resqplate/shared";
 import { restaurantListingApi } from "../../api/restaurantListing";
 import "./Business.css";
+import { getAssetUrl } from "../../api/assets";
 
 export function BusinessListingsPage() {
   const [listings, setListings] = useState<FoodListingResponse[]>([]);
@@ -58,8 +59,11 @@ export function BusinessListingsPage() {
     <div className="business-page">
       <header className="business-topbar">
         <div className="business-brand">
-          <h1>Food Listings</h1>
-          <p>Create and manage available pickup listings.</p>
+          <span className="business-brand-mark" aria-hidden="true" />
+          <div className="business-brand-text">
+            <h1>Food Listings</h1>
+            <p>Create and manage available pickup listings.</p>
+          </div>
         </div>
 
         <div className="business-actions">
@@ -106,9 +110,24 @@ export function BusinessListingsPage() {
                 {listings.map((listing) => (
                   <tr key={listing.id}>
                     <td>
+                      {listing.imagePath && (
+                        <img
+                          className="business-listing-image"
+                          src={getAssetUrl(listing.imagePath) ?? undefined}
+                          alt={listing.title}
+                        />
+                      )}
                       <div className="business-title">{listing.title}</div>
                       <div className="business-muted">
                         {listing.description || "No description"}
+                      </div>
+                      <div className="business-listing-allergens">
+                        <strong>Allergens:</strong>{" "}
+                        {listing.allergens && listing.allergens.length > 0
+                          ? listing.allergens
+                              .map((allergen) => allergen.name)
+                              .join(", ")
+                          : "No allergen"}
                       </div>
                     </td>
 

@@ -9,12 +9,24 @@ export function CreateListingPage() {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  async function handleSubmit(input: CreateListingInput | UpdateListingInput) {
+  async function handleSubmit(
+    input: CreateListingInput | UpdateListingInput,
+    imageFile: File | null,
+  ) {
     setError(null);
     setIsSubmitting(true);
 
     try {
-      await restaurantListingApi.createListing(input as CreateListingInput);
+      const result = await restaurantListingApi.createListing(
+        input as CreateListingInput,
+      );
+
+      if (imageFile) {
+        await restaurantListingApi.uploadListingImage(
+          result.listing.id,
+          imageFile,
+        );
+      }
       navigate("/business/listings");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to create listing");
@@ -42,12 +54,13 @@ export function CreateListingPage() {
           </div>
 
           {error && <p className="business-error">{error}</p>}
-
-          <ListingForm
-            submitLabel="Create Listing"
-            isSubmitting={isSubmitting}
-            onSubmit={handleSubmit}
-          />
+          <div className="business-form-body">
+            <ListingForm
+              submitLabel="Create Listing"
+              isSubmitting={isSubmitting}
+              onSubmit={handleSubmit}
+            />
+          </div>
         </section>
       </div>
     </div>

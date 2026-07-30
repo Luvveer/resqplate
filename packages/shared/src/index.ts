@@ -34,9 +34,30 @@ export type ProfileResponse = {
   name: string;
   role: UserRole;
   status: profileStatus;
+  dietaryPreferences?: string[];
   createdAt: Date;
   updatedAt: Date;
 };
+
+//Seeker's profile edit schema and response type
+export const updateSeekerProfileSchema = z
+  .object({
+    name: z.string().trim().min(1).max(255).optional(),
+    dietaryPreferences: z
+      .array(z.string().trim().min(1).max(60))
+      .max(30)
+      .optional(),
+  })
+  //reject if empty object
+  .refine(
+    (body) => body.name !== undefined || body.dietaryPreferences !== undefined,
+    {
+      message: "Sorry !! At least one field must be provided",
+    },
+  );
+export type UpdateSeekerProfileInput = z.infer<
+  typeof updateSeekerProfileSchema
+>;
 
 export type RestaurantProfileResponse = {
   id: string;
@@ -48,20 +69,50 @@ export type RestaurantProfileResponse = {
   postalCode: string;
   phone: string | null;
   description: string | null;
+  latitude: string | null;
+  longitude: string | null;
   verificationStatus: verificationStatus;
+  adminNotes: string | null;
   createdAt: Date;
   updatedAt: Date;
 };
 
 export const createRestaurantSchema = z.object({
   businessName: z.string().min(1),
-  address: z.string().min(1),
-  city: z.string().min(1),
-  province: z.string().min(1),
-  postalCode: z.string().min(1),
+  placeId: z.string().trim().min(1),
+  sessionToken: z.string().trim().min(1).max(36),
   phone: z.string().optional(),
   description: z.string().optional(),
 });
+
+export const updateRestaurantSchema = z
+  .object({
+    businessName: z.string().min(1).optional(),
+    placeId: z.string().trim().min(1).optional(),
+    sessionToken: z.string().trim().min(1).max(36).optional(),
+    phone: z.string().optional(),
+    description: z.string().optional(),
+  })
+  .refine(
+    (data) => (data.placeId == undefined) === (data.sessionToken === undefined),
+    { message: "placeId and sessionToken must be provided together" },
+  );
+
+export type UpdateRestrauntInput = z.infer<typeof updateRestaurantSchema>;
+
+export const addressAutocompleteSchema = z.object({
+  input: z.string().trim().min(3).max(200),
+  sessionToken: z.string().trim().min(1).max(36),
+});
+
+export type AddressAutocompleteInput = z.infer<
+  typeof addressAutocompleteSchema
+>;
+
+export type AddressSuggestion = {
+  placeId: string;
+  description: string;
+};
 
 export type AdminRestaurantProfileResponse = {
   id: string;
@@ -116,11 +167,11 @@ export type FoodListingResponse = {
   restaurantId: string;
   title: string;
   description: string | null;
+  imagePath: string | null;
   category: string | null;
   quantityAvailable: number;
   pickupStart: Date;
   pickupEnd: Date;
-  pickupCode: string | null;
   status: ListingStatus;
   addressSnapShot: string | null;
   latitude: string | null;
@@ -131,22 +182,33 @@ export type FoodListingResponse = {
   allergens?: AllergenResponse[];
 };
 
-export const createListingSchema = z.object({
+const listingFieldSchema = z.object({
   title: z.string().min(1),
   description: z.string().optional(),
   category: z.string().optional(),
   quantityAvailable: z.number().int().positive(),
   pickupStart: z.coerce.date(),
   pickupEnd: z.coerce.date(),
-  pickupCode: z.string().optional(),
-  addressSnapShot: z.string().optional(),
-  latitude: z.string().optional(),
-  longitude: z.string().optional(),
   storageNote: z.string().optional(),
   allergenIds: z.array(z.uuid()).optional(),
 });
 
-export const updateListingSchema = createListingSchema.partial();
+export const createListingSchema = listingFieldSchema
+  .refine((input) => input.pickupEnd > input.pickupStart, {
+    message: "Pickup end time must be after pickup start time",
+    path: ["pickupEnd"],
+  })
+  .refine(
+    (input) =>
+      input.pickupEnd.getTime() - input.pickupStart.getTime() <=
+      24 * 60 * 60 * 1000,
+    {
+      message: "Pickup window cannot be longer than 24 hours.",
+      path: ["pickupEnd"],
+    },
+  );
+
+export const updateListingSchema = listingFieldSchema.partial();
 
 export const listingParamsSchema = z.object({
   listingId: z.uuid(),
@@ -158,31 +220,117 @@ export type ListingParamsInput = z.infer<typeof listingParamsSchema>;
 
 // Feature 3 -Food listing (the browser and search for food items) + reservations)
 
+// For the maps lets add a cordiate helper
+const coordinateQueryParam = z
+  .string()
+  .trim()
+  .min(1)
+  .transform((value) => Number(value))
+  .pipe(z.number().finite());
+
 //Function to match on the restaurant's city, listing category, and free text search
-export const browseListingsQuerySchema = z.object({
-  city: z.string().trim().min(1).optional(),
-  category: z.string().trim().min(1).optional(),
-  search: z.string().trim().min(1).optional(),
-  // Constraint for the allergens to be excluded from the search results.
-  excludeAllergenIds: z
-    .string()
-    .optional()
-    .transform((value) =>
-      value
-        ? value
-            .split(",")
-            .map((part) => part.trim())
-            .filter(Boolean)
-        : [],
-    )
-    .pipe(z.array(z.uuid())),
-});
+export const browseListingsQuerySchema = z
+  .object({
+    city: z.string().trim().min(1).optional(),
+    category: z.string().trim().min(1).optional(),
+    search: z.string().trim().min(1).optional(),
+    // Constraint for the allergens to be excluded from the search results.
+    excludeAllergenIds: z
+      .string()
+      .optional()
+      .transform((value) =>
+        value
+          ? value
+              .split(",")
+              .map((part) => part.trim())
+              .filter(Boolean)
+          : [],
+      )
+      .pipe(z.array(z.uuid())),
+    //the seeker's origin point for the distance mapping and radius for the appropirate listing
+    lat: coordinateQueryParam.pipe(z.number().min(-90).max(90)).optional(),
+    lng: coordinateQueryParam.pipe(z.number().min(-180).max(180)).optional(),
+    // option for the seeker to choose the within n kn filter
+    radiusKm: coordinateQueryParam
+      .pipe(z.number().positive().max(500))
+      .optional(),
+    sort: z.enum(["distance", "pickupEnd"]).optional(),
+  })
+  .refine((query) => (query.lat === undefined) === (query.lng === undefined), {
+    message: "Sorry !! Both lat and lng must be provided together.",
+    path: ["lat"],
+    // path: ["lng"], // This is the other path
+  });
 
 export type BrowseListingsQuery = z.infer<typeof browseListingsQuerySchema>; //single unit for listing
+
+//The Pickup timeSlot window and workflow
+export const PICKUP_SLOT_MINUTES = 60;
+const SLOT_MS = PICKUP_SLOT_MINUTES * 60 * 1000;
+
+export type PickupSlot = {
+  start: Date;
+  end: Date;
+};
+
+//make the slot of the pickup time window for the listing
+export function generatePickupSlots(
+  pickupStart: Date | string,
+  pickupEnd: Date | string,
+  now: Date = new Date(),
+): PickupSlot[] {
+  const windowStart = new Date(pickupStart);
+  const windowEnd = new Date(pickupEnd);
+  const slots: PickupSlot[] = [];
+
+  // Guard against a malformed / inverted window.
+  if (
+    Number.isNaN(windowStart.getTime()) ||
+    Number.isNaN(windowEnd.getTime()) ||
+    windowEnd.getTime() <= windowStart.getTime()
+  ) {
+    return slots;
+  }
+
+  let cursor = windowStart.getTime();
+  const endMs = windowEnd.getTime();
+
+  while (cursor < endMs) {
+    // Clamp the last slot to the window end so partial tails survive.
+    const slotEnd = Math.min(cursor + SLOT_MS, endMs);
+
+    // Hide slots that have already finished.
+    if (slotEnd > now.getTime()) {
+      slots.push({ start: new Date(cursor), end: new Date(slotEnd) });
+    }
+
+    cursor = slotEnd;
+  }
+
+  return slots;
+}
+//This is the function to find the matching pickup slot for a given listing and pickup time window is correctly valid and matched
+export function findMatchingPickupSlot(
+  pickupStart: Date | string,
+  pickupEnd: Date | string,
+  slotStart: Date | string,
+  now: Date = new Date(),
+): PickupSlot | undefined {
+  const target = new Date(slotStart).getTime();
+  if (Number.isNaN(target)) {
+    return undefined;
+  }
+  return generatePickupSlots(pickupStart, pickupEnd, now).find(
+    (slot) => slot.start.getTime() === target,
+  );
+}
 
 export const createReservationSchema = z.object({
   listingId: z.uuid(),
   // pickupCode: z.string().min(1),
+
+  //Now start the seeker's chosen one hour time slot for the pickup window, which is a required field for the reservation
+  pickupSlotStart: z.coerce.date(),
 });
 
 export type CreateReservationInput = z.infer<typeof createReservationSchema>;
@@ -213,6 +361,8 @@ export type ReservationResponse = {
   noShowAt: Date | null;
   // createdAt: Date;
   // updatedAt: Date;
+  pickupSlotStart: Date;
+  pickupSlotEnd: Date;
 };
 
 // Reserved by the seeker and what was reserved and the pickup code
@@ -229,7 +379,10 @@ export type PublicListingResponse = FoodListingResponse & {
     city: string;
     province: string;
     // postalCode: string;
+    latitude: string | null; //for the map feature
+    longitude: string | null;
   } | null;
+  distanceKm?: number | null; //for the map feature
 };
 
 export const reservationStatusQuerySchema = z.object({
@@ -241,3 +394,29 @@ export const reservationStatusQuerySchema = z.object({
 export const confirmPickupSchema = z.object({
   pickupCode: z.string().min(1),
 });
+
+export const requestPasswordResetSchema = z.object({
+  email: z.email(),
+  redirectTo: z.string(),
+});
+
+export type requestPasswordResetInput = z.infer<
+  typeof requestPasswordResetSchema
+>;
+
+export const confirmPasswordResetSchema = z.object({
+  newPassword: z.string().min(8),
+  token: z.string(),
+});
+
+export type confirmPasswordResetInput = z.infer<
+  typeof confirmPasswordResetSchema
+>;
+
+export const searchReservationEmailSchema = z.object({
+  email: z.email(),
+});
+
+export type ReservationEmailResponse = ReservationResponse & {
+  seekerEmail: string;
+};

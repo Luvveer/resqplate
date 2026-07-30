@@ -1,0 +1,68 @@
+<svg width="820" height="1040" viewBox="0 0 820 1040" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" role="img" aria-label="">
+  <defs>
+    <linearGradient id="ink" x1="0" y1="0" x2="820" y2="1040" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#26221A"/>
+      <stop offset="0.55" stop-color="#211E18"/>
+      <stop offset="1" stop-color="#191610"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
+      gradientTransform="translate(150 120) rotate(50) scale(430)">
+      <stop stop-color="#E39A16" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#E39A16" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow2" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse"
+      gradientTransform="translate(720 940) rotate(-130) scale(360)">
+      <stop stop-color="#2F6B4F" stop-opacity="0.20"/>
+      <stop offset="1" stop-color="#2F6B4F" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="dots" width="26" height="26" patternUnits="userSpaceOnUse">
+      <circle cx="1.4" cy="1.4" r="1.4" fill="#F4EFE3" fill-opacity="0.05"/>
+    </pattern>
+  </defs>
+
+  <!-- base -->
+  <rect width="820" height="1040" fill="url(#ink)"/>
+  <!-- expo-board dot matrix -->
+  <rect width="820" height="1040" fill="url(#dots)"/>
+  <!-- warm service light, top-left behind the logo -->
+  <rect width="820" height="1040" fill="url(#glow)"/>
+  <!-- faint herb glow, bottom-right -->
+  <rect width="820" height="1040" fill="url(#glow2)"/>
+
+  <!-- big ghost plate ring bleeding off the bottom-right (echoes the mark) -->
+  <g fill="none" stroke="#F4EFE3" opacity="0.06">
+    <circle cx="742" cy="898" r="196" stroke-width="10"/>
+    <circle cx="742" cy="898" r="120" stroke-width="5"/>
+    <path d="M872 1028 L980 1136" stroke-width="10" stroke-linecap="round"/>
+  </g>
+  <!-- a second, smaller ghost plate, top-right, amber-tinted -->
+  <g fill="none" stroke="#E39A16" opacity="0.10">
+    <circle cx="748" cy="150" r="92" stroke-width="6"/>
+    <circle cx="748" cy="150" r="48" stroke-width="3"/>
+  </g>
+
+  <!-- steam curls rising along the right seam, very quiet -->
+  <g stroke="#ECE5D6" stroke-width="3" stroke-linecap="round" fill="none" opacity="0.08">
+    <path d="M560 560 C548 528 580 512 560 480 C544 456 576 440 560 412"/>
+    <path d="M628 620 C616 588 648 572 628 540 C612 516 644 500 628 472"/>
+    <path d="M690 520 C680 494 706 480 690 452"/>
+  </g>
+
+  <!-- ticket perforation running down the far-right seam (where it meets the light panel) -->
+  <g fill="#ECE5D6" opacity="0.16">
+    <circle cx="806" cy="40" r="4"/><circle cx="806" cy="90" r="4"/><circle cx="806" cy="140" r="4"/>
+    <circle cx="806" cy="190" r="4"/><circle cx="806" cy="240" r="4"/><circle cx="806" cy="290" r="4"/>
+    <circle cx="806" cy="340" r="4"/><circle cx="806" cy="390" r="4"/><circle cx="806" cy="440" r="4"/>
+    <circle cx="806" cy="490" r="4"/><circle cx="806" cy="540" r="4"/><circle cx="806" cy="590" r="4"/>
+    <circle cx="806" cy="640" r="4"/><circle cx="806" cy="690" r="4"/><circle cx="806" cy="740" r="4"/>
+    <circle cx="806" cy="790" r="4"/><circle cx="806" cy="840" r="4"/><circle cx="806" cy="890" r="4"/>
+    <circle cx="806" cy="940" r="4"/><circle cx="806" cy="990" r="4"/>
+  </g>
+
+  <!-- scattered tiny plate-bokeh, faint -->
+  <g fill="none" stroke="#F4EFE3" opacity="0.05">
+    <circle cx="120" cy="620" r="26" stroke-width="3"/>
+    <circle cx="210" cy="780" r="15" stroke-width="2.5"/>
+    <circle cx="90" cy="900" r="12" stroke-width="2.5"/>
+  </g>
+</svg>

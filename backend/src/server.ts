@@ -9,6 +9,8 @@ import morgan from "morgan";
 import ReservationRouter from "./reservations/reservations.routes.js";
 import ListingRouter from "./listings/listings.routes.js";
 import PickupRouter from "./pickups/pickups.routes.js";
+import path from "path";
+import { openApiDocument } from "./docs/swagger.js";
 
 const app = express();
 app.use(morgan("dev"));
@@ -24,11 +26,16 @@ app.use(
 );
 app.use(express.json());
 
+app.get("/api/openapi.json", (_req, res) => {
+  return res.status(200).json(openApiDocument);
+});
+
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok" });
 });
 
-// Call routes in the respective modules
 app.use("/api/auth", AuthRouter);
 app.use("/api/restaurants", RestaurantRouter);
 app.use("/api/admin", AdminRouter);
@@ -39,6 +46,7 @@ app.use("/api/pickups", PickupRouter);
 const port = process.env.PORT ?? 3000;
 
 app.listen(port, () => {
-  console.log(`API listening on http://localhost:${port}`);
-  console.log(`Server health is in http://localhost:${port}/api/health`);
+  console.log(`API is listening on http://localhost:${port}`);
+  console.log(`Server health is live in http://localhost:${port}/api/health`);
+  console.log(`Project Docs is live in http://localhost:${port}/api-docs`);
 });

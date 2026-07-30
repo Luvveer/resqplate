@@ -1,0 +1,271 @@
+/* ResQPlate design system, the central css */
+
+:root {
+  /* Ink / board surfaces */
+  --ink: #211e18;
+  --ink-2: #2c271e;
+  --ink-line: #3a3428;
+
+  /* Paper / cards */
+  --paper: #ece5d6;
+  --card: #fbf8f1;
+
+  /* Brand + signals */
+  --herb: #453524;
+  --herb-deep: #2b2016;
+  --amber: #e39a16;
+  --ember: #c24a22;
+
+  /* Text on paper */
+  --stone: #786f5c;
+  --stone-2: #a79c86;
+  --line: #dcd3bf;
+
+  --r: 14px; /* card radius */
+  --shadow: 0 1px 0 #fff inset, 0 10px 24px -14px rgba(33, 30, 24, 0.35);
+
+  --display: "Bricolage Grotesque", system-ui, sans-serif;
+  --body: "Hanken Grotesk", system-ui, sans-serif;
+  --mono: "Spline Sans Mono", ui-monospace, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--body);
+  background: var(--paper);
+  color: var(--ink);
+  /* faint dotted paper texture */
+  background-image: radial-gradient(var(--line) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+}
+
+/* ---- Typographic primitives ---- */
+.rq-display {
+  font-family: var(--display);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin: 0;
+}
+.rq-mono {
+  font-family: var(--mono);
+}
+.rq-muted {
+  color: var(--stone);
+}
+.rq-faint {
+  color: var(--stone-2);
+}
+
+/* ---- Buttons ---- */
+.rq-btn {
+  border: none;
+  border-radius: 11px;
+  padding: 0 18px;
+  height: 42px;
+  font-weight: 700;
+  font-size: 14px;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.rq-btn-primary {
+  background: var(--herb);
+  color: #fff;
+}
+.rq-btn-primary:hover:not(:disabled) {
+  background: var(--herb-deep);
+}
+.rq-btn-ghost {
+  background: var(--card);
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+.rq-btn-ghost:hover:not(:disabled) {
+  border-color: var(--ink);
+}
+.rq-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* ---- Fields ---- */
+.rq-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  padding: 0 6px 0 12px;
+  height: 42px;
+}
+.rq-field label {
+  font-size: 12px;
+  color: var(--stone-2);
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.rq-field input,
+.rq-field select {
+  border: none;
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+  color: var(--ink);
+  outline: none;
+  padding: 10px 6px;
+  min-width: 88px;
+  width: 100%;
+}
+
+/* Standalone input (login/profile) */
+.rq-input {
+  width: 100%;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  padding: 11px 13px;
+  font: inherit;
+  font-size: 14px;
+  color: var(--ink);
+  outline: none;
+}
+.rq-input:focus {
+  border-color: var(--herb);
+}
+
+.rq-chip {
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--stone);
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-weight: 600;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.rq-chip.on {
+  background: var(--herb);
+  color: #fff;
+  border-color: var(--herb);
+}
+.rq-tag {
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--stone);
+  border-radius: 8px;
+  padding: 3px 9px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* ---- Segmented control (List / Map) ---- */
+.rq-seg {
+  display: flex;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  padding: 4px;
+}
+.rq-seg button {
+  border: none;
+  background: transparent;
+  color: var(--stone);
+  font-weight: 600;
+  font-size: 13.5px;
+  padding: 8px 15px;
+  border-radius: 8px;
+}
+.rq-seg button.on {
+  background: var(--ink);
+  color: #f4efe3;
+}
+
+.rq-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  box-shadow: var(--shadow);
+}
+
+.rq-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+.rq-pill-herb {
+  background: #efe7d6;
+  color: var(--herb);
+  border: 1px solid #e0d4bd;
+}
+.rq-pill-amber {
+  background: #fbeecb;
+  color: #99630a;
+  border: 1px solid #f0d79a;
+}
+.rq-pill-ember {
+  background: #f7ddd2;
+  color: var(--ember);
+  border: 1px solid #eec3b2;
+}
+.rq-pill-stone {
+  background: #eee9dd;
+  color: var(--stone);
+  border: 1px solid var(--line);
+}
+
+.rq-notice {
+  background: #efe7d6;
+  border: 1px solid #e0d4bd;
+  color: var(--herb-deep);
+  border-radius: 11px;
+  padding: 10px 14px;
+  font-size: 14px;
+}
+.rq-error {
+  background: #f7ddd2;
+  border: 1px solid #eec3b2;
+  color: var(--ember);
+  border-radius: 11px;
+  padding: 10px 14px;
+  font-size: 14px;
+}
+
+.rq-loc {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--herb);
+  background: #e4ede6;
+  border: 1px solid #cfe0d5;
+  padding: 7px 11px;
+  border-radius: 999px;
+}

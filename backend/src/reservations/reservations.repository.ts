@@ -61,6 +61,8 @@ export async function reserveListingAtomically(input: {
   profileId: string;
   listingId: string;
   pickupCodeDisplay: string;
+  pickupSlotStart: Date;
+  pickupSlotEnd: Date;
 }): Promise<{ reservation: Reservation; listing: FoodListing }> {
   return db.transaction(async (tx) => {
     //Check if the listing is still available
@@ -107,6 +109,8 @@ export async function reserveListingAtomically(input: {
         listingId: input.listingId,
         pickupCodeDisplay: input.pickupCodeDisplay,
         status: "RESERVED",
+        pickupSlotStart: input.pickupSlotStart,
+        pickupSlotEnd: input.pickupSlotEnd,
       })
       .returning();
 
@@ -166,4 +170,18 @@ export async function cancelReservationAtomically(
 
     return reservation;
   });
+}
+
+export async function expireReservationForFoodListing(
+  listingId: string,
+): Promise<void> {
+  await db
+    .update(reservationTable)
+    .set({ status: "EXPIRED" })
+    .where(
+      and(
+        eq(reservationTable.listingId, listingId),
+        eq(reservationTable.status, "RESERVED"),
+      ),
+    );
 }

@@ -1,0 +1,18 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ResQPlate">
+  <defs>
+    <linearGradient id="amber" x1="18" y1="10" x2="104" y2="112" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F2AE2B"/>
+      <stop offset="1" stop-color="#D2820F"/>
+    </linearGradient>
+  </defs>
+  <!-- warm tile -->
+  <rect x="4" y="4" width="112" height="112" rx="30" fill="url(#amber)"/>
+  <rect x="4" y="4" width="112" height="112" rx="30" fill="#000" opacity="0.06"/>
+  <rect x="4.75" y="4.75" width="110.5" height="110.5" rx="29.25" stroke="#fff" stroke-opacity="0.18" stroke-width="1.5"/>
+  <!-- plate-as-Q, knocked out in ink -->
+  <g stroke="#211E18" fill="none" stroke-linecap="round">
+    <circle cx="58" cy="60" r="30" stroke-width="8.5"/>
+    <circle cx="58" cy="60" r="16.5" stroke-width="4"/>
+    <path d="M74 76 L90 92" stroke-width="8.5"/>
+  </g>
+</svg>

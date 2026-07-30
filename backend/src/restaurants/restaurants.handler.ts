@@ -4,6 +4,8 @@ import {
   createListingSchema,
   updateListingSchema,
   listingParamsSchema,
+  addressAutocompleteSchema,
+  updateRestaurantSchema,
 } from "@resqplate/shared";
 import {
   getMyRestaurant,
@@ -13,6 +15,9 @@ import {
   createMyListing,
   updateMyListing,
   expireMyListing,
+  updateMyListingImage,
+  getAddressSuggestions,
+  updateMyRestaurant,
 } from "./restaurants.service.js";
 
 export async function getRestaurantHandler(req: Request, res: Response) {
@@ -24,6 +29,26 @@ export async function getRestaurantHandler(req: Request, res: Response) {
     return res.status(404).json({ error: "No restraunt profile found" });
   }
   return res.status(200).json({ restaurant });
+}
+
+export async function addressSuggestionsHandler(req: Request, res: Response) {
+  if (!req.profile) {
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+  const input = addressAutocompleteSchema.parse(req.body);
+  try {
+    const suggestions = await getAddressSuggestions(
+      input.input,
+      input.sessionToken,
+    );
+
+    return res.status(200).json({ suggestions });
+  } catch (error) {
+    if (error instanceof Error) {
+      return res.status(400).json({ error: error.message });
+    }
+    throw error;
+  }
 }
 
 export async function createRestaurantHandler(req: Request, res: Response) {
@@ -122,6 +147,38 @@ export async function updateListingHandler(req: Request, res: Response) {
   }
 }
 
+export async function updateListingImageHandler(req: Request, res: Response) {
+  if (!req.profile) {
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+
+  const params = listingParamsSchema.parse(req.params);
+
+  if (!req.file) {
+    return res.status(400).json({ error: "Please select image" });
+  }
+
+  try {
+    const listing = await updateMyListingImage(
+      req.profile.id,
+      params.listingId,
+      req.file,
+    );
+
+    if (!listing) {
+      return res.status(404).json({ error: "Food listing not found" });
+    }
+
+    return res.status(200).json({ listing });
+  } catch (error) {
+    if (error instanceof Error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    throw error;
+  }
+}
+
 export async function expireListingHandler(req: Request, res: Response) {
   if (!req.profile) {
     return res.status(401).json({ error: "Not authenticated" });
@@ -141,4 +198,16 @@ export async function expireListingHandler(req: Request, res: Response) {
     }
     throw error;
   }
+}
+
+export async function updateRestaurantHandler(req: Request, res: Response) {
+  if (!req.profile) {
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+  const body = updateRestaurantSchema.parse(req.body);
+  const restaurant = await updateMyRestaurant(req.profile.id, body);
+  if (!restaurant) {
+    return res.status(404).json({ error: "No restaurant profile found" });
+  }
+  return res.status(200).json({ restaurant });
 }

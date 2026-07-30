@@ -92,7 +92,7 @@ fi
 
 echo "Secrets in Secret Manager..."
 
-for SECRET_NAME in DATABASE_URL BETTER_AUTH_SECRET BETTER_AUTH_URL FRONTEND_URL; do
+for SECRET_NAME in DATABASE_URL BETTER_AUTH_SECRET BETTER_AUTH_URL FRONTEND_URL RESEND_API_KEY GOOGLE_PLACES_API_KEY ALGOLIA_APP_ID ALGOLIA_WRITE_API_KEY ALGOLIA_LISTINGS_INDEX; do
     if gcloud secrets describe "$SECRET_NAME" --quiet > /dev/null 2>&1; then
         echo "Secret $SECRET_NAME already exists, skipping."
     else
@@ -103,6 +103,12 @@ for SECRET_NAME in DATABASE_URL BETTER_AUTH_SECRET BETTER_AUTH_URL FRONTEND_URL;
             BETTER_AUTH_SECRET) echo -n "$BETTER_AUTH_SECRET" | gcloud secrets versions add BETTER_AUTH_SECRET --data-file=- ;;
             BETTER_AUTH_URL) echo -n "$BETTER_AUTH_URL" | gcloud secrets versions add BETTER_AUTH_URL --data-file=- ;;
             FRONTEND_URL) echo -n "$FRONTEND_URL" | gcloud secrets versions add FRONTEND_URL --data-file=- ;;
+
+            RESEND_API_KEY) echo -n "$RESEND_API_KEY" | gcloud secrets versions add RESEND_API_KEY --data-file=- ;;
+            GOOGLE_PLACES_API_KEY) echo -n "$GOOGLE_PLACES_API_KEY" | gcloud secrets versions add GOOGLE_PLACES_API_KEY --data-file=- ;;
+            ALGOLIA_APP_ID) echo -n "$ALGOLIA_APP_ID" | gcloud secrets versions add ALGOLIA_APP_ID --data-file=- ;;
+            ALGOLIA_WRITE_API_KEY) echo -n "$ALGOLIA_WRITE_API_KEY" | gcloud secrets versions add ALGOLIA_WRITE_API_KEY --data-file=- ;;
+            ALGOLIA_LISTINGS_INDEX) echo -n "$ALGOLIA_LISTINGS_INDEX" | gcloud secrets versions add ALGOLIA_LISTINGS_INDEX --data-file=- ;;
         esac
     fi
 done

@@ -4,6 +4,9 @@ import type {
   LoginInput,
   UserRole,
   ProfileResponse,
+  UpdateSeekerProfileInput,
+  UpdateRestrauntInput,
+  RestaurantProfileResponse,
 } from "@resqplate/shared";
 
 class AuthAPI {
@@ -46,6 +49,51 @@ class AuthAPI {
     return await apiClient.request<{ profile: ProfileResponse }>(
       "GET",
       "/auth/profile/me",
+    );
+  }
+
+  async updateProfile(input: UpdateSeekerProfileInput) {
+    return await apiClient.request<{ profile: ProfileResponse }>(
+      "PATCH",
+      "/auth/profile/me",
+      input,
+    );
+  }
+
+  async requestPasswordReset(email: string) {
+    return await apiClient.request<{ message: string }>(
+      "POST",
+      "/auth/password-reset/request",
+      {
+        email,
+        redirectTo: `${window.location.origin}/reset-password`,
+      },
+    );
+  }
+
+  async confirmPasswordReset(newPassword: string, token: string) {
+    return await apiClient.request<{ message: string }>(
+      "POST",
+      "/auth/password-reset/confirm",
+      {
+        newPassword,
+        token,
+      },
+    );
+  }
+
+  async deleteAccount() {
+    return await apiClient.request<{ message: string }>(
+      "DELETE",
+      "/auth/profile/me",
+    );
+  }
+
+  async updateRestaurant(input: UpdateRestrauntInput) {
+    return await apiClient.request<{ restaurant: RestaurantProfileResponse }>(
+      "PATCH",
+      "/restaurants/profileres",
+      input,
     );
   }
 }

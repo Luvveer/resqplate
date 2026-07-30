@@ -117,8 +117,11 @@ export function AdminDashboard() {
     <div className="admin-page">
       <header className="admin-topbar">
         <div className="admin-brand">
-          <h1 className="admin-brand-title">ResQPlate Admin Platform</h1>
-          <p className="admin-brand-subtitle">Restaurant verification panel</p>
+          <span className="admin-brand-mark" aria-hidden="true" />
+          <div>
+            <h1 className="admin-brand-title">ResQPlate Admin</h1>
+            <p className="admin-brand-subtitle">Verification platform</p>
+          </div>
         </div>
 
         <div className="admin-user">
@@ -132,12 +135,14 @@ export function AdminDashboard() {
       <main className="admin-main">
         <section className="admin-header">
           <div>
-            <h2>Restaurant Verification</h2>
-            <p>Review business profiles and Approve business.</p>
+            <h2 className="admin-title">Restaurant verification</h2>
+            <p className="admin-sub">
+              Review business profiles and approve, reject, or follow up.
+            </p>
           </div>
 
           <button
-            className="admin-refresh"
+            className="rq-btn rq-btn-ghost"
             onClick={() => loadRestaurants()}
             disabled={isLoading}
           >
@@ -150,28 +155,25 @@ export function AdminDashboard() {
             <p className="admin-stat-label">Showing</p>
             <p className="admin-stat-value">{restaurants.length}</p>
           </div>
-
           <div className="admin-stat-card">
             <p className="admin-stat-label">Pending in view</p>
             <p className="admin-stat-value">{pendingCount}</p>
           </div>
-
           <div className="admin-stat-card">
             <p className="admin-stat-label">Approved in view</p>
             <p className="admin-stat-value">{approvedCount}</p>
           </div>
         </section>
 
-        <section className="admin-panel">
-          <div className="admin-panel-header">
-            <h3>Business profiles</h3>
-
+        <section className="admin-panel-block">
+          <div className="admin-panel-top">
+            <h3 className="admin-panel-title">Business profiles</h3>
             <div className="admin-filters">
               {statusOptions.map((status) => (
                 <button
                   key={status}
-                  className={`admin-filter-button ${
-                    statusFilter === status ? "active" : ""
+                  className={`admin-filter ${
+                    statusFilter === status ? "on" : ""
                   }`}
                   type="button"
                   onClick={() => setStatusFilter(status)}
@@ -182,120 +184,98 @@ export function AdminDashboard() {
             </div>
           </div>
 
-          {error && <p className="admin-error">{error}</p>}
+          {error && <p className="rq-error admin-inset">{error}</p>}
 
           {isLoading ? (
             <p className="admin-message">Loading restaurant profiles...</p>
           ) : restaurants.length === 0 ? (
             <p className="admin-message">No restaurant profiles found.</p>
           ) : (
-            <div className="admin-table-wrap">
-              <table className="admin-table">
-                <thead>
-                  <tr>
-                    <th>Business</th>
-                    <th>Location</th>
-                    <th>Contact</th>
-                    <th>Status</th>
-                    <th>Admin notes</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
+            <div className="admin-card-list">
+              {restaurants.map((restaurant) => (
+                <article key={restaurant.id} className="admin-card">
+                  <div className="admin-card-head">
+                    <div>
+                      <h4 className="admin-card-name">
+                        {restaurant.businessName}
+                      </h4>
+                      <p className="admin-card-desc">
+                        {restaurant.description || "No description provided."}
+                      </p>
+                    </div>
+                    <span
+                      className={`admin-status ${getStatusClass(
+                        restaurant.verificationStatus,
+                      )}`}
+                    >
+                      {formatStatus(restaurant.verificationStatus)}
+                    </span>
+                  </div>
 
-                <tbody>
-                  {restaurants.map((restaurant) => (
-                    <tr key={restaurant.id}>
-                      <td>
-                        <div className="admin-business-name">
-                          {restaurant.businessName}
-                        </div>
-                        <div className="admin-business-description">
-                          {restaurant.description || "No description provided."}
-                        </div>
-                      </td>
-
-                      <td>
-                        <div>{restaurant.address}</div>
-                        <div className="admin-muted">
+                  <dl className="admin-card-meta">
+                    <div>
+                      <dt>Location</dt>
+                      <dd>
+                        {restaurant.address}
+                        <span className="admin-muted">
                           {restaurant.city}, {restaurant.province}{" "}
                           {restaurant.postalCode}
-                        </div>
-                      </td>
-
-                      <td>
-                        <div>{restaurant.phone || "No phone"}</div>
-                      </td>
-
-                      <td>
-                        <span
-                          className={`admin-status ${getStatusClass(
-                            restaurant.verificationStatus,
-                          )}`}
-                        >
-                          {formatStatus(restaurant.verificationStatus)}
                         </span>
-                      </td>
+                      </dd>
+                    </div>
+                    <div>
+                      <dt>Contact</dt>
+                      <dd>{restaurant.phone || "No phone"}</dd>
+                    </div>
+                  </dl>
 
-                      <td>
-                        <textarea
-                          className="admin-notes"
-                          value={
-                            adminNotes[restaurant.id] ??
-                            restaurant.adminNotes ??
-                            ""
-                          }
-                          onChange={(event) =>
-                            setAdminNotes((current) => ({
-                              ...current,
-                              [restaurant.id]: event.target.value,
-                            }))
-                          }
-                          rows={3}
-                          placeholder="Add admin notes"
-                        />
-                      </td>
+                  <textarea
+                    className="admin-notes"
+                    value={
+                      adminNotes[restaurant.id] ?? restaurant.adminNotes ?? ""
+                    }
+                    onChange={(event) =>
+                      setAdminNotes((current) => ({
+                        ...current,
+                        [restaurant.id]: event.target.value,
+                      }))
+                    }
+                    rows={2}
+                    placeholder="Add admin notes (optional)"
+                  />
 
-                      <td>
-                        <div className="admin-actions">
-                          <button
-                            className="admin-action approve"
-                            onClick={() => runAction(restaurant.id, "approve")}
-                            disabled={updatingId === restaurant.id}
-                          >
-                            Approve
-                          </button>
-
-                          <button
-                            className="admin-action reject"
-                            onClick={() => runAction(restaurant.id, "reject")}
-                            disabled={updatingId === restaurant.id}
-                          >
-                            Reject
-                          </button>
-
-                          <button
-                            className="admin-action"
-                            onClick={() =>
-                              runAction(restaurant.id, "request-info")
-                            }
-                            disabled={updatingId === restaurant.id}
-                          >
-                            Info
-                          </button>
-
-                          <button
-                            className="admin-action"
-                            onClick={() => runAction(restaurant.id, "suspend")}
-                            disabled={updatingId === restaurant.id}
-                          >
-                            Suspend
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                  <div className="admin-card-actions">
+                    <button
+                      className="rq-btn rq-btn-primary"
+                      onClick={() => runAction(restaurant.id, "approve")}
+                      disabled={updatingId === restaurant.id}
+                    >
+                      Approve
+                    </button>
+                    <button
+                      className="rq-btn rq-btn-ghost admin-btn-danger"
+                      onClick={() => runAction(restaurant.id, "reject")}
+                      disabled={updatingId === restaurant.id}
+                    >
+                      Reject
+                    </button>
+                    <button
+                      className="rq-btn rq-btn-ghost"
+                      onClick={() => runAction(restaurant.id, "request-info")}
+                      disabled={updatingId === restaurant.id}
+                    >
+                      Request info
+                    </button>
+                    <button
+                      className="rq-btn rq-btn-ghost"
+                      onClick={() => runAction(restaurant.id, "suspend")}
+                      disabled={updatingId === restaurant.id}
+                    >
+                      Suspend
+                    </button>
+                  </div>
+                </article>
+              ))}
             </div>
           )}
         </section>
