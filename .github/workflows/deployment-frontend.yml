@@ -28,6 +28,9 @@ jobs:
         run: npm run build -w frontend
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
+          VITE_ALGOLIA_APP_ID: ${{ secrets.VITE_ALGOLIA_APP_ID }}
+          VITE_ALGOLIA_SEARCH_API_KEY: ${{ secrets.VITE_ALGOLIA_SEARCH_API_KEY }}
+          VITE_ALGOLIA_LISTINGS_INDEX: ${{ secrets.VITE_ALGOLIA_LISTINGS_INDEX }}
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v4
         with:
