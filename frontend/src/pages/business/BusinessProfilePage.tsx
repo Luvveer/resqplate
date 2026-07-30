@@ -34,6 +34,7 @@ export function BusinessProfilePage() {
       .then(([profileResult, restaurantResult]) => {
         if (cancelled) return;
         setProfile(profileResult.profile);
+        setName(profileResult.profile.name);
         setRestaurant(restaurantResult.restaurant);
         setBusinessName(restaurantResult.restaurant.businessName);
         setPhone(restaurantResult.restaurant.phone ?? "");
@@ -115,7 +116,7 @@ export function BusinessProfilePage() {
       });
       setProfile(updated);
       setName(updated.name);
-      setNotice("Yes !! The Profile is correctly updated.");
+      setNotice("The Profile is updated successfully");
     } catch (err) {
       setError(
         err instanceof Error
@@ -141,9 +142,11 @@ export function BusinessProfilePage() {
 
       <main className="business-main business-profile-grid">
         <div className="business-head">
-          <div>
-            <h1 className="rq-display sk-title">My profile</h1>
-            <p className="sk-sub">Update your Profile Name.</p>
+          <div className="business-account-head">
+            <h1 className="business-account-title">Account Details</h1>
+            <p className="business-account-subtitle">
+              Update your profile name and restaurant details
+            </p>
           </div>
         </div>
 
@@ -159,16 +162,16 @@ export function BusinessProfilePage() {
           </section>
         ) : (
           <>
-            <section className="sk-profile">
-              <p className="sk-profile-signed rq-mono">
+            <section className="business-card business-profile-card">
+              <h2>Profile Details</h2>
+              <p className="business-profile-email">
                 Signed in as {profile.email}
               </p>
 
-              <div className="sk-profile-field">
-                <label htmlFor="pf-name">Name</label>
+              <div className="business-field">
+                <label htmlFor="business-profile-name">Name</label>
                 <input
-                  id="pf-name"
-                  className="rq-input"
+                  id="business-profile-name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   maxLength={255}
@@ -176,22 +179,24 @@ export function BusinessProfilePage() {
               </div>
 
               <button
-                className="rq-btn rq-btn-primary sk-profile-save"
-                onClick={() => handleSave()}
+                type="button"
+                className="business-button primary-dark business-profile-save"
+                onClick={handleSave}
                 disabled={isSaving}
               >
-                {isSaving ? "Saving…" : "Save changes"}
+                {isSaving ? "Saving..." : "Save changes"}
               </button>
               <button
                 type="button"
-                className="rq-btn rq-btn-danger sk-profile-delete"
-                onClick={() => handleDeleteAccount()}
+                className="business-button danger business-profile-delete"
+                onClick={handleDeleteAccount}
+                disabled={isSaving}
               >
                 Delete Account
               </button>
             </section>
-            <section className="business-card">
-              <h2>Restraunt Details</h2>
+            <section className="business-card business-restaurant-card">
+              <h2>Restaurant Details</h2>
               {restaurant && (
                 <form className="business-form" onSubmit={handleSaveRestaurant}>
                   <div className="business-field">

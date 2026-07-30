@@ -112,7 +112,7 @@ export function SeekerProfilePage() {
           ? updated.dietaryPreferences
           : [],
       );
-      setNotice("Yes !! The Profile is correctly updated.");
+      setNotice("The Profile is updated successfully");
     } catch (err) {
       setError(
         err instanceof Error
@@ -214,7 +214,7 @@ export function SeekerProfilePage() {
                         aria-label={`Remove ${tag}`}
                         onClick={() => removeTag(tag)}
                       >
-                        ×
+                        x
                       </button>
                     </li>
                   ))}
@@ -231,12 +231,12 @@ export function SeekerProfilePage() {
               onClick={() => handleSave()}
               disabled={isSaving}
             >
-              {isSaving ? "Saving…" : "Save changes"}
+              {isSaving ? "Saving..." : "Save changes"}
             </button>
             <button
               type="button"
               className="rq-btn rq-btn-danger sk-profile-delete"
-              onClick={() => handleDeleteAccount()}
+              onClick={handleDeleteAccount}
             >
               Delete Account
             </button>
