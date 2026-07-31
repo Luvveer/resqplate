@@ -49,6 +49,19 @@ export async function confirmPickup(
     throw new Error("Incorrect Pick up Code");
   }
 
+  const now = Date.now();
+  if (now < reservation.pickupSlotStart.getTime()) {
+    throw new Error(
+      `This pickup is not scheduled to start until ${reservation.pickupSlotStart.toLocaleString()}.`,
+    );
+  }
+
+  if (now - 5 * 60 * 1000 > reservation.pickupSlotEnd.getTime()) {
+    await markReservationNoShow(reservationId);
+    throw new Error(
+      `This pickup window ended at ${reservation.pickupSlotEnd.toLocaleString()}.`,
+    );
+  }
   const confirmation = await confirmReservationPickup(reservationId);
   if (confirmation === undefined) {
     throw new Error("Reservation just updated, please retry");
@@ -69,6 +82,12 @@ export async function markNoShow(profileId: string, reservationId: string) {
   }
   if (reservation.status !== "RESERVED") {
     throw new Error("This item is not reserved");
+  }
+  const now = Date.now();
+  if (now < reservation.pickupSlotEnd.getTime()) {
+    throw new Error(
+      `This pickup window doesnot end until ${reservation.pickupSlotEnd.toLocaleString()}.`,
+    );
   }
   const noShow = await markReservationNoShow(reservation.id);
   if (noShow === undefined) {
