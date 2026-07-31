@@ -500,5 +500,5 @@ export const openApiDocument = swaggerJsdoc({
       },
     },
   },
-  apis: ["./src/**/*.routes.ts"],
+  apis: ["./src/**/*.routes.ts", "./dist/**/*.routes.js"],
 });

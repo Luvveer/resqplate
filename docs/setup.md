@@ -20,12 +20,13 @@ There are two `.env.example` files (`one in root & one in backend/`) which exist
 
 ```bash
 # start/stop/force-stop the database
-npm run db:start          # start the container
-npm run db:stop           # stop the container (doesnot delete the volume)
-npm run db:force-stop     # deletes the volume and the container
-npm run db:studio         # use the link to view the database & can run SQL commands in it
+npm run db:start            # start the container
+npm run db:stop             # stop the container (doesnot delete the volume)
+npm run db:force-stop       # deletes the volume and the container
+npm run db:studio           # use the link to view the database & can run SQL commands in it
+npm run db:seed -w backend  # seeds data into database
 
-#schema commands
+
 # These commands need to be run to add new changes to the database schema in the same order
 1. npm run db:generate    # generates the sql code from drizzle
 2. npm run db:migrate     # used for migrations to the container
@@ -54,6 +55,7 @@ npm run dev -w backend
 npm run lint      # check all the workspaces(frontend, backend, shared file)
 npm run format    # auto-format whole repo
 npm run test      # run backend test suite
+npm run test:coverage   # run backend tests and generate the coverage.
 ```
 
 ## Branching & Code Organization

@@ -233,6 +233,41 @@ AuthRouter.post("/password-reset/confirm", passwordResetConfirmHandler);
 AuthRouter.get("/profile/me", profileHandler);
 AuthRouter.patch("/profile/me", getSession, updateProfileHandler);
 
+/**
+ * @openapi
+ * /api/auth/profile/me:
+ *   delete:
+ *     tags:
+ *       - Auth
+ *     summary: Delete authenticated user's account
+ *     security:
+ *       - sessionCookie: []
+ *     responses:
+ *       200:
+ *         description: Account deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               required:
+ *                 - message
+ *               properties:
+ *                 message:
+ *                  type: string
+ *                  example: Account deleted
+ *       401:
+ *         description: User is not authenticated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       500:
+ *         description: Failed to delete account
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
 AuthRouter.delete("/profile/me", getSession, deleteAccountHandler);
 
 export default AuthRouter;

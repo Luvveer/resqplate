@@ -15,7 +15,8 @@
     "db:migrate": "npm exec -w backend -- drizzle-kit migrate",
     "db:generate": "npm exec -w backend -- drizzle-kit generate",
     "db:studio": "npm exec -w backend -- drizzle-kit studio",
-    "test": "npm run test --workspaces --if-present"
+    "test": "npm run test -w backend",
+    "test:coverage": "npm run test:coverage -w backend"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": "eslint --fix",

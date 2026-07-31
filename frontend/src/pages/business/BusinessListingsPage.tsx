@@ -135,7 +135,7 @@ export function BusinessListingsPage() {
 
                     <td>{listing.quantityAvailable}</td>
 
-                    <td>
+                    <td className="business-pickup-cell">
                       <div>
                         {new Date(listing.pickupStart).toLocaleString()}
                       </div>

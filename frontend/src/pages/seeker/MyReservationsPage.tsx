@@ -100,7 +100,7 @@ export function MyReservationsPage() {
             Browse
           </Link>
           <Link className="sk-nav-link is-active" to="/seeker/reservations">
-            My reservations
+            My Reservations
           </Link>
           <Link className="sk-nav-link" to="/seeker/profile">
             Profile
