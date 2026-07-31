@@ -718,3 +718,19 @@
 .business-profile-delete {
   margin-top: 3px;
 }
+
+.business-pickup-success {
+  position: fixed;
+  top: 90px;
+  right: 24px;
+  z-index: 100;
+  max-width: 420px;
+  padding: 14px 18px;
+  border: 1px solid #aac7a1;
+  border-radius: 10px;
+  background: #edf7e9;
+  color: #2b4e29;
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 15%);
+}

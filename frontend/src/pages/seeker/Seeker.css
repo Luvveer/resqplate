@@ -428,6 +428,8 @@
 /* My tickets  */
 .sk-topbar-spacer {
   flex: 1;
+  max-width: 520px;
+  height: 42px;
 }
 
 .sk-ticket-grid {
@@ -533,6 +535,9 @@
 @media (max-width: 780px) {
   .sk-ticket-grid {
     grid-template-columns: 1fr;
+  }
+  .sk-topbar-spacer {
+    display: none;
   }
 }
 

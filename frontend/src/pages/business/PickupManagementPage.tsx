@@ -24,6 +24,7 @@ export function PickupManagementPage() {
   const [hasSearched, setHadSearched] = useState(false);
   const [confirmId, setconfirmId] = useState<string | null>(null);
   const [confirmNoShow, setconfirmNoShow] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const displayedReservations = hasSearched ? searchResult : reservations;
 
@@ -79,6 +80,20 @@ export function PickupManagementPage() {
 
     loadReservations();
   }, []);
+
+  useEffect(() => {
+    if (!successMessage) {
+      return;
+    }
+    const timeoutId = window.setTimeout(() => {
+      setSuccessMessage(null);
+    }, 5000);
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [successMessage]);
+
   async function handleNoShow(reservationId: string) {
     setError(null);
     setUpdatingId(reservationId);
@@ -99,9 +114,21 @@ export function PickupManagementPage() {
 
   async function handleConfirm(reservationId: string) {
     setError(null);
+    setSuccessMessage(null);
     setUpdatingId(reservationId);
+
+    const selectedReservation = displayedReservations.find(
+      (reservation) => reservation.id === reservationId,
+    );
+
     try {
       await pickupApi.confirm(reservationId, pickupCodeInput);
+      if (selectedReservation) {
+        const listingTitle = getListingTitle(selectedReservation.listingId);
+        setSuccessMessage(
+          `${listingTitle} has been picked up by ${selectedReservation.seekerEmail},`,
+        );
+      }
       setpickupCodeInput("");
       setconfirmId(null);
       await loadReservations();
@@ -160,6 +187,12 @@ export function PickupManagementPage() {
         </div>
       </header>
       <main className="business-main">
+        {successMessage && (
+          <div className="business-pickup-success" role="status">
+            {successMessage}
+          </div>
+        )}
+
         {error && <p className="business-error">{error}</p>}
         <div className="business-search-bar">
           <input
