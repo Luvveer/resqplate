@@ -27,3 +27,7 @@ Updated Architecture design: [`Architecture`](/docs/Architecture-diagram-ResQPla
 ## ER Diagram
 
 Updated ER Diagram: [`ER Diagram`](/docs/ER_diagram.png)
+
+## Deployment Screenshots
+
+See screenshots of clouddlare, VM(backend-server) and CloudSQL: [`screenshots`](/screenshots/)
