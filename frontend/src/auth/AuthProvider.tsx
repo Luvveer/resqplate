@@ -43,8 +43,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await authApi.logoutRequest();
     setProfile(null);
   }
+  function setCurrentProfile(updatedProfile: ProfileResponse | null) {
+    setProfile(updatedProfile);
+  }
   return (
-    <AuthContext.Provider value={{ profile, isLoading, login, signup, logout }}>
+    <AuthContext.Provider
+      value={{ profile, isLoading, login, signup, logout, setCurrentProfile }}
+    >
       {children}
     </AuthContext.Provider>
   );

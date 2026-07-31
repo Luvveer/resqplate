@@ -16,6 +16,8 @@ function makeReservation(overrides: Record<string, unknown> = {}) {
     pickedUpAt: null,
     cancelledAt: null,
     noShowAt: null,
+    pickupSlotStart: new Date(Date.now() - 30 * 60 * 1000),
+    pickupSlotEnd: new Date(Date.now() + 30 * 60 * 1000),
     ...overrides,
   };
 }
@@ -221,7 +223,10 @@ describe("pickups service", () => {
 
     it("throws when the atomic update returns undefined (race condition)", async () => {
       restaurantResult = makeRestaurant();
-      reservationResult = makeReservation();
+      reservationResult = makeReservation({
+        pickupSlotStart: new Date(Date.now() - 120 * 60 * 1000),
+        pickupSlotEnd: new Date(Date.now() - 60 * 60 * 1000),
+      });
       noShowResult = undefined;
 
       await assert.rejects(
@@ -232,12 +237,39 @@ describe("pickups service", () => {
 
     it("marks the reservation as a no-show", async () => {
       restaurantResult = makeRestaurant();
-      reservationResult = makeReservation();
+      reservationResult = makeReservation({
+        pickupSlotStart: new Date(Date.now() - 120 * 60 * 1000),
+        pickupSlotEnd: new Date(Date.now() - 60 * 60 * 1000),
+      });
       noShowResult = makeReservation({ status: "NO_SHOW" });
 
       const result = await markNoShow(profileId, reservationId);
 
       assert.equal((result as { status: string }).status, "NO_SHOW");
+    });
+
+    it("throws error when pickup slot has not started", async () => {
+      restaurantResult = makeRestaurant();
+      reservationResult = makeReservation({
+        pickupCodeDisplay: "ABC123",
+        pickupSlotStart: new Date(Date.now() + 60 * 60 * 1000),
+        pickupSlotEnd: new Date(Date.now() + 120 * 60 * 1000),
+      });
+
+      await assert.rejects(confirmPickup(profileId, reservationId, "ABC123"));
+      assert.equal(confirmReservationPickupMock.mock.callCount(), 0);
+    });
+
+    it("throws error when pickup slot has ended", async () => {
+      restaurantResult = makeRestaurant();
+      reservationResult = makeReservation({
+        pickupCodeDisplay: "ABC123",
+        pickupSlotStart: new Date(Date.now() - 120 * 60 * 1000),
+        pickupSlotEnd: new Date(Date.now() - 60 * 60 * 1000),
+      });
+
+      await assert.rejects(confirmPickup(profileId, reservationId, "ABC123"));
+      assert.equal(confirmReservationPickupMock.mock.callCount(), 0);
     });
   });
 

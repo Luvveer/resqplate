@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import type { ReservationWithListingResponse } from "@resqplate/shared";
 import { reservationsApi } from "../../api/reservations";
+import { useAuth } from "../../auth/useAuth";
 import "./Seeker.css";
 
 // Show the reserved time slot for the seeker
@@ -44,6 +45,7 @@ export function MyReservationsPage() {
 
   // Also look at the pre-resetvation state for the cancel so that only the clicked row shows the canceling state
   const [cancellingId, setCancelingId] = useState<string | null>(null);
+  const { logout } = useAuth();
 
   async function loadReservations() {
     setError(null);
@@ -105,6 +107,14 @@ export function MyReservationsPage() {
           <Link className="sk-nav-link" to="/seeker/profile">
             Profile
           </Link>
+
+          <button
+            type="button"
+            className="sk-nav-logout"
+            onClick={() => logout()}
+          >
+            Logout
+          </button>
         </nav>
       </header>
 

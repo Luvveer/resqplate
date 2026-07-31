@@ -553,13 +553,15 @@ describe("restaurant handlers", () => {
   });
 
   describe("createListingHandler", () => {
+    const futureStart = new Date(Date.now() + 60 * 60 * 1000);
+    const futureEnd = new Date(futureStart.getTime() + 2 * 60 * 60 * 1000);
     const validBody = {
       title: "Banana shake",
       description: "Fresh shake",
       category: "Drink",
       quantityAvailable: 4,
-      pickupStart: "2026-07-26T10:00:00Z",
-      pickupEnd: "2026-07-26T12:00:00Z",
+      pickupStart: futureStart.toISOString(),
+      pickupEnd: futureEnd.toISOString(),
       allergenIds: [allergenId],
     };
 
@@ -600,7 +602,7 @@ describe("restaurant handlers", () => {
     });
 
     it("return 400 when listing creation fails", async () => {
-      serviceError = new Error("Pickup window cannot be longer than 24 hours");
+      serviceError = new Error("Pickup window cannot be longer than 72 hours");
 
       const request = makeRequest({ body: validBody });
       const { response, state } = makeResponse();
@@ -609,7 +611,7 @@ describe("restaurant handlers", () => {
 
       assert.equal(state.statusCode, 400);
       assert.deepEqual(state.body, {
-        error: "Pickup window cannot be longer than 24 hours",
+        error: "Pickup window cannot be longer than 72 hours",
       });
     });
   });

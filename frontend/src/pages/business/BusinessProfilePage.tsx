@@ -8,6 +8,7 @@ import { authApi } from "../../api/authClient";
 import { AddressAutocomplete } from "./AddressAutocomplete";
 import "./Business.css";
 import { companyApi } from "../../api/restaurant";
+import { useAuth } from "../../auth/useAuth";
 
 export function BusinessProfilePage() {
   const [profile, setProfile] = useState<ProfileResponse | null>(null);
@@ -25,6 +26,7 @@ export function BusinessProfilePage() {
   const [sessionToken] = useState(() => crypto.randomUUID());
   const [phone, setPhone] = useState("");
   const [description, setDescription] = useState("");
+  const { setCurrentProfile } = useAuth();
 
   // check to see the current profile once
   useEffect(() => {
@@ -114,6 +116,7 @@ export function BusinessProfilePage() {
       const { profile: updated } = await authApi.updateProfile({
         name: trimmedName,
       });
+      setCurrentProfile(updated);
       setProfile(updated);
       setName(updated.name);
       setNotice("The Profile is updated successfully");

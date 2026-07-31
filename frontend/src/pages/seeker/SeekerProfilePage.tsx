@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import type { ProfileResponse } from "@resqplate/shared";
 import { authApi } from "../../api/authClient";
+import { useAuth } from "../../auth/useAuth";
 import "./Seeker.css";
 
 export function SeekerProfilePage() {
@@ -14,6 +15,7 @@ export function SeekerProfilePage() {
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const { logout } = useAuth();
 
   // check to see the current profile once
   useEffect(() => {
@@ -144,6 +146,13 @@ export function SeekerProfilePage() {
           <Link className="sk-nav-link is-active" to="/seeker/profile">
             Profile
           </Link>
+          <button
+            type="button"
+            className="sk-nav-logout"
+            onClick={() => logout()}
+          >
+            Logout
+          </button>
         </nav>
       </header>
 

@@ -45,6 +45,14 @@ function toLocalDatetimeValue(date: Date) {
   return `${year}-${month}-${day}T${hours}:${minutes}`;
 }
 
+function getMinPickupStart() {
+  const min = new Date();
+  min.setSeconds(0, 0);
+  min.setMinutes(min.getMinutes() + 1);
+
+  return toLocalDatetimeValue(min);
+}
+
 function toDatetimeLocalValue(value?: string | Date | null) {
   if (!value) {
     return "";
@@ -66,7 +74,7 @@ function getMaxPickupEnd(pickupStart: string) {
     return undefined;
   }
 
-  const maxEndtime = new Date(start.getTime() + 24 * 60 * 60 * 1000);
+  const maxEndtime = new Date(start.getTime() + 72 * 60 * 60 * 1000);
 
   return toLocalDatetimeValue(maxEndtime);
 }
@@ -262,6 +270,7 @@ export function ListingForm({
             id="listing-pickup-start"
             type="datetime-local"
             value={values.pickupStart}
+            min={getMinPickupStart()}
             onChange={(event) => updateField("pickupStart", event.target.value)}
             required
           />

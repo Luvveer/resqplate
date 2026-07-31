@@ -12,6 +12,7 @@ export interface AuthContextValue {
     role: "FOOD_SEEKER" | "BUSINESS" | "ADMIN",
   ) => Promise<void>;
   logout: () => Promise<void>;
+  setCurrentProfile: (profile: ProfileResponse | null) => void;
 }
 
 export const AuthContext = createContext<AuthContextValue | undefined>(
