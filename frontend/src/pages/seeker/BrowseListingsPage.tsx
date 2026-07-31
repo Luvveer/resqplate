@@ -527,20 +527,28 @@ export function BrowseListingsPage() {
                         </p>
 
                         <div className="sk-card-window">
-                          <span className="rq-mono sk-window-time">
-                            {new Date(listing.pickupStart).toLocaleTimeString(
-                              [],
-                              { hour: "numeric", minute: "2-digit" },
-                            )}
-                            -
-                            {new Date(listing.pickupEnd).toLocaleTimeString(
-                              [],
-                              {
+                          <div className="sk-window-time">
+                            <span className="rq-mono sk-window-start">
+                              {new Date(listing.pickupStart).toLocaleString(
+                                [],
+                                {
+                                  month: "short",
+                                  day: "numeric",
+                                  hour: "numeric",
+                                  minute: "2-digit",
+                                },
+                              )}
+                            </span>
+                            {"  to  "}
+                            <span className="rq-mono sk-window-end">
+                              {new Date(listing.pickupEnd).toLocaleString([], {
+                                month: "short",
+                                day: "numeric",
                                 hour: "numeric",
                                 minute: "2-digit",
-                              },
-                            )}
-                          </span>
+                              })}
+                            </span>
+                          </div>
                           {closes && (
                             <span
                               className={`sk-window-closes sk-closes-${tier}`}
