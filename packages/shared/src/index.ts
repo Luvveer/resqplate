@@ -194,6 +194,10 @@ const listingFieldSchema = z.object({
 });
 
 export const createListingSchema = listingFieldSchema
+  .refine((input) => input.pickupStart.getTime() >= Date.now(), {
+    message: "Pickup start time cannot be in past",
+    path: ["pickupStart"],
+  })
   .refine((input) => input.pickupEnd > input.pickupStart, {
     message: "Pickup end time must be after pickup start time",
     path: ["pickupEnd"],
@@ -201,9 +205,9 @@ export const createListingSchema = listingFieldSchema
   .refine(
     (input) =>
       input.pickupEnd.getTime() - input.pickupStart.getTime() <=
-      24 * 60 * 60 * 1000,
+      72 * 60 * 60 * 1000,
     {
-      message: "Pickup window cannot be longer than 24 hours.",
+      message: "Pickup window cannot be longer than 72 hours.",
       path: ["pickupEnd"],
     },
   );

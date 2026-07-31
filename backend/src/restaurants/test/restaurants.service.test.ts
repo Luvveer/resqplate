@@ -385,13 +385,15 @@ describe("restaurants service", () => {
   });
 
   it("create listing using restaurant location", async () => {
+    const futureStart = new Date(Date.now() + 60 * 60 * 1000);
+    const futureEnd = new Date(futureStart.getTime() + 2 * 60 * 60 * 1000);
     const result = await createMyListing(profileId, {
       title: "Banana shake",
       description: "Fresh shake",
       category: "Drink",
       quantityAvailable: 4,
-      pickupStart: new Date("2026-07-26T10:00:00"),
-      pickupEnd: new Date("2026-07-26T12:00:00"),
+      pickupStart: futureStart,
+      pickupEnd: futureEnd,
       allergenIds: [allergenId],
     });
 
@@ -408,26 +410,32 @@ describe("restaurants service", () => {
   });
 
   it("rejects pickup end before pickup start", async () => {
+    const futureStart = new Date(Date.now() + 2 * 60 * 60 * 1000);
+    const futureEnd = new Date(futureStart.getTime() - 60 * 60 * 1000);
     await assert.rejects(
       createMyListing(profileId, {
         title: "Food",
         quantityAvailable: 1,
-        pickupStart: new Date("2026-07-27T12:00:00"),
-        pickupEnd: new Date("2026-07-27T10:00:00"),
+        pickupStart: futureStart,
+        pickupEnd: futureEnd,
       }),
       /Pickup end time must be after pickup start time/,
     );
   });
 
-  it("rejects pickup window longer than 24 hours", async () => {
+  it("rejects pickup window longer than 72 hours", async () => {
+    const futureStart = new Date(Date.now() + 60 * 60 * 1000);
+    const LateEnd = new Date(
+      futureStart.getTime() + 72 * 60 * 60 * 1000 + 60 * 1000,
+    );
     await assert.rejects(
       createMyListing(profileId, {
         title: "Food",
         quantityAvailable: 1,
-        pickupStart: new Date("2026-07-26T10:00:00"),
-        pickupEnd: new Date("2026-07-27T10:01:00"),
+        pickupStart: futureStart,
+        pickupEnd: LateEnd,
       }),
-      /Pickup window cannot be longer than 24 hours/,
+      /Pickup window cannot be longer than 72 hours/,
     );
   });
 
@@ -444,14 +452,16 @@ describe("restaurants service", () => {
   });
 
   it("rejects unknown allergens", async () => {
+    const futureStart = new Date(Date.now() + 60 * 60 * 1000);
+    const futureEnd = new Date(futureStart.getTime() + 2 * 60 * 60 * 1000);
     allergensResult = [];
 
     await assert.rejects(
       createMyListing(profileId, {
         title: "Food",
         quantityAvailable: 1,
-        pickupStart: new Date("2026-07-26T10:00:00"),
-        pickupEnd: new Date("2026-07-26T12:00:00"),
+        pickupStart: futureStart,
+        pickupEnd: futureEnd,
         allergenIds: [allergenId],
       }),
       /allergen were not found/,
@@ -459,14 +469,16 @@ describe("restaurants service", () => {
   });
 
   it("rejects listing creation without restaurant coordinates", async () => {
+    const futureStart = new Date(Date.now() + 60 * 60 * 1000);
+    const futureEnd = new Date(futureStart.getTime() + 2 * 60 * 60 * 1000);
     restaurantResult = makeRestaurant({ latitude: null });
 
     await assert.rejects(
       createMyListing(profileId, {
         title: "Food",
         quantityAvailable: 1,
-        pickupStart: new Date("2026-07-26T10:00:00"),
-        pickupEnd: new Date("2026-07-26T12:00:00"),
+        pickupStart: futureStart,
+        pickupEnd: futureEnd,
       }),
       /Restaurant does not have valid location/,
     );

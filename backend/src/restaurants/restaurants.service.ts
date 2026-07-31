@@ -69,7 +69,13 @@ export async function createMyRestaurant(
 
 /* Feature 2 */
 
-const MAX_PICKUP_WINDOW = 24 * 60 * 60 * 1000;
+const MAX_PICKUP_WINDOW = 72 * 60 * 60 * 1000;
+
+function assertPickupStarttime(pickupStart: Date) {
+  if (pickupStart.getTime() < Date.now()) {
+    throw new Error("Pickup start time cannot be in past");
+  }
+}
 
 function assertPickupWindow(pickupStart: Date, pickupEnd: Date) {
   if (
@@ -85,7 +91,7 @@ function assertPickupWindow(pickupStart: Date, pickupEnd: Date) {
   const pickupWindowDuration = pickupEnd.getTime() - pickupStart.getTime();
 
   if (pickupWindowDuration > MAX_PICKUP_WINDOW) {
-    throw new Error("Pickup window cannot be longer than 24 hours.");
+    throw new Error("Pickup window cannot be longer than 72 hours.");
   }
 }
 
@@ -165,6 +171,7 @@ export async function createMyListing(
   const restaurant = await getApprovedRestaurantForProfile(profileId);
   const { allergenIds, ...listingInput } = input;
 
+  assertPickupStarttime(listingInput.pickupStart);
   assertPickupWindow(listingInput.pickupStart, listingInput.pickupEnd);
   await validateAllergenIds(allergenIds);
 
@@ -218,6 +225,11 @@ export async function updateMyListing(
 
   const pickupStart = listingInput.pickupStart ?? existingListing.pickupStart;
   const pickupEnd = listingInput.pickupEnd ?? existingListing.pickupEnd;
+
+  if (listingInput.pickupStart !== undefined) {
+    assertPickupStarttime(listingInput.pickupStart);
+  }
+
   assertPickupWindow(pickupStart, pickupEnd);
 
   await validateAllergenIds(allergenIds);
