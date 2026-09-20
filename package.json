@@ -25,13 +25,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bobbychan-cmpt/final-project-group-12.git"
+    "url": "git+https://github.com/Luvveer/resqplate.git"
   },
   "type": "commonjs",
   "bugs": {
-    "url": "https://github.com/bobbychan-cmpt/final-project-group-12/issues"
+    "url": "https://github.com/Luvveer/resqplate/issues"
   },
-  "homepage": "https://github.com/bobbychan-cmpt/final-project-group-12#readme",
+  "homepage": "https://github.com/Luvveer/resqplate#readme",
   "private": true,
   "workspaces": [
     "backend",
