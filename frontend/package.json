@@ -2,6 +2,7 @@
   "name": "frontend",
   "private": true,
   "version": "0.0.0",
+  "description": "ResQPlate frontend - React + TypeScript + Vite web app for food businesses and food seekers.",
   "type": "module",
   "scripts": {
     "dev": "vite",

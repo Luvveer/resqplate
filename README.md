@@ -1,33 +1,80 @@
 # ResQPlate
 
-The name of our application is ResQPlate. It is a food donation platform that helps restaurants, cafes, bakeries and food businesses distribute leftover edible food with people in need.
+ResQPlate is a food donation platform that helps restaurants, cafes, bakeries and food businesses distribute leftover edible food to people in need.
 
 ## Problem Statement
 
-Food insecurity and food waste are both serious problems nowadays; many people struggle to get affordable meals, while restaurants, bakeries and cafes often throw leftover edible food at the end of the day. Today, this problem is partly solved through food banks and donations programs. Apps such as Too Good To Go help businesses sell leftover food at discounted prices. However, discounted food may not help people who cannot afford to pay. Our app solves this problem by creating a donation-based dynamic platform where verified food businesses can post leftover food for free, and food seekers can find and receive available food nearby. This will help reduce food waste while making extra food accessible to people who need it.
+Food insecurity and food waste are both serious problems today; many people struggle to get affordable meals, while restaurants, bakeries and cafes often throw out leftover edible food at the end of the day. This problem is partly solved through food banks and donation programs. Apps such as Too Good To Go help businesses sell leftover food at discounted prices, but discounted food doesn't help people who can't afford to pay at all. ResQPlate solves this by creating a donation-based platform where verified food businesses can post leftover food for free, and food seekers can find and reserve it nearby — reducing food waste while making food accessible to the people who need it most.
 
-## Final feature list
+## Tech Stack
 
-1. **Business Profile & Verification:** Restaurant, bakeries, cafes, and other business can create account and complete restaurant profiles using Google Places address autocomplete. Admin can review Business profiles, approve or reject businesses, request additional information, suspend account and can provide notes.
+| Layer | Technologies |
+|---|---|
+| Frontend | React 19, TypeScript, Vite, React Router, Leaflet (maps), Algolia InstantSearch |
+| Backend | Node.js, Express 5, TypeScript, Drizzle ORM, PostgreSQL, better-auth, Resend (email), Sharp (image processing), Swagger |
+| Infra / DevOps | Docker Compose, GitHub Actions (CI, deploys, DB migrations), GCP (Cloud SQL, Compute Engine, Secret Manager), Cloudflare Pages + Workers, Caddy |
 
-2. **Food Listing Creation:** Verified businesses can create, edit, or view food listing. They can manage listing quantity, upload image, cancel reservation, pickup time, location, and allergens for Food Seekers.
+## Features
 
-3. **Food search and reservation for food seekers:** Food seekers can create accounts and search for available listings near them, filter listings, reserve pickup time, and receive pickup code to confirm pickup and claim their food. They can search available listing through Algolia, filter by city, category, allergens, and based on distance. Seekers can select available one-hour pickup slot, view their reservation, or cancel eligible reservations.
+1. **Business Profile & Verification** — Restaurants, bakeries, cafes, and other businesses can create an account and complete a profile using Google Places address autocomplete. Admins can review, approve or reject businesses, request additional information, suspend accounts, and leave notes.
 
-4. **Pickup Management:** Businesses can view and manage reservations for their listing, can confirm pickup using codes, can mark no-show, can update reservation status, can search by food seeker email address.
+2. **Food Listing Creation** — Verified businesses can create, edit, and view food listings: quantity, images, cancellations, pickup time, location, and allergens.
 
-## Local setup
+3. **Food Search & Reservation** — Food seekers can search nearby listings via Algolia, filter by city, category, allergens, and distance, reserve a one-hour pickup slot, and receive a pickup code to confirm pickup. They can also view or cancel eligible reservations.
 
-For prerequisites, environment variables, database configuration, and instruction for runing app locally, see [Local Setup Guide](docs/setup.md).
+4. **Pickup Management** — Businesses can view and manage reservations, confirm pickups using codes, mark no-shows, update reservation status, and search by food seeker email.
+
+## Screenshots
+
+Production infrastructure — Cloudflare Pages, Cloud SQL, and the backend VM on GCP:
+
+<p>
+  <img src="screenshots/cloudflare-pages.jpeg" width="32%" alt="Cloudflare Pages deployment" />
+  <img src="screenshots/CloudSQL-instance.jpeg" width="32%" alt="Cloud SQL instance" />
+  <img src="screenshots/VM-basic-detail.jpeg" width="32%" alt="Backend VM configuration" />
+</p>
+
+More in [`/screenshots`](/screenshots/).
 
 ## Architecture
 
-Updated Architecture design: [`Architecture`](/docs/Architecture-diagram-ResQPlate.png)
+![Architecture diagram](docs/Architecture-diagram-ResQPlate.png)
 
 ## ER Diagram
 
-Updated ER Diagram: [`ER Diagram`](/docs/ER_diagram.png)
+![ER diagram](docs/ER_diagram.png)
 
-## Deployment Screenshots
+## Local Setup
 
-See screenshots of clouddlare, VM(backend-server) and CloudSQL: [`screenshots`](/screenshots/)
+See the [Local Setup Guide](docs/setup.md) for prerequisites, environment variables, database configuration, and instructions to run the app locally.
+
+```bash
+npm install
+npm run db:start      # start local Postgres via Docker Compose
+npm run db:migrate
+npm run dev            # runs backend + frontend (see docs/setup.md for details)
+```
+
+## Testing & Code Quality
+
+- Backend: unit/integration tests via Node's built-in test runner (`npm test`), with coverage reporting (`npm run test:coverage`)
+- ESLint + Prettier enforced via Husky pre-commit/pre-push hooks
+- CI runs lint, build, and tests on every PR via GitHub Actions
+
+## My Contributions
+
+This was a team project built by a group of 4 for our software engineering course. My focus was primarily on infrastructure, authentication, and backend functionality:
+
+- Set up the monorepo workspace structure (frontend / backend / shared packages) and the CI/CD pipelines (GitHub Actions) for linting, testing, and deployment
+- Built and deployed the production infrastructure: GCP Compute Engine VM + Cloud SQL, Cloudflare Pages + Workers proxy, Caddy for HTTPS, and GCP Secret Manager integration for CI secrets
+- Implemented authentication end-to-end with better-auth: signup, login, logout, forgot/reset password (with Resend for transactional emails), and role-based route guards for seeker, business, and admin users
+- Designed the database schema (Drizzle ORM/PostgreSQL): better-auth tables, restaurant/listing/reservation models, and iterative schema changes as requirements evolved
+- Built the dashboards and routing for the seeker, business, and admin user roles
+- Implemented pickup time-slot logic, restricting pickup code redemption to the reserved time window
+- Added local image storage with server-side resizing to improve frontend load performance
+- Wrote backend service/repository test suites and wired test coverage into CI
+- Wrote Swagger API documentation for the restaurant module, and the architecture and ER diagrams
+
+## Contributors
+
+Built by a team of 4 as a course capstone project.

@@ -1,6 +1,7 @@
 {
   "name": "backend",
   "version": "1.0.0",
+  "description": "ResQPlate backend API - Express + TypeScript + Drizzle ORM/PostgreSQL, handling auth, listings, reservations, and pickup management.",
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "tsc",

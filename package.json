@@ -1,6 +1,7 @@
 {
   "name": "final-project-group-12",
   "version": "1.0.0",
+  "description": "ResQPlate - a food donation platform connecting restaurants and food businesses with people in need to reduce food waste.",
   "directories": {
     "doc": "docs"
   },
