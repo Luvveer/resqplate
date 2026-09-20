@@ -23,7 +23,7 @@ Food insecurity and food waste are both serious problems, and they're related. M
 
 ## Screenshots
 
-Production infrastructure: Cloudflare Pages, Cloud SQL, and the backend VM on GCP.
+Previous production deployment: ResQPlate was deployed using Cloudflare Pages, GCP Compute Engine, Cloud SQL, Secret Manager, and Caddy. The deployment is no longer active; these screenshots document the infrastructure that was configured and operated during the project.
 
 <p>
   <img src="screenshots/cloudflare-pages.jpeg" width="32%" alt="Cloudflare Pages deployment" />
@@ -31,7 +31,7 @@ Production infrastructure: Cloudflare Pages, Cloud SQL, and the backend VM on GC
   <img src="screenshots/VM-basic-detail.jpeg" width="32%" alt="Backend VM configuration" />
 </p>
 
-More in [`/screenshots`](/screenshots/).
+More in [`/screenshots`](/screenshots/). Internal IPs and instance IDs are redacted; the deployment behind them no longer exists.
 
 ## Architecture
 
